@@ -30,6 +30,10 @@ var (
 			Foreground(lipgloss.Color("#FFFFFF")).
 			Background(lipgloss.Color("#7D56F4")).
 			Padding(0, 1)
+
+	buttonStyle = lipgloss.NewStyle().
+			Bold(true).
+			Foreground(lipgloss.Color("#FFA500"))
 )
 
 type screen int
@@ -258,7 +262,7 @@ func (m model) updateAddBook(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	case "tab", "shift+tab", "enter", "up", "down":
 		s := msg.String()
 
-		if s == "enter" && m.focused == len(m.inputs)-1 {
+		if s == "enter" && m.focused == len(m.inputs) {
 			return m, m.saveBook()
 		}
 
@@ -268,23 +272,23 @@ func (m model) updateAddBook(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 			m.focused++
 		}
 
-		if m.focused > len(m.inputs) {
+		if m.focused >= len(m.inputs)+1 {
 			m.focused = 0
 		} else if m.focused < 0 {
 			m.focused = len(m.inputs)
 		}
 
 		cmds := make([]tea.Cmd, len(m.inputs))
-		for i := 0; i <= len(m.inputs)-1; i++ {
+		for i := 0; i < len(m.inputs); i++ {
 			if i == m.focused {
 				cmds[i] = m.inputs[i].Focus()
 				m.inputs[i].PromptStyle = focusedStyle
 				m.inputs[i].TextStyle = focusedStyle
-				continue
+			} else {
+				m.inputs[i].Blur()
+				m.inputs[i].PromptStyle = noStyle
+				m.inputs[i].TextStyle = noStyle
 			}
-			m.inputs[i].Blur()
-			m.inputs[i].PromptStyle = noStyle
-			m.inputs[i].TextStyle = noStyle
 		}
 
 		return m, tea.Batch(cmds...)
@@ -377,7 +381,7 @@ func (m model) updateEditBook(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	case "tab", "shift+tab", "enter", "up", "down":
 		s := msg.String()
 
-		if s == "enter" && m.focused == len(m.inputs)-1 {
+		if s == "enter" && m.focused == len(m.inputs) {
 			return m, m.updateBook()
 		}
 
@@ -394,16 +398,16 @@ func (m model) updateEditBook(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		}
 
 		cmds := make([]tea.Cmd, len(m.inputs))
-		for i := 0; i <= len(m.inputs)-1; i++ {
+		for i := 0; i < len(m.inputs); i++ {
 			if i == m.focused {
 				cmds[i] = m.inputs[i].Focus()
 				m.inputs[i].PromptStyle = focusedStyle
 				m.inputs[i].TextStyle = focusedStyle
-				continue
+			} else {
+				m.inputs[i].Blur()
+				m.inputs[i].PromptStyle = noStyle
+				m.inputs[i].TextStyle = noStyle
 			}
-			m.inputs[i].Blur()
-			m.inputs[i].PromptStyle = noStyle
-			m.inputs[i].TextStyle = noStyle
 		}
 
 		return m, tea.Batch(cmds...)
@@ -477,9 +481,9 @@ func (m model) viewAddBook() string {
 
 	button := &blurredStyle
 	if m.focused == len(m.inputs) {
-		button = &focusedStyle
+		button = &buttonStyle
 	}
-	fmt.Fprintf(&b, "\n\n%s\n\n", button.Render("[ Save Book ]"))
+	fmt.Fprintf(&b, "\n\n%s\n\n", button.Render("SAVE BOOK"))
 
 	if m.err != nil {
 		b.WriteString(lipgloss.NewStyle().Foreground(lipgloss.Color("#FF0000")).Render("Error: " + m.err.Error()))
@@ -599,9 +603,9 @@ func (m model) viewEditBook() string {
 
 	button := &blurredStyle
 	if m.focused == len(m.inputs) {
-		button = &focusedStyle
+		button = &buttonStyle
 	}
-	fmt.Fprintf(&b, "\n\n%s\n\n", button.Render("[ Update Book ]"))
+	fmt.Fprintf(&b, "\n\n%s\n\n", button.Render("UPDATE BOOK"))
 
 	if m.err != nil {
 		b.WriteString(lipgloss.NewStyle().Foreground(lipgloss.Color("#FF0000")).Render("Error: " + m.err.Error()))
