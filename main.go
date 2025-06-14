@@ -16,13 +16,13 @@ var (
 	titleStyle = lipgloss.NewStyle().
 			Bold(true).
 			Foreground(lipgloss.Color("#7D56F4"))
-	
+
 	focusedStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("#7D56F4"))
-	
+
 	blurredStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("#9CA3AF"))
-	
+
 	noStyle = lipgloss.NewStyle()
 
 	selectedStyle = lipgloss.NewStyle().
@@ -47,15 +47,15 @@ type book struct {
 }
 
 type model struct {
-	db          *sql.DB
-	inputs      []textinput.Model
-	focused     int
-	err         error
-	saved       bool
+	db            *sql.DB
+	inputs        []textinput.Model
+	focused       int
+	err           error
+	saved         bool
 	currentScreen screen
-	menuItems   []string
-	menuIndex   int
-	books       []book
+	menuItems     []string
+	menuIndex     int
+	books         []book
 }
 
 func initialModel() model {
@@ -289,7 +289,7 @@ func (m model) View() string {
 func (m model) viewMenu() string {
 	var b strings.Builder
 
-	b.WriteString(titleStyle.Render("📚 Libros - Book Manager"))
+	b.WriteString(titleStyle.Render("📚 Libros - Davis Family Book Manager"))
 	b.WriteString("\n\n")
 
 	for i, item := range m.menuItems {
@@ -309,7 +309,9 @@ func (m model) viewMenu() string {
 func (m model) viewAddBook() string {
 	var b strings.Builder
 
-	b.WriteString(titleStyle.Render("📚 Add New Book"))
+	b.WriteString(titleStyle.Render("📚 Libros - Davis Family Book Manager"))
+	b.WriteString("\n")
+	b.WriteString(blurredStyle.Render("Add New Book"))
 	b.WriteString("\n\n")
 
 	for i := range m.inputs {
@@ -343,7 +345,9 @@ func (m model) viewAddBook() string {
 func (m model) viewListBooks() string {
 	var b strings.Builder
 
-	b.WriteString(titleStyle.Render("📚 Your Book Collection"))
+	b.WriteString(titleStyle.Render("📚 Libros - Davis Family Book Manager"))
+	b.WriteString("\n")
+	b.WriteString(blurredStyle.Render("Your Book Collection"))
 	b.WriteString("\n\n")
 
 	if len(m.books) == 0 {
