@@ -24,14 +24,38 @@ var (
 			Foreground(lipgloss.Color("#9CA3AF"))
 	
 	noStyle = lipgloss.NewStyle()
+
+	selectedStyle = lipgloss.NewStyle().
+			Bold(true).
+			Foreground(lipgloss.Color("#FFFFFF")).
+			Background(lipgloss.Color("#7D56F4")).
+			Padding(0, 1)
 )
 
+type screen int
+
+const (
+	menuScreen screen = iota
+	addBookScreen
+	listBooksScreen
+)
+
+type book struct {
+	ID     int
+	Title  string
+	Author string
+}
+
 type model struct {
-	db       *sql.DB
-	inputs   []textinput.Model
-	focused  int
-	err      error
-	saved    bool
+	db          *sql.DB
+	inputs      []textinput.Model
+	focused     int
+	err         error
+	saved       bool
+	currentScreen screen
+	menuItems   []string
+	menuIndex   int
+	books       []book
 }
 
 func initialModel() model {
@@ -54,9 +78,13 @@ func initialModel() model {
 	}
 
 	m := model{
-		db:     db,
-		inputs: make([]textinput.Model, 2),
+		db:            db,
+		inputs:        make([]textinput.Model, 2),
+		currentScreen: menuScreen,
+		menuIndex:     0,
 	}
+
+	m.updateMenuItems()
 
 	var t textinput.Model
 	for i := range m.inputs {
@@ -79,6 +107,25 @@ func initialModel() model {
 	return m
 }
 
+func (m *model) updateMenuItems() {
+	var count int
+	err := m.db.QueryRow("SELECT COUNT(*) FROM books").Scan(&count)
+	if err != nil {
+		m.menuItems = []string{"Add Book", "Quit"}
+		return
+	}
+
+	if count > 0 {
+		m.menuItems = []string{"Add Book", "View Books", "Quit"}
+	} else {
+		m.menuItems = []string{"Add Book", "Quit"}
+	}
+
+	if m.menuIndex >= len(m.menuItems) {
+		m.menuIndex = len(m.menuItems) - 1
+	}
+}
+
 func (m model) Init() tea.Cmd {
 	return textinput.Blink
 }
@@ -87,43 +134,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "ctrl+c", "esc":
+		case "ctrl+c":
 			m.db.Close()
 			return m, tea.Quit
+		}
 
-		case "tab", "shift+tab", "enter", "up", "down":
-			s := msg.String()
-
-			if s == "enter" && m.focused == len(m.inputs)-1 {
-				return m, m.saveBook()
-			}
-
-			if s == "up" || s == "shift+tab" {
-				m.focused--
-			} else {
-				m.focused++
-			}
-
-			if m.focused > len(m.inputs) {
-				m.focused = 0
-			} else if m.focused < 0 {
-				m.focused = len(m.inputs)
-			}
-
-			cmds := make([]tea.Cmd, len(m.inputs))
-			for i := 0; i <= len(m.inputs)-1; i++ {
-				if i == m.focused {
-					cmds[i] = m.inputs[i].Focus()
-					m.inputs[i].PromptStyle = focusedStyle
-					m.inputs[i].TextStyle = focusedStyle
-					continue
-				}
-				m.inputs[i].Blur()
-				m.inputs[i].PromptStyle = noStyle
-				m.inputs[i].TextStyle = noStyle
-			}
-
-			return m, tea.Batch(cmds...)
+		switch m.currentScreen {
+		case menuScreen:
+			return m.updateMenu(msg)
+		case addBookScreen:
+			return m.updateAddBook(msg)
+		case listBooksScreen:
+			return m.updateListBooks(msg)
 		}
 
 	case saveMsg:
@@ -131,13 +153,114 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.err = msg.err
 		} else {
 			m.saved = true
+			for i := range m.inputs {
+				m.inputs[i].SetValue("")
+			}
+			m.focused = 0
+			m.inputs[0].Focus()
+			m.updateMenuItems()
+		}
+		return m, nil
+
+	case loadBooksMsg:
+		if msg.err != nil {
+			m.err = msg.err
+		} else {
+			m.books = msg.books
 		}
 		return m, nil
 	}
 
 	cmd := m.updateInputs(msg)
-
 	return m, cmd
+}
+
+func (m model) updateMenu(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+	switch msg.String() {
+	case "up", "k":
+		if m.menuIndex > 0 {
+			m.menuIndex--
+		}
+	case "down", "j":
+		if m.menuIndex < len(m.menuItems)-1 {
+			m.menuIndex++
+		}
+	case "enter":
+		selectedItem := m.menuItems[m.menuIndex]
+		switch selectedItem {
+		case "Add Book":
+			m.currentScreen = addBookScreen
+			m.focused = 0
+			m.err = nil
+			m.saved = false
+			m.inputs[0].Focus()
+			for i := 1; i < len(m.inputs); i++ {
+				m.inputs[i].Blur()
+			}
+		case "View Books":
+			m.currentScreen = listBooksScreen
+			return m, m.loadBooks()
+		case "Quit":
+			m.db.Close()
+			return m, tea.Quit
+		}
+	}
+	return m, nil
+}
+
+func (m model) updateAddBook(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+	switch msg.String() {
+	case "esc":
+		m.currentScreen = menuScreen
+		m.err = nil
+		m.saved = false
+		return m, nil
+	case "tab", "shift+tab", "enter", "up", "down":
+		s := msg.String()
+
+		if s == "enter" && m.focused == len(m.inputs)-1 {
+			return m, m.saveBook()
+		}
+
+		if s == "up" || s == "shift+tab" {
+			m.focused--
+		} else {
+			m.focused++
+		}
+
+		if m.focused > len(m.inputs) {
+			m.focused = 0
+		} else if m.focused < 0 {
+			m.focused = len(m.inputs)
+		}
+
+		cmds := make([]tea.Cmd, len(m.inputs))
+		for i := 0; i <= len(m.inputs)-1; i++ {
+			if i == m.focused {
+				cmds[i] = m.inputs[i].Focus()
+				m.inputs[i].PromptStyle = focusedStyle
+				m.inputs[i].TextStyle = focusedStyle
+				continue
+			}
+			m.inputs[i].Blur()
+			m.inputs[i].PromptStyle = noStyle
+			m.inputs[i].TextStyle = noStyle
+		}
+
+		return m, tea.Batch(cmds...)
+	}
+
+	cmd := m.updateInputs(msg)
+	return m, cmd
+}
+
+func (m model) updateListBooks(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+	switch msg.String() {
+	case "esc", "q":
+		m.currentScreen = menuScreen
+		return m, nil
+	}
+	return m, nil
 }
 
 func (m *model) updateInputs(msg tea.Msg) tea.Cmd {
@@ -151,9 +274,42 @@ func (m *model) updateInputs(msg tea.Msg) tea.Cmd {
 }
 
 func (m model) View() string {
+	switch m.currentScreen {
+	case menuScreen:
+		return m.viewMenu()
+	case addBookScreen:
+		return m.viewAddBook()
+	case listBooksScreen:
+		return m.viewListBooks()
+	default:
+		return ""
+	}
+}
+
+func (m model) viewMenu() string {
 	var b strings.Builder
 
-	b.WriteString(titleStyle.Render("📚 Book Entry"))
+	b.WriteString(titleStyle.Render("📚 Libros - Book Manager"))
+	b.WriteString("\n\n")
+
+	for i, item := range m.menuItems {
+		if i == m.menuIndex {
+			b.WriteString(selectedStyle.Render("> " + item))
+		} else {
+			b.WriteString(blurredStyle.Render("  " + item))
+		}
+		b.WriteString("\n")
+	}
+
+	b.WriteString("\n" + blurredStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, Ctrl+C to quit"))
+
+	return b.String()
+}
+
+func (m model) viewAddBook() string {
+	var b strings.Builder
+
+	b.WriteString(titleStyle.Render("📚 Add New Book"))
 	b.WriteString("\n\n")
 
 	for i := range m.inputs {
@@ -179,13 +335,47 @@ func (m model) View() string {
 		b.WriteString("\n")
 	}
 
-	b.WriteString(blurredStyle.Render("Press ctrl+c to quit"))
+	b.WriteString(blurredStyle.Render("Press Esc to return to menu, Ctrl+C to quit"))
+
+	return b.String()
+}
+
+func (m model) viewListBooks() string {
+	var b strings.Builder
+
+	b.WriteString(titleStyle.Render("📚 Your Book Collection"))
+	b.WriteString("\n\n")
+
+	if len(m.books) == 0 {
+		b.WriteString(blurredStyle.Render("No books found. Add some books first!"))
+	} else {
+		for i, book := range m.books {
+			b.WriteString(fmt.Sprintf("%d. ", i+1))
+			b.WriteString(focusedStyle.Render(book.Title))
+			b.WriteString(" by ")
+			b.WriteString(blurredStyle.Render(book.Author))
+			b.WriteString("\n")
+		}
+	}
+
+	if m.err != nil {
+		b.WriteString("\n")
+		b.WriteString(lipgloss.NewStyle().Foreground(lipgloss.Color("#FF0000")).Render("Error: " + m.err.Error()))
+		b.WriteString("\n")
+	}
+
+	b.WriteString("\n" + blurredStyle.Render("Press Esc or q to return to menu, Ctrl+C to quit"))
 
 	return b.String()
 }
 
 type saveMsg struct {
 	err error
+}
+
+type loadBooksMsg struct {
+	books []book
+	err   error
 }
 
 func (m model) saveBook() tea.Cmd {
@@ -203,6 +393,32 @@ func (m model) saveBook() tea.Cmd {
 		}
 
 		return saveMsg{}
+	}
+}
+
+func (m model) loadBooks() tea.Cmd {
+	return func() tea.Msg {
+		rows, err := m.db.Query("SELECT id, title, author FROM books ORDER BY created_at DESC")
+		if err != nil {
+			return loadBooksMsg{err: err}
+		}
+		defer rows.Close()
+
+		var books []book
+		for rows.Next() {
+			var b book
+			err := rows.Scan(&b.ID, &b.Title, &b.Author)
+			if err != nil {
+				return loadBooksMsg{err: err}
+			}
+			books = append(books, b)
+		}
+
+		if err = rows.Err(); err != nil {
+			return loadBooksMsg{err: err}
+		}
+
+		return loadBooksMsg{books: books}
 	}
 }
 
