@@ -253,10 +253,8 @@ func (m model) updateAddBook(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		m.saved = false
 		return m, nil
 	case "q":
-		if msg.Alt {
-			m.db.Close()
-			return m, tea.Quit
-		}
+		m.db.Close()
+		return m, tea.Quit
 	case "tab", "shift+tab", "enter", "up", "down":
 		s := msg.String()
 
@@ -302,13 +300,8 @@ func (m model) updateListBooks(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		m.currentScreen = menuScreen
 		return m, nil
 	case "q":
-		if msg.Alt {
-			m.db.Close()
-			return m, tea.Quit
-		} else {
-			m.currentScreen = menuScreen
-			return m, nil
-		}
+		m.db.Close()
+		return m, tea.Quit
 	case "up", "k":
 		if m.bookListIndex > 0 {
 			m.bookListIndex--
@@ -336,13 +329,8 @@ func (m model) updateBookDetail(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		m.currentScreen = listBooksScreen
 		return m, nil
 	case "q":
-		if msg.Alt {
-			m.db.Close()
-			return m, tea.Quit
-		} else {
-			m.currentScreen = listBooksScreen
-			return m, nil
-		}
+		m.db.Close()
+		return m, tea.Quit
 	case "up", "k":
 		if m.detailIndex > 0 {
 			m.detailIndex--
@@ -460,14 +448,14 @@ func (m model) viewMenu() string {
 
 	for i, item := range m.menuItems {
 		if i == m.menuIndex {
-			b.WriteString(selectedStyle.Render("> " + item))
+			b.WriteString(selectedStyle.Render(item))
 		} else {
-			b.WriteString(blurredStyle.Render("  " + item))
+			b.WriteString(blurredStyle.Render(item))
 		}
-		b.WriteString("\n")
+		b.WriteString("\n\n")
 	}
 
-	b.WriteString("\n" + blurredStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, Ctrl+C or Alt+Q to quit"))
+	b.WriteString("\n" + blurredStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, q or Ctrl+C to quit"))
 
 	return b.String()
 }
@@ -503,7 +491,7 @@ func (m model) viewAddBook() string {
 		b.WriteString("\n")
 	}
 
-	b.WriteString(blurredStyle.Render("Press Esc to return to menu, Ctrl+C or Alt+Q to quit"))
+	b.WriteString(blurredStyle.Render("Press Esc to return to menu, q or Ctrl+C to quit"))
 
 	return b.String()
 }
@@ -521,15 +509,17 @@ func (m model) viewListBooks() string {
 	} else {
 		for i, book := range m.books {
 			if i == m.bookListIndex {
-				b.WriteString(selectedStyle.Render(fmt.Sprintf("%d. %s by %s", i+1, book.Title, book.Author)))
+				b.WriteString(selectedStyle.Render(fmt.Sprintf("%s by %s", book.Title, book.Author)))
 			} else {
-				b.WriteString(fmt.Sprintf("%d. ", i+1))
 				b.WriteString(focusedStyle.Render(book.Title))
 				b.WriteString(" by ")
 				b.WriteString(blurredStyle.Render(book.Author))
 			}
-			b.WriteString("\n")
+			b.WriteString("\n\n")
 		}
+		
+		b.WriteString(blurredStyle.Render(fmt.Sprintf("Total books: %d", len(m.books))))
+		b.WriteString("\n")
 	}
 
 	if m.deleted {
@@ -545,9 +535,9 @@ func (m model) viewListBooks() string {
 	}
 
 	if len(m.books) > 0 {
-		b.WriteString("\n" + blurredStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, Esc to return to menu, Alt+Q to quit"))
+		b.WriteString("\n" + blurredStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, Esc to return to menu, q to quit"))
 	} else {
-		b.WriteString("\n" + blurredStyle.Render("Press Esc or q to return to menu, Ctrl+C or Alt+Q to quit"))
+		b.WriteString("\n" + blurredStyle.Render("Press Esc to return to menu, q or Ctrl+C to quit"))
 	}
 
 	return b.String()
@@ -567,11 +557,11 @@ func (m model) viewBookDetail() string {
 
 		for i, action := range m.detailActions {
 			if i == m.detailIndex {
-				b.WriteString(selectedStyle.Render("> " + action))
+				b.WriteString(selectedStyle.Render(action))
 			} else {
-				b.WriteString(blurredStyle.Render("  " + action))
+				b.WriteString(blurredStyle.Render(action))
 			}
-			b.WriteString("\n")
+			b.WriteString("\n\n")
 		}
 	}
 
@@ -587,7 +577,7 @@ func (m model) viewBookDetail() string {
 		b.WriteString("\n")
 	}
 
-	b.WriteString("\n" + blurredStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, Esc to go back, Alt+Q to quit"))
+	b.WriteString("\n" + blurredStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, Esc to go back, q to quit"))
 
 	return b.String()
 }
@@ -618,7 +608,7 @@ func (m model) viewEditBook() string {
 		b.WriteString("\n")
 	}
 
-	b.WriteString(blurredStyle.Render("Press Esc to cancel, Ctrl+C or Alt+Q to quit"))
+	b.WriteString(blurredStyle.Render("Press Esc to cancel, q or Ctrl+C to quit"))
 
 	return b.String()
 }
