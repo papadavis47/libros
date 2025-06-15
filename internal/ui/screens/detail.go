@@ -1,7 +1,9 @@
 package screens
 
 import (
+	"fmt"
 	"strings"
+	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/papadavis47/libros/internal/database"
@@ -25,6 +27,24 @@ func NewDetailModel(db *database.DB) DetailModel {
 		actions: []string{"Edit Book", "Delete Book", "Back to List"},
 		index:   0,
 	}
+}
+
+func formatDateDetail(t time.Time) string {
+	day := t.Day()
+	var suffix string
+	switch {
+	case day >= 11 && day <= 13:
+		suffix = "th"
+	case day%10 == 1:
+		suffix = "st"
+	case day%10 == 2:
+		suffix = "nd"
+	case day%10 == 3:
+		suffix = "rd"
+	default:
+		suffix = "th"
+	}
+	return fmt.Sprintf("%s %d%s, %d", t.Format("January"), day, suffix, t.Year())
 }
 
 func (m DetailModel) Update(msg tea.Msg) (DetailModel, tea.Cmd, models.Screen) {
@@ -80,6 +100,15 @@ func (m DetailModel) View() string {
 	b.WriteString("\n\n")
 
 	if m.SelectedBook != nil {
+		createdStr := formatDateDetail(m.SelectedBook.CreatedAt)
+		updatedStr := formatDateDetail(m.SelectedBook.UpdatedAt)
+		
+		b.WriteString(styles.BlurredStyle.Render("Added: " + createdStr) + "\n")
+		if !m.SelectedBook.CreatedAt.Truncate(24*time.Hour).Equal(m.SelectedBook.UpdatedAt.Truncate(24*time.Hour)) {
+			b.WriteString(styles.BlurredStyle.Render("Last updated: " + updatedStr) + "\n")
+		}
+		b.WriteString("\n")
+		
 		b.WriteString(styles.FocusedStyle.Render("Title: ") + m.SelectedBook.Title + "\n")
 		b.WriteString(styles.FocusedStyle.Render("Author: ") + m.SelectedBook.Author + "\n\n")
 

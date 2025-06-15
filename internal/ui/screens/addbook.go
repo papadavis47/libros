@@ -35,13 +35,13 @@ func NewAddBookModel(db *database.DB) AddBookModel {
 
 		switch i {
 		case 0:
-			t.Placeholder = "Enter book title"
+			t.Placeholder = "Book title here . . ."
 			t.Prompt = "Title:  "
 			t.Focus()
 			t.PromptStyle = styles.FocusedStyle
 			t.TextStyle = styles.FocusedStyle
 		case 1:
-			t.Placeholder = "Enter author name"
+			t.Placeholder = "Author name here . . ."
 			t.Prompt = "Author: "
 		}
 
