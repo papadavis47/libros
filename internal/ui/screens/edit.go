@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/textarea"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/papadavis47/libros/internal/database"
@@ -16,6 +17,7 @@ type EditModel struct {
 	db           *database.DB
 	SelectedBook *models.Book
 	inputs       []textinput.Model
+	textarea     textarea.Model
 	focused      int
 	err          error
 }
@@ -48,6 +50,14 @@ func NewEditModel(db *database.DB) EditModel {
 		m.inputs[i] = t
 	}
 
+	// Initialize textarea for notes
+	ta := textarea.New()
+	ta.Placeholder = "Enter notes about this book (optional) . . ."
+	ta.SetWidth(50)
+	ta.SetHeight(4)
+	ta.CharLimit = 1000
+	m.textarea = ta
+
 	return m
 }
 
@@ -61,7 +71,7 @@ func (m EditModel) Update(msg tea.Msg) (EditModel, tea.Cmd, models.Screen) {
 		case "tab", "shift+tab", "enter", "up", "down":
 			s := msg.String()
 
-			if s == "enter" && m.focused == len(m.inputs) {
+			if s == "enter" && m.focused == len(m.inputs)+1 {
 				return m, m.updateBookCmd(), models.EditBookScreen
 			}
 
@@ -71,13 +81,13 @@ func (m EditModel) Update(msg tea.Msg) (EditModel, tea.Cmd, models.Screen) {
 				m.focused++
 			}
 
-			if m.focused > len(m.inputs) {
+			if m.focused > len(m.inputs)+1 {
 				m.focused = 0
 			} else if m.focused < 0 {
-				m.focused = len(m.inputs)
+				m.focused = len(m.inputs) + 1
 			}
 
-			cmds := make([]tea.Cmd, len(m.inputs))
+			cmds := make([]tea.Cmd, len(m.inputs)+1)
 			for i := 0; i < len(m.inputs); i++ {
 				if i == m.focused {
 					cmds[i] = m.inputs[i].Focus()
@@ -90,6 +100,13 @@ func (m EditModel) Update(msg tea.Msg) (EditModel, tea.Cmd, models.Screen) {
 				}
 			}
 
+			// Handle textarea focus
+			if m.focused == len(m.inputs) {
+				cmds[len(m.inputs)] = m.textarea.Focus()
+			} else {
+				m.textarea.Blur()
+			}
+
 			return m, tea.Batch(cmds...), models.EditBookScreen
 		}
 
@@ -99,6 +116,7 @@ func (m EditModel) Update(msg tea.Msg) (EditModel, tea.Cmd, models.Screen) {
 		} else {
 			m.SelectedBook.Title = m.inputs[0].Value()
 			m.SelectedBook.Author = m.inputs[1].Value()
+			m.SelectedBook.Notes = m.textarea.Value()
 			return m, nil, models.BookDetailScreen
 		}
 	}
@@ -108,11 +126,15 @@ func (m EditModel) Update(msg tea.Msg) (EditModel, tea.Cmd, models.Screen) {
 }
 
 func (m *EditModel) updateInputs(msg tea.Msg) tea.Cmd {
-	cmds := make([]tea.Cmd, len(m.inputs))
+	cmds := make([]tea.Cmd, len(m.inputs)+1)
 
 	for i := range m.inputs {
 		m.inputs[i], cmds[i] = m.inputs[i].Update(msg)
 	}
+
+	var cmd tea.Cmd
+	m.textarea, cmd = m.textarea.Update(msg)
+	cmds[len(m.inputs)] = cmd
 
 	return tea.Batch(cmds...)
 }
@@ -127,13 +149,17 @@ func (m EditModel) View() string {
 
 	for i := range m.inputs {
 		b.WriteString(m.inputs[i].View())
-		if i < len(m.inputs)-1 {
-			b.WriteRune('\n')
-		}
+		b.WriteRune('\n')
 	}
 
+	// Add notes textarea
+	b.WriteString("\n")
+	b.WriteString(styles.FocusedStyle.Render("Notes: "))
+	b.WriteString("\n")
+	b.WriteString(m.textarea.View())
+
 	button := &styles.BlurredStyle
-	if m.focused == len(m.inputs) {
+	if m.focused == len(m.inputs)+1 {
 		button = &styles.ButtonStyle
 	}
 	fmt.Fprintf(&b, "\n\n%s\n\n", button.Render("UPDATE BOOK"))
@@ -154,17 +180,20 @@ func (m *EditModel) SetBook(book *models.Book) {
 	m.err = nil
 	m.inputs[0].SetValue(book.Title)
 	m.inputs[1].SetValue(book.Author)
+	m.textarea.SetValue(book.Notes)
 	m.inputs[0].Focus()
 	for i := 1; i < len(m.inputs); i++ {
 		m.inputs[i].Blur()
 	}
+	m.textarea.Blur()
 }
 
 func (m EditModel) updateBookCmd() tea.Cmd {
 	return func() tea.Msg {
 		title := m.inputs[0].Value()
 		author := m.inputs[1].Value()
-		err := m.db.UpdateBook(m.SelectedBook.ID, title, author)
+		notes := m.textarea.Value()
+		err := m.db.UpdateBook(m.SelectedBook.ID, title, author, notes)
 		return messages.UpdateMsg{Err: err}
 	}
 }

@@ -47,6 +47,31 @@ func formatDateDetail(t time.Time) string {
 	return fmt.Sprintf("%s %d%s, %d", t.Format("January"), day, suffix, t.Year())
 }
 
+func wrapText(text string, width int) string {
+	if len(text) <= width {
+		return text
+	}
+	
+	var result []string
+	words := strings.Fields(text)
+	if len(words) == 0 {
+		return text
+	}
+	
+	currentLine := words[0]
+	for _, word := range words[1:] {
+		if len(currentLine)+1+len(word) <= width {
+			currentLine += " " + word
+		} else {
+			result = append(result, currentLine)
+			currentLine = word
+		}
+	}
+	result = append(result, currentLine)
+	
+	return strings.Join(result, "\n")
+}
+
 func (m DetailModel) Update(msg tea.Msg) (DetailModel, tea.Cmd, models.Screen) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -110,7 +135,15 @@ func (m DetailModel) View() string {
 		b.WriteString("\n")
 		
 		b.WriteString(styles.FocusedStyle.Render("Title: ") + m.SelectedBook.Title + "\n")
-		b.WriteString(styles.FocusedStyle.Render("Author: ") + m.SelectedBook.Author + "\n\n")
+		b.WriteString(styles.FocusedStyle.Render("Author: ") + m.SelectedBook.Author + "\n")
+		
+		if m.SelectedBook.Notes != "" {
+			b.WriteString("\n")
+			b.WriteString(styles.FocusedStyle.Render("Notes: ") + "\n")
+			wrappedNotes := wrapText(m.SelectedBook.Notes, 60)
+			b.WriteString(wrappedNotes + "\n")
+		}
+		b.WriteString("\n")
 
 		for i, action := range m.actions {
 			if i == m.index {

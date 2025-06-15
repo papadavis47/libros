@@ -6,6 +6,7 @@ type Book struct {
 	ID        int
 	Title     string
 	Author    string
+	Notes     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

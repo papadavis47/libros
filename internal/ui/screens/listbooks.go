@@ -42,6 +42,18 @@ func formatDate(t time.Time) string {
 	return fmt.Sprintf("%s %d%s, %d", t.Format("January"), day, suffix, t.Year())
 }
 
+func truncateNotes(notes string, maxLength int) string {
+	if len(notes) <= maxLength {
+		return notes
+	}
+	// Find a good break point near the limit
+	truncated := notes[:maxLength]
+	if lastSpace := strings.LastIndex(truncated, " "); lastSpace > maxLength-20 {
+		truncated = notes[:lastSpace]
+	}
+	return truncated + " . . ."
+}
+
 func (m ListBooksModel) Update(msg tea.Msg) (ListBooksModel, tea.Cmd, models.Screen, *models.Book) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -101,12 +113,20 @@ func (m ListBooksModel) View() string {
 				b.WriteString(styles.SelectedStyle.Render(fmt.Sprintf("%s by %s", book.Title, book.Author)))
 				b.WriteString("\n")
 				b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Added: %s", dateStr)))
+				if book.Notes != "" {
+					b.WriteString("\n")
+					b.WriteString(styles.BlurredStyle.Render(truncateNotes(book.Notes, 60)))
+				}
 			} else {
 				b.WriteString(styles.FocusedStyle.Render(book.Title))
 				b.WriteString(" by ")
 				b.WriteString(styles.BlurredStyle.Render(book.Author))
 				b.WriteString("\n")
 				b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Added: %s", dateStr)))
+				if book.Notes != "" {
+					b.WriteString("\n")
+					b.WriteString(styles.BlurredStyle.Render(truncateNotes(book.Notes, 60)))
+				}
 			}
 			b.WriteString("\n\n")
 		}
