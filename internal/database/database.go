@@ -37,7 +37,8 @@ func (db *DB) createTable() error {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		title TEXT NOT NULL,
 		author TEXT NOT NULL,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 	);`
 
 	_, err := db.conn.Exec(createTable)
@@ -57,7 +58,7 @@ func (db *DB) SaveBook(title, author string) error {
 }
 
 func (db *DB) LoadBooks() ([]models.Book, error) {
-	rows, err := db.conn.Query("SELECT id, title, author FROM books ORDER BY created_at DESC")
+	rows, err := db.conn.Query("SELECT id, title, author, created_at, updated_at FROM books ORDER BY created_at DESC")
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +67,7 @@ func (db *DB) LoadBooks() ([]models.Book, error) {
 	var books []models.Book
 	for rows.Next() {
 		var b models.Book
-		err := rows.Scan(&b.ID, &b.Title, &b.Author)
+		err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.CreatedAt, &b.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -88,7 +89,7 @@ func (db *DB) UpdateBook(id int, title, author string) error {
 		return fmt.Errorf("both title and author are required")
 	}
 
-	_, err := db.conn.Exec("UPDATE books SET title = ?, author = ? WHERE id = ?", title, author, id)
+	_, err := db.conn.Exec("UPDATE books SET title = ?, author = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", title, author, id)
 	return err
 }
 

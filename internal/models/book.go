@@ -1,9 +1,13 @@
 package models
 
+import "time"
+
 type Book struct {
-	ID     int
-	Title  string
-	Author string
+	ID        int
+	Title     string
+	Author    string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Screen int

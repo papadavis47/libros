@@ -3,6 +3,7 @@ package screens
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/papadavis47/libros/internal/messages"
@@ -21,6 +22,24 @@ func NewListBooksModel() ListBooksModel {
 	return ListBooksModel{
 		index: 0,
 	}
+}
+
+func formatDate(t time.Time) string {
+	day := t.Day()
+	var suffix string
+	switch {
+	case day >= 11 && day <= 13:
+		suffix = "th"
+	case day%10 == 1:
+		suffix = "st"
+	case day%10 == 2:
+		suffix = "nd"
+	case day%10 == 3:
+		suffix = "rd"
+	default:
+		suffix = "th"
+	}
+	return fmt.Sprintf("%s %d%s, %d", t.Format("January"), day, suffix, t.Year())
 }
 
 func (m ListBooksModel) Update(msg tea.Msg) (ListBooksModel, tea.Cmd, models.Screen, *models.Book) {
@@ -77,12 +96,17 @@ func (m ListBooksModel) View() string {
 		b.WriteString(styles.BlurredStyle.Render("No books found. Add some books first!"))
 	} else {
 		for i, book := range m.books {
+			dateStr := formatDate(book.CreatedAt)
 			if i == m.index {
 				b.WriteString(styles.SelectedStyle.Render(fmt.Sprintf("%s by %s", book.Title, book.Author)))
+				b.WriteString("\n")
+				b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Added: %s", dateStr)))
 			} else {
 				b.WriteString(styles.FocusedStyle.Render(book.Title))
 				b.WriteString(" by ")
 				b.WriteString(styles.BlurredStyle.Render(book.Author))
+				b.WriteString("\n")
+				b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Added: %s", dateStr)))
 			}
 			b.WriteString("\n\n")
 		}
