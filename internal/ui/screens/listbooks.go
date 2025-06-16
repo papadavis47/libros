@@ -112,7 +112,7 @@ func (m ListBooksModel) View() string {
 			if i == m.index {
 				b.WriteString(styles.SelectedStyle.Render(fmt.Sprintf("%s by %s", book.Title, book.Author)))
 				b.WriteString("\n")
-				b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Added: %s", dateStr)))
+				b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Type: %s | Added: %s", string(book.Type), dateStr)))
 				if book.Notes != "" {
 					b.WriteString("\n")
 					b.WriteString(styles.BlurredStyle.Render(truncateNotes(book.Notes, 60)))
@@ -122,7 +122,7 @@ func (m ListBooksModel) View() string {
 				b.WriteString(" by ")
 				b.WriteString(styles.BlurredStyle.Render(book.Author))
 				b.WriteString("\n")
-				b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Added: %s", dateStr)))
+				b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Type: %s | Added: %s", string(book.Type), dateStr)))
 				if book.Notes != "" {
 					b.WriteString("\n")
 					b.WriteString(styles.BlurredStyle.Render(truncateNotes(book.Notes, 60)))

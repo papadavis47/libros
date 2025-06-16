@@ -136,6 +136,7 @@ func (m DetailModel) View() string {
 		
 		b.WriteString(styles.FocusedStyle.Render("Title: ") + m.SelectedBook.Title + "\n")
 		b.WriteString(styles.FocusedStyle.Render("Author: ") + m.SelectedBook.Author + "\n")
+		b.WriteString(styles.FocusedStyle.Render("Type: ") + string(m.SelectedBook.Type) + "\n")
 		
 		if m.SelectedBook.Notes != "" {
 			b.WriteString("\n")

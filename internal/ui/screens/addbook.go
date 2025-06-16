@@ -14,19 +14,23 @@ import (
 )
 
 type AddBookModel struct {
-	db       *database.DB
-	inputs   []textinput.Model
-	textarea textarea.Model
-	focused  int
-	err      error
-	saved    bool
+	db           *database.DB
+	inputs       []textinput.Model
+	textarea     textarea.Model
+	bookTypes    []models.BookType
+	selectedType int
+	focused      int
+	err          error
+	saved        bool
 }
 
 func NewAddBookModel(db *database.DB) AddBookModel {
 	m := AddBookModel{
-		db:      db,
-		inputs:  make([]textinput.Model, 2),
-		focused: 0,
+		db:           db,
+		inputs:       make([]textinput.Model, 2),
+		bookTypes:    []models.BookType{models.Paperback, models.Hardback, models.Audio, models.Digital},
+		selectedType: 0,
+		focused:      0,
 	}
 
 	var t textinput.Model
@@ -69,11 +73,37 @@ func (m AddBookModel) Update(msg tea.Msg) (AddBookModel, tea.Cmd, models.Screen)
 			m.err = nil
 			m.saved = false
 			return m, nil, models.MenuScreen
-		case "tab", "shift+tab", "enter", "up", "down":
+		case "ctrl+a":
+			if m.focused < len(m.inputs) {
+				m.inputs[m.focused].CursorStart()
+			}
+			return m, nil, models.AddBookScreen
+		case "ctrl+e":
+			if m.focused < len(m.inputs) {
+				m.inputs[m.focused].CursorEnd()
+			}
+			return m, nil, models.AddBookScreen
+		case "tab", "shift+tab", "enter", "up", "down", "left", "right":
 			s := msg.String()
 
-			if s == "enter" && m.focused == len(m.inputs)+1 {
+			if s == "enter" && m.focused == len(m.inputs)+2 {
 				return m, m.saveBookCmd(), models.AddBookScreen
+			}
+
+			// Handle book type selection
+			if m.focused == len(m.inputs) && (s == "left" || s == "right") {
+				if s == "left" {
+					m.selectedType--
+					if m.selectedType < 0 {
+						m.selectedType = len(m.bookTypes) - 1
+					}
+				} else {
+					m.selectedType++
+					if m.selectedType >= len(m.bookTypes) {
+						m.selectedType = 0
+					}
+				}
+				return m, nil, models.AddBookScreen
 			}
 
 			if s == "up" || s == "shift+tab" {
@@ -82,10 +112,10 @@ func (m AddBookModel) Update(msg tea.Msg) (AddBookModel, tea.Cmd, models.Screen)
 				m.focused++
 			}
 
-			if m.focused >= len(m.inputs)+2 {
+			if m.focused >= len(m.inputs)+3 {
 				m.focused = 0
 			} else if m.focused < 0 {
-				m.focused = len(m.inputs) + 1
+				m.focused = len(m.inputs) + 2
 			}
 
 			cmds := make([]tea.Cmd, len(m.inputs)+1)
@@ -94,6 +124,7 @@ func (m AddBookModel) Update(msg tea.Msg) (AddBookModel, tea.Cmd, models.Screen)
 					cmds[i] = m.inputs[i].Focus()
 					m.inputs[i].PromptStyle = styles.FocusedStyle
 					m.inputs[i].TextStyle = styles.FocusedStyle
+					m.inputs[i].CursorEnd()
 				} else {
 					m.inputs[i].Blur()
 					m.inputs[i].PromptStyle = styles.NoStyle
@@ -102,7 +133,7 @@ func (m AddBookModel) Update(msg tea.Msg) (AddBookModel, tea.Cmd, models.Screen)
 			}
 
 			// Handle textarea focus
-			if m.focused == len(m.inputs) {
+			if m.focused == len(m.inputs)+1 {
 				cmds[len(m.inputs)] = m.textarea.Focus()
 			} else {
 				m.textarea.Blur()
@@ -157,6 +188,31 @@ func (m AddBookModel) View() string {
 		b.WriteRune('\n')
 	}
 
+	// Add book type selector
+	b.WriteString("\n")
+	typeLabel := "Type:   "
+	if m.focused == len(m.inputs) {
+		b.WriteString(styles.FocusedStyle.Render(typeLabel))
+	} else {
+		b.WriteString(styles.BlurredStyle.Render(typeLabel))
+	}
+	
+	for i, bookType := range m.bookTypes {
+		if i == m.selectedType {
+			if m.focused == len(m.inputs) {
+				b.WriteString(styles.ButtonStyle.Render(fmt.Sprintf(" %s ", string(bookType))))
+			} else {
+				b.WriteString(styles.FocusedStyle.Render(fmt.Sprintf(" %s ", string(bookType))))
+			}
+		} else {
+			b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf(" %s ", string(bookType))))
+		}
+		if i < len(m.bookTypes)-1 {
+			b.WriteString(" ")
+		}
+	}
+	b.WriteString("\n")
+
 	// Add notes textarea
 	b.WriteString("\n")
 	b.WriteString(styles.FocusedStyle.Render("Notes: "))
@@ -164,7 +220,7 @@ func (m AddBookModel) View() string {
 	b.WriteString(m.textarea.View())
 
 	button := &styles.BlurredStyle
-	if m.focused == len(m.inputs)+1 {
+	if m.focused == len(m.inputs)+2 {
 		button = &styles.ButtonStyle
 	}
 	fmt.Fprintf(&b, "\n\n%s\n\n", button.Render("SAVE BOOK"))
@@ -179,7 +235,7 @@ func (m AddBookModel) View() string {
 		b.WriteString("\n")
 	}
 
-	b.WriteString(styles.BlurredStyle.Render("Press Esc to return to menu, q or Ctrl+C to quit"))
+	b.WriteString(styles.BlurredStyle.Render("Press Esc to return to menu, Ctrl+A/Ctrl+E for start/end of field, q or Ctrl+C to quit"))
 
 	return b.String()
 }
@@ -188,8 +244,9 @@ func (m AddBookModel) saveBookCmd() tea.Cmd {
 	return func() tea.Msg {
 		title := m.inputs[0].Value()
 		author := m.inputs[1].Value()
+		bookType := m.bookTypes[m.selectedType]
 		notes := m.textarea.Value()
-		err := m.db.SaveBook(title, author, notes)
+		err := m.db.SaveBook(title, author, bookType, notes)
 		return messages.SaveMsg{Err: err}
 	}
 }
@@ -198,6 +255,7 @@ func (m *AddBookModel) Reset() {
 	m.err = nil
 	m.saved = false
 	m.focused = 0
+	m.selectedType = 0
 	for i := range m.inputs {
 		m.inputs[i].SetValue("")
 	}

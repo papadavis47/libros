@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/papadavis47/libros/internal/database"
+	"github.com/papadavis47/libros/internal/models"
 	"github.com/papadavis47/libros/internal/ui"
 )
 
@@ -26,7 +27,7 @@ func TestDatabaseOperations(t *testing.T) {
 	title := "Test Book"
 	author := "Test Author"
 	
-	err = db.SaveBook(title, author)
+	err = db.SaveBook(title, author, models.Paperback, "")
 	if err != nil {
 		t.Fatalf("Failed to save book: %v", err)
 	}
@@ -42,15 +43,15 @@ func TestDatabaseOperations(t *testing.T) {
 	}
 	
 	book := books[0]
-	if book.Title != title || book.Author != author {
-		t.Errorf("Expected title: %s, author: %s, got title: %s, author: %s", title, author, book.Title, book.Author)
+	if book.Title != title || book.Author != author || book.Type != models.Paperback {
+		t.Errorf("Expected title: %s, author: %s, type: %s, got title: %s, author: %s, type: %s", title, author, models.Paperback, book.Title, book.Author, book.Type)
 	}
 	
 	// Test updating the book
 	newTitle := "Updated Test Book"
 	newAuthor := "Updated Test Author"
 	
-	err = db.UpdateBook(book.ID, newTitle, newAuthor)
+	err = db.UpdateBook(book.ID, newTitle, newAuthor, models.Hardback, "")
 	if err != nil {
 		t.Fatalf("Failed to update book: %v", err)
 	}
@@ -66,8 +67,8 @@ func TestDatabaseOperations(t *testing.T) {
 	}
 	
 	updatedBook := books[0]
-	if updatedBook.Title != newTitle || updatedBook.Author != newAuthor {
-		t.Errorf("Expected updated title: %s, author: %s, got title: %s, author: %s", newTitle, newAuthor, updatedBook.Title, updatedBook.Author)
+	if updatedBook.Title != newTitle || updatedBook.Author != newAuthor || updatedBook.Type != models.Hardback {
+		t.Errorf("Expected updated title: %s, author: %s, type: %s, got title: %s, author: %s, type: %s", newTitle, newAuthor, models.Hardback, updatedBook.Title, updatedBook.Author, updatedBook.Type)
 	}
 	
 	// Test deleting the book
@@ -116,25 +117,25 @@ func TestSaveBookValidation(t *testing.T) {
 	defer db.Close()
 
 	// Test empty title and author
-	err = db.SaveBook("", "")
+	err = db.SaveBook("", "", models.Paperback, "")
 	if err == nil {
 		t.Error("Expected validation error for empty fields")
 	}
 
 	// Test empty title
-	err = db.SaveBook("", "Valid Author")
+	err = db.SaveBook("", "Valid Author", models.Paperback, "")
 	if err == nil {
 		t.Error("Expected validation error for empty title")
 	}
 
 	// Test empty author
-	err = db.SaveBook("Valid Title", "")
+	err = db.SaveBook("Valid Title", "", models.Paperback, "")
 	if err == nil {
 		t.Error("Expected validation error for empty author")
 	}
 
 	// Test valid input
-	err = db.SaveBook("Valid Title", "Valid Author")
+	err = db.SaveBook("Valid Title", "Valid Author", models.Paperback, "")
 	if err != nil {
 		t.Errorf("Expected no error for valid input, got: %v", err)
 	}
@@ -161,7 +162,7 @@ func TestBookCount(t *testing.T) {
 	}
 
 	// Add a book and test count
-	err = db.SaveBook("Test Title", "Test Author")
+	err = db.SaveBook("Test Title", "Test Author", models.Paperback, "")
 	if err != nil {
 		t.Fatalf("Failed to save book: %v", err)
 	}
