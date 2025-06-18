@@ -1,33 +1,54 @@
+// Package styles defines the visual styling for the Libros TUI application
+// It uses the Lip Gloss library to create consistent colors, fonts, and layouts
+// across all UI components and screens
 package styles
 
 import "github.com/charmbracelet/lipgloss"
 
+// Global style definitions used throughout the application
+// These provide a consistent look and feel across all UI components
 var (
+	// TitleStyle is used for main headings and screen titles
+	// Purple color with bold text for prominence
 	TitleStyle = lipgloss.NewStyle().
 			Bold(true).
-			Foreground(lipgloss.Color("#7D56F4"))
+			Foreground(lipgloss.Color("#7D56F4")) // Purple color
 
+	// FocusedStyle is applied to UI elements that currently have focus
+	// Uses the same purple color to indicate active state
 	FocusedStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#7D56F4"))
+			Foreground(lipgloss.Color("#7D56F4")) // Purple color for focus
 
+	// BlurredStyle is applied to UI elements that are not currently focused
+	// Gray color to de-emphasize inactive elements
 	BlurredStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#9CA3AF"))
+			Foreground(lipgloss.Color("#9CA3AF")) // Gray color for unfocused
 
+	// NoStyle is a plain style with no special formatting
+	// Used as a neutral base or to reset styling
 	NoStyle = lipgloss.NewStyle()
 
+	// SelectedStyle is used for highlighted/selected items in lists
+	// White text on purple background with padding for visual separation
 	SelectedStyle = lipgloss.NewStyle().
 			Bold(true).
-			Foreground(lipgloss.Color("#FFFFFF")).
-			Background(lipgloss.Color("#7D56F4")).
-			Padding(0, 1)
+			Foreground(lipgloss.Color("#FFFFFF")). // White text
+			Background(lipgloss.Color("#7D56F4")). // Purple background
+			Padding(0, 1)                          // Horizontal padding
 
+	// ButtonStyle is used for interactive buttons and action items
+	// Orange color with bold text to make actions stand out
 	ButtonStyle = lipgloss.NewStyle().
 			Bold(true).
-			Foreground(lipgloss.Color("#FFA500"))
+			Foreground(lipgloss.Color("#FFA500")) // Orange color
 
+	// ErrorStyle is used for error messages and warnings
+	// Red color to clearly indicate problems or failures
 	ErrorStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FF0000"))
+			Foreground(lipgloss.Color("#FF0000")) // Red color
 
+	// SuccessStyle is used for success messages and confirmations
+	// Green color to indicate successful operations
 	SuccessStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#00FF00"))
+			Foreground(lipgloss.Color("#00FF00")) // Green color
 )

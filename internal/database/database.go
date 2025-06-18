@@ -109,7 +109,10 @@ func (db *DB) UpdateBook(id int, title, author string, bookType models.BookType,
 	return err
 }
 
+// DeleteBook removes a book from the database by its ID
+// Takes the book ID as parameter and permanently deletes the record
 func (db *DB) DeleteBook(id int) error {
+	// Execute DELETE statement using parameterized query to prevent SQL injection
 	_, err := db.conn.Exec("DELETE FROM books WHERE id = ?", id)
 	return err
 }
