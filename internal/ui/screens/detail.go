@@ -216,7 +216,7 @@ func (m DetailModel) View() string {
 			b.WriteString(styles.FocusedStyle.Render("Notes: ") + "\n")
 			// Wrap long notes to fit terminal width
 			wrappedNotes := wrapText(m.SelectedBook.Notes, 60)
-			b.WriteString(wrappedNotes + "\n")
+			b.WriteString(styles.NotesStyle.Render(wrappedNotes) + "\n")
 		}
 		b.WriteString("\n")
 

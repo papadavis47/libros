@@ -68,9 +68,11 @@ func NewAddBookModel(db *database.DB) AddBookModel {
 	// Initialize the textarea for optional book notes
 	ta := textarea.New()
 	ta.Placeholder = "Notes about this book (optional) . . ."
-	ta.SetWidth(50)     // Match width of text inputs
-	ta.SetHeight(4)     // Multi-line height for longer notes
-	ta.CharLimit = 1000 // Reasonable limit for notes length
+	ta.SetWidth(50)        // Match width of text inputs
+	ta.SetHeight(4)        // Multi-line height for longer notes
+	ta.CharLimit = 1000    // Reasonable limit for notes length
+	ta.ShowLineNumbers = false // Disable line numbers
+	ta.Prompt = " "        // Minimal left padding with single space
 	m.textarea = ta
 
 	return m
@@ -208,7 +210,11 @@ func (m AddBookModel) View() string {
 
 	for i := range m.inputs {
 		b.WriteString(m.inputs[i].View())
-		b.WriteRune('\n')
+		if i == 0 {
+			b.WriteString("\n\n") // Extra space after Title
+		} else {
+			b.WriteRune('\n')
+		}
 	}
 
 	// Add book type selector

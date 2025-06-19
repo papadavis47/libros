@@ -76,9 +76,11 @@ func NewEditModel(db *database.DB) EditModel {
 	// Initialize textarea for notes
 	ta := textarea.New()
 	ta.Placeholder = "Enter notes about this book (optional) . . ."
-	ta.SetWidth(50)   // Match width of text inputs
-	ta.SetHeight(4)   // Allow multiple lines
-	ta.CharLimit = 1000 // Reasonable limit for notes
+	ta.SetWidth(50)        // Match width of text inputs
+	ta.SetHeight(4)        // Allow multiple lines
+	ta.CharLimit = 1000    // Reasonable limit for notes
+	ta.ShowLineNumbers = false // Disable line numbers
+	ta.Prompt = " "        // Minimal left padding with single space
 	m.textarea = ta
 
 	return m
@@ -247,7 +249,11 @@ func (m EditModel) View() string {
 	// Render all text input fields (title and author)
 	for i := range m.inputs {
 		b.WriteString(m.inputs[i].View())
-		b.WriteRune('\n')
+		if i == 0 {
+			b.WriteString("\n\n") // Extra space after Title
+		} else {
+			b.WriteRune('\n')
+		}
 	}
 
 	// Add book type selector with focus-aware styling

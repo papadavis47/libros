@@ -22,7 +22,8 @@ var (
 	// BlurredStyle is applied to UI elements that are not currently focused
 	// Gray color to de-emphasize inactive elements
 	BlurredStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#9CA3AF")) // Gray color for unfocused
+			Foreground(lipgloss.Color("#9CA3AF")). // Gray color for unfocused
+			Padding(0, 1)                          // Consistent horizontal padding
 
 	// NoStyle is a plain style with no special formatting
 	// Used as a neutral base or to reset styling
@@ -51,4 +52,11 @@ var (
 	// Green color to indicate successful operations
 	SuccessStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("#00FF00")) // Green color
+
+	// NotesStyle is used for displaying book notes with italic formatting
+	// Gray color with italic text to distinguish notes from other content
+	NotesStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#9CA3AF")). // Gray color like BlurredStyle
+			Italic(true).                          // Italic formatting for notes
+			Padding(0, 1)                          // Consistent horizontal padding
 )

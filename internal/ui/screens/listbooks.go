@@ -182,7 +182,7 @@ func (m ListBooksModel) View() string {
 				if book.Notes != "" {
 					// Show truncated notes for selected book
 					b.WriteString("\n")
-					b.WriteString(styles.BlurredStyle.Render(truncateNotes(book.Notes, 60)))
+					b.WriteString(styles.NotesStyle.Render(truncateNotes(book.Notes, 60)))
 				}
 			} else {
 				// Non-selected book - use different styling for title vs author
@@ -194,7 +194,7 @@ func (m ListBooksModel) View() string {
 				if book.Notes != "" {
 					// Show truncated notes for non-selected book too
 					b.WriteString("\n")
-					b.WriteString(styles.BlurredStyle.Render(truncateNotes(book.Notes, 60)))
+					b.WriteString(styles.NotesStyle.Render(truncateNotes(book.Notes, 60)))
 				}
 			}
 			b.WriteString("\n\n") // Add spacing between books
