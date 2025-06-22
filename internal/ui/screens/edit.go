@@ -21,14 +21,14 @@ import (
 // for modifying existing book information. It manages multiple input fields,
 // focus navigation, and form validation.
 type EditModel struct {
-	db           *database.DB        // Database connection for saving changes
-	SelectedBook *models.Book        // Book being edited (set by navigation from detail screen)
-	inputs       []textinput.Model   // Text input fields for title and author
-	textarea     textarea.Model      // Multi-line text area for notes
-	bookTypes    []models.BookType   // Available book types (Paperback, Hardback, etc.)
-	selectedType int                 // Currently selected book type index
-	focused      int                 // Currently focused form element (0=title, 1=author, 2=type, 3=notes, 4=button)
-	err          error               // Any error from form validation or save operation
+	db           *database.DB      // Database connection for saving changes
+	SelectedBook *models.Book      // Book being edited (set by navigation from detail screen)
+	inputs       []textinput.Model // Text input fields for title and author
+	textarea     textarea.Model    // Multi-line text area for notes
+	bookTypes    []models.BookType // Available book types (Paperback, Hardback, etc.)
+	selectedType int               // Currently selected book type index
+	focused      int               // Currently focused form element (0=title, 1=author, 2=type, 3=notes, 4=button)
+	err          error             // Any error from form validation or save operation
 }
 
 // NewEditModel creates and initializes a new EditModel instance.
@@ -42,8 +42,8 @@ type EditModel struct {
 //   - EditModel: Fully initialized edit model ready for use
 func NewEditModel(db *database.DB) EditModel {
 	m := EditModel{
-		db:           db,
-		inputs:       make([]textinput.Model, 2), // Title and Author inputs
+		db:     db,
+		inputs: make([]textinput.Model, 2), // Title and Author inputs
 		// Define available book types in order
 		bookTypes:    []models.BookType{models.Paperback, models.Hardback, models.Audio, models.Digital},
 		selectedType: 0, // Start with first book type selected
@@ -55,7 +55,7 @@ func NewEditModel(db *database.DB) EditModel {
 	for i := range m.inputs {
 		t = textinput.New()
 		t.CharLimit = 255 // Reasonable limit for title and author
-		t.Width = 50     // Visual width in terminal
+		t.Width = 50      // Visual width in terminal
 
 		switch i {
 		case 0: // Title field
@@ -75,12 +75,12 @@ func NewEditModel(db *database.DB) EditModel {
 
 	// Initialize textarea for notes
 	ta := textarea.New()
-	ta.Placeholder = "Enter notes about this book (optional) . . ."
-	ta.SetWidth(50)        // Match width of text inputs
-	ta.SetHeight(4)        // Allow multiple lines
-	ta.CharLimit = 1000    // Reasonable limit for notes
+	ta.Placeholder = "Enter notes about this book (optional)..."
+	ta.SetWidth(50)            // Match width of text inputs
+	ta.SetHeight(4)            // Allow multiple lines
+	ta.CharLimit = 1000        // Reasonable limit for notes
 	ta.ShowLineNumbers = false // Disable line numbers
-	ta.Prompt = " "        // Minimal left padding with single space
+	ta.Prompt = " "            // Minimal left padding with single space
 	m.textarea = ta
 
 	return m
@@ -266,7 +266,7 @@ func (m EditModel) View() string {
 		// Book type selector is not focused
 		b.WriteString(styles.BlurredStyle.Render(typeLabel))
 	}
-	
+
 	// Render each book type option with appropriate styling
 	for i, bookType := range m.bookTypes {
 		if i == m.selectedType {
@@ -325,12 +325,12 @@ func (m *EditModel) SetBook(book *models.Book) {
 	m.SelectedBook = book
 	m.focused = 0 // Start with title field focused
 	m.err = nil   // Clear any previous errors
-	
+
 	// Populate text input fields with current book data
 	m.inputs[0].SetValue(book.Title)
 	m.inputs[1].SetValue(book.Author)
 	m.textarea.SetValue(book.Notes)
-	
+
 	// Find and select the current book type in the selector
 	for i, bookType := range m.bookTypes {
 		if bookType == book.Type {
@@ -338,7 +338,7 @@ func (m *EditModel) SetBook(book *models.Book) {
 			break // Found matching type
 		}
 	}
-	
+
 	// Set initial focus state - title field focused, others blurred
 	m.inputs[0].Focus()
 	m.inputs[0].CursorEnd() // Position cursor at end of title
@@ -357,14 +357,14 @@ func (m *EditModel) SetBook(book *models.Book) {
 func (m EditModel) updateBookCmd() tea.Cmd {
 	return func() tea.Msg {
 		// Extract values from all form fields
-		title := m.inputs[0].Value()              // Title from first input
-		author := m.inputs[1].Value()             // Author from second input
-		bookType := m.bookTypes[m.selectedType]   // Selected book type
-		notes := m.textarea.Value()               // Notes from textarea
-		
+		title := m.inputs[0].Value()            // Title from first input
+		author := m.inputs[1].Value()           // Author from second input
+		bookType := m.bookTypes[m.selectedType] // Selected book type
+		notes := m.textarea.Value()             // Notes from textarea
+
 		// Update the book in the database
 		err := m.db.UpdateBook(m.SelectedBook.ID, title, author, bookType, notes)
-		
+
 		// Return message containing the result
 		return messages.UpdateMsg{Err: err}
 	}

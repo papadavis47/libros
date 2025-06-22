@@ -23,10 +23,10 @@ type AddBookModel struct {
 	inputs       []textinput.Model // Text input fields [0]=title, [1]=author
 	textarea     textarea.Model    // Multi-line text area for optional notes
 	bookTypes    []models.BookType // Available book types (paperback, hardback, etc.)
-	selectedType int              // Currently selected book type index
-	focused      int              // Index of currently focused UI element
-	err          error            // Error from save operation, if any
-	saved        bool             // Flag indicating if book was successfully saved
+	selectedType int               // Currently selected book type index
+	focused      int               // Index of currently focused UI element
+	err          error             // Error from save operation, if any
+	saved        bool              // Flag indicating if book was successfully saved
 }
 
 // NewAddBookModel creates and initializes a new AddBookModel instance
@@ -34,11 +34,11 @@ type AddBookModel struct {
 // The title field is focused by default for immediate user input
 func NewAddBookModel(db *database.DB) AddBookModel {
 	m := AddBookModel{
-		db:           db,                                                                            // Store database connection
-		inputs:       make([]textinput.Model, 2),                                                   // Create title and author inputs
+		db:           db,                                                                                 // Store database connection
+		inputs:       make([]textinput.Model, 2),                                                         // Create title and author inputs
 		bookTypes:    []models.BookType{models.Paperback, models.Hardback, models.Audio, models.Digital}, // All available book types
-		selectedType: 0,                                                                            // Default to first type (Paperback)
-		focused:      0,                                                                            // Start focus on title field
+		selectedType: 0,                                                                                  // Default to first type (Paperback)
+		focused:      0,                                                                                  // Start focus on title field
 	}
 
 	// Initialize and configure the text input fields
@@ -46,18 +46,18 @@ func NewAddBookModel(db *database.DB) AddBookModel {
 	for i := range m.inputs {
 		t = textinput.New()
 		t.CharLimit = 255 // Maximum characters per field
-		t.Width = 50     // Visual width of input field
+		t.Width = 50      // Visual width of input field
 
 		// Configure each input field with specific prompts and placeholders
 		switch i {
 		case 0: // Title field
-			t.Placeholder = "Book title here . . ."
+			t.Placeholder = "Book title..."
 			t.Prompt = "Title:  "
-			t.Focus()                              // Start with title field focused
-			t.PromptStyle = styles.FocusedStyle    // Purple styling for focused state
+			t.Focus()                           // Start with title field focused
+			t.PromptStyle = styles.FocusedStyle // Purple styling for focused state
 			t.TextStyle = styles.FocusedStyle
 		case 1: // Author field
-			t.Placeholder = "Author name here . . ."
+			t.Placeholder = "Author name..."
 			t.Prompt = "Author: "
 			// Author field starts unfocused (default styling)
 		}
@@ -67,12 +67,12 @@ func NewAddBookModel(db *database.DB) AddBookModel {
 
 	// Initialize the textarea for optional book notes
 	ta := textarea.New()
-	ta.Placeholder = "Notes about this book (optional) . . ."
-	ta.SetWidth(50)        // Match width of text inputs
-	ta.SetHeight(4)        // Multi-line height for longer notes
-	ta.CharLimit = 1000    // Reasonable limit for notes length
+	ta.Placeholder = "Notes about this book (optional)..."
+	ta.SetWidth(50)            // Match width of text inputs
+	ta.SetHeight(4)            // Multi-line height for longer notes
+	ta.CharLimit = 1000        // Reasonable limit for notes length
 	ta.ShowLineNumbers = false // Disable line numbers
-	ta.Prompt = " "        // Minimal left padding with single space
+	ta.Prompt = " "            // Minimal left padding with single space
 	m.textarea = ta
 
 	return m
@@ -86,7 +86,7 @@ func (m AddBookModel) Update(msg tea.Msg) (AddBookModel, tea.Cmd, models.Screen)
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "esc": // Escape key returns to main menu
-			m.err = nil   // Clear any error state
+			m.err = nil     // Clear any error state
 			m.saved = false // Clear saved status
 			return m, nil, models.MenuScreen
 		case "ctrl+a":
@@ -225,7 +225,7 @@ func (m AddBookModel) View() string {
 	} else {
 		b.WriteString(styles.BlurredStyle.Render(typeLabel))
 	}
-	
+
 	for i, bookType := range m.bookTypes {
 		if i == m.selectedType {
 			if m.focused == len(m.inputs) {
@@ -260,7 +260,7 @@ func (m AddBookModel) View() string {
 	}
 
 	if m.saved {
-		b.WriteString(styles.SuccessStyle.Render("✓ Book saved successfully!"))
+		b.WriteString(styles.SuccessStyle.Render("Book saved successfully!"))
 		b.WriteString("\n")
 	}
 
@@ -275,14 +275,14 @@ func (m AddBookModel) View() string {
 func (m AddBookModel) saveBookCmd() tea.Cmd {
 	return func() tea.Msg {
 		// Extract values from form fields
-		title := m.inputs[0].Value()                  // Get title from first input
-		author := m.inputs[1].Value()                 // Get author from second input
-		bookType := m.bookTypes[m.selectedType]       // Get selected book type
-		notes := m.textarea.Value()                   // Get optional notes
-		
+		title := m.inputs[0].Value()            // Get title from first input
+		author := m.inputs[1].Value()           // Get author from second input
+		bookType := m.bookTypes[m.selectedType] // Get selected book type
+		notes := m.textarea.Value()             // Get optional notes
+
 		// Attempt to save the book to database
 		err := m.db.SaveBook(title, author, bookType, notes)
-		
+
 		// Return result message that will be handled by Update method
 		return messages.SaveMsg{Err: err}
 	}
@@ -293,31 +293,31 @@ func (m AddBookModel) saveBookCmd() tea.Cmd {
 // All fields are cleared and focus returns to the title field
 func (m *AddBookModel) Reset() {
 	// Clear all status flags
-	m.err = nil      // Clear any error messages
-	m.saved = false  // Clear saved confirmation
-	m.focused = 0    // Reset focus to title field
+	m.err = nil        // Clear any error messages
+	m.saved = false    // Clear saved confirmation
+	m.focused = 0      // Reset focus to title field
 	m.selectedType = 0 // Reset to first book type (Paperback)
-	
+
 	// Clear all text input values
 	for i := range m.inputs {
 		m.inputs[i].SetValue("")
 	}
-	
+
 	// Clear textarea notes
 	m.textarea.SetValue("")
-	
+
 	// Reset focus styling - title field focused, others blurred
 	m.inputs[0].Focus()
 	m.inputs[0].PromptStyle = styles.FocusedStyle // Purple for focused
 	m.inputs[0].TextStyle = styles.FocusedStyle
-	
+
 	// Blur all other input fields
 	for i := 1; i < len(m.inputs); i++ {
 		m.inputs[i].Blur()
 		m.inputs[i].PromptStyle = styles.NoStyle // No special styling
 		m.inputs[i].TextStyle = styles.NoStyle
 	}
-	
+
 	// Blur the textarea
 	m.textarea.Blur()
 }

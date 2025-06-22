@@ -5,6 +5,8 @@ package main
 
 import (
 	"log"
+	"os"
+	"path/filepath"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/papadavis47/libros/internal/database"
@@ -14,9 +16,24 @@ import (
 // main is the entry point of the application
 // It initializes the SQLite database, creates the UI model, and starts the Bubble Tea program
 func main() {
+	// Get user's home directory
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create .libros directory in user's home directory if it doesn't exist
+	librosDir := filepath.Join(homeDir, ".libros")
+	if err := os.MkdirAll(librosDir, 0755); err != nil {
+		log.Fatal(err)
+	}
+
+	// Set database path to ~/.libros/books.db
+	dbPath := filepath.Join(librosDir, "books.db")
+
 	// Initialize database connection to books.db SQLite file
 	// This will create the database file if it doesn't exist
-	db, err := database.New("books.db")
+	db, err := database.New(dbPath)
 	if err != nil {
 		log.Fatal(err)
 	}
