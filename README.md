@@ -1,4 +1,4 @@
-# Libros - A Davis Family Book Manager
+# Libros - A Book Manager
 
 This is the first app I began working on with the help of Claude Code. It has been a fascinating process and I have learned a lot already in a short time.
 
