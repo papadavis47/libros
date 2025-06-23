@@ -83,7 +83,7 @@ func (s *BackupScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "esc":
 			return s, SwitchScreenCmd(models.MenuScreen)
 		}
-		
+
 	case messages.BackupMsg:
 		if msg.Err != nil {
 			s.status = "Backup failed: " + msg.Err.Error()
@@ -101,7 +101,7 @@ func (s *BackupScreen) View() string {
 	var b strings.Builder
 
 	// Display application title
-	b.WriteString(styles.TitleStyle.Render("📁 Backup Data"))
+	b.WriteString(styles.TitleStyle.Render("Backup"))
 	b.WriteString("\n\n")
 
 	// Render each menu item with appropriate styling
@@ -122,11 +122,11 @@ func (s *BackupScreen) View() string {
 			Foreground(lipgloss.Color("#00FF00")).
 			Bold(true).
 			Padding(1, 0)
-		
+
 		if s.isError {
 			statusStyle = statusStyle.Foreground(lipgloss.Color("#FF0000"))
 		}
-		
+
 		b.WriteString("\n" + statusStyle.Render(s.status))
 	}
 
@@ -155,4 +155,3 @@ func (s *BackupScreen) performBackup(format string) tea.Cmd {
 		return messages.BackupMsg{Err: err}
 	}
 }
-

@@ -162,7 +162,7 @@ func (m ListBooksModel) View() string {
 	var b strings.Builder
 
 	// Display application title and screen subtitle
-	b.WriteString(styles.TitleStyle.Render("📚 Libros - Davis Family Book Manager"))
+	b.WriteString(styles.TitleStyle.Render("📚 Libros - A Book Manager"))
 	b.WriteString("\n")
 	b.WriteString(styles.BlurredStyle.Render("Your Book Collection"))
 	b.WriteString("\n\n")
@@ -199,7 +199,7 @@ func (m ListBooksModel) View() string {
 			}
 			b.WriteString("\n\n") // Add spacing between books
 		}
-		
+
 		// Display total book count
 		b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Total books: %d", len(m.books))))
 		b.WriteString("\n")

@@ -226,7 +226,7 @@ func (m *AddBookModel) updateInputs(msg tea.Msg) tea.Cmd {
 func (m AddBookModel) View() string {
 	var b strings.Builder
 
-	b.WriteString(styles.TitleStyle.Render("📚 Libros - Davis Family Book Manager"))
+	b.WriteString(styles.TitleStyle.Render("📚 Libros - A Book Manager"))
 	b.WriteString("\n")
 	b.WriteString(styles.BlurredStyle.Render("Add New Book"))
 	b.WriteString("\n\n")

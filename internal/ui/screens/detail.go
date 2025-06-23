@@ -19,12 +19,12 @@ import (
 // DetailModel represents the book detail screen that shows comprehensive information
 // about a selected book and provides actions for editing, deleting, or navigation.
 type DetailModel struct {
-	db           *database.DB  // Database connection for book operations
-	SelectedBook *models.Book  // Currently displayed book (set by navigation from list screen)
-	actions      []string      // Available actions (Edit, Delete, Back to List)
-	index        int           // Currently selected action index (0-based)
-	err          error         // Any error from book operations (deletion, etc.)
-	updated      bool          // Flag indicating if book was recently updated (for showing success message)
+	db           *database.DB // Database connection for book operations
+	SelectedBook *models.Book // Currently displayed book (set by navigation from list screen)
+	actions      []string     // Available actions (Edit, Delete, Back to List)
+	index        int          // Currently selected action index (0-based)
+	err          error        // Any error from book operations (deletion, etc.)
+	updated      bool         // Flag indicating if book was recently updated (for showing success message)
 }
 
 // NewDetailModel creates and initializes a new DetailModel instance.
@@ -38,7 +38,7 @@ type DetailModel struct {
 //   - DetailModel: Initialized detail model ready to display book information
 func NewDetailModel(db *database.DB) DetailModel {
 	return DetailModel{
-		db:      db,
+		db: db,
 		// Define available actions for the selected book
 		actions: []string{"Edit Book", "Delete Book", "Back to List"},
 		index:   0, // Start with first action selected
@@ -88,13 +88,13 @@ func wrapText(text string, width int) string {
 	if len(text) <= width {
 		return text // No wrapping needed
 	}
-	
+
 	var result []string
 	words := strings.Fields(text) // Split into words
 	if len(words) == 0 {
 		return text // Handle edge case of empty or whitespace-only text
 	}
-	
+
 	// Start first line with first word
 	currentLine := words[0]
 	for _, word := range words[1:] {
@@ -110,7 +110,7 @@ func wrapText(text string, width int) string {
 	}
 	// Add the final line
 	result = append(result, currentLine)
-	
+
 	return strings.Join(result, "\n")
 }
 
@@ -187,7 +187,7 @@ func (m DetailModel) View() string {
 	var b strings.Builder
 
 	// Display application title and screen subtitle
-	b.WriteString(styles.TitleStyle.Render("📚 Libros - Davis Family Book Manager"))
+	b.WriteString(styles.TitleStyle.Render("📚 Libros - A Book Manager"))
 	b.WriteString("\n")
 	b.WriteString(styles.BlurredStyle.Render("Book Details"))
 	b.WriteString("\n\n")
@@ -196,20 +196,20 @@ func (m DetailModel) View() string {
 		// Format the creation and update dates
 		createdStr := formatDateDetail(m.SelectedBook.CreatedAt)
 		updatedStr := formatDateDetail(m.SelectedBook.UpdatedAt)
-		
+
 		// Always show creation date
-		b.WriteString(styles.BlurredStyle.Render("Added: " + createdStr) + "\n")
+		b.WriteString(styles.BlurredStyle.Render("Added: "+createdStr) + "\n")
 		// Only show update date if it's different from creation date
-		if !m.SelectedBook.CreatedAt.Truncate(24*time.Hour).Equal(m.SelectedBook.UpdatedAt.Truncate(24*time.Hour)) {
-			b.WriteString(styles.BlurredStyle.Render("Last updated: " + updatedStr) + "\n")
+		if !m.SelectedBook.CreatedAt.Truncate(24 * time.Hour).Equal(m.SelectedBook.UpdatedAt.Truncate(24 * time.Hour)) {
+			b.WriteString(styles.BlurredStyle.Render("Last updated: "+updatedStr) + "\n")
 		}
 		b.WriteString("\n")
-		
+
 		// Display all book metadata with labels
 		b.WriteString(styles.FocusedStyle.Render("Title: ") + m.SelectedBook.Title + "\n")
 		b.WriteString(styles.FocusedStyle.Render("Author: ") + m.SelectedBook.Author + "\n")
 		b.WriteString(styles.FocusedStyle.Render("Type: ") + string(m.SelectedBook.Type) + "\n")
-		
+
 		// Display notes if they exist, with text wrapping for readability
 		if m.SelectedBook.Notes != "" {
 			b.WriteString("\n")
@@ -261,8 +261,8 @@ func (m DetailModel) View() string {
 //   - book: Pointer to the book to display in detail view
 func (m *DetailModel) SetBook(book *models.Book) {
 	m.SelectedBook = book
-	m.index = 0      // Reset to first action
-	m.err = nil      // Clear any previous errors
+	m.index = 0       // Reset to first action
+	m.err = nil       // Clear any previous errors
 	m.updated = false // Clear any previous update success message
 }
 

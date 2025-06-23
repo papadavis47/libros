@@ -264,7 +264,7 @@ func (m EditModel) View() string {
 	var b strings.Builder
 
 	// Display application title and screen subtitle
-	b.WriteString(styles.TitleStyle.Render("📚 Libros - Davis Family Book Manager"))
+	b.WriteString(styles.TitleStyle.Render("📚 Libros - A Book Manager"))
 	b.WriteString("\n")
 	b.WriteString(styles.BlurredStyle.Render("Edit Book"))
 	b.WriteString("\n\n")
