@@ -17,9 +17,9 @@ import (
 // MenuModel represents the main menu screen of the application.
 // It provides navigation options based on the current state of the book collection.
 type MenuModel struct {
-	db        *database.DB // Database connection for checking book count and loading books
-	items     []string     // Menu items to display (dynamically generated based on book count)
-	index     int          // Currently selected menu item index (0-based)
+	db    *database.DB // Database connection for checking book count and loading books
+	items []string     // Menu items to display (dynamically generated based on book count)
+	index int          // Currently selected menu item index (0-based)
 }
 
 // NewMenuModel creates and initializes a new MenuModel instance.
@@ -121,7 +121,7 @@ func (m MenuModel) View() string {
 	var b strings.Builder
 
 	// Display application title with emoji and branding
-	b.WriteString(styles.TitleStyle.Render("📚 Libros - Davis Family Book Manager"))
+	b.WriteString(styles.TitleStyle.Render("Libros - A Book Manager "))
 	b.WriteString("\n\n")
 
 	// Render each menu item with appropriate styling
