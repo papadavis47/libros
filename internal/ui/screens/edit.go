@@ -116,7 +116,7 @@ func (m EditModel) Update(msg tea.Msg) (EditModel, tea.Cmd, models.Screen) {
 				m.inputs[m.focused].CursorEnd()
 			}
 			return m, nil, models.EditBookScreen
-		case "tab", "shift+tab", "enter", "up", "down", "left", "right":
+		case "tab", "shift+tab", "enter", "up", "down":
 			s := msg.String()
 
 			// Handle form submission when save button is focused
@@ -124,15 +124,15 @@ func (m EditModel) Update(msg tea.Msg) (EditModel, tea.Cmd, models.Screen) {
 				return m, m.updateBookCmd(), models.EditBookScreen
 			}
 
-			// Handle book type selection with left/right arrows
-			if m.focused == len(m.inputs) && (s == "left" || s == "right") {
-				if s == "left" {
+			// Handle tab within type field to cycle through book types
+			if m.focused == len(m.inputs) && (s == "tab" || s == "shift+tab") {
+				if s == "shift+tab" {
 					m.selectedType--
 					// Wrap around to last type
 					if m.selectedType < 0 {
 						m.selectedType = len(m.bookTypes) - 1
 					}
-				} else {
+				} else { // tab
 					m.selectedType++
 					// Wrap around to first type
 					if m.selectedType >= len(m.bookTypes) {
@@ -142,11 +142,11 @@ func (m EditModel) Update(msg tea.Msg) (EditModel, tea.Cmd, models.Screen) {
 				return m, nil, models.EditBookScreen
 			}
 
-			// Handle focus navigation between form elements
-			if s == "up" || s == "shift+tab" {
+			// Only allow up/down/enter to move between fields
+			if s == "up" {
 				// Move focus backward
 				m.focused--
-			} else {
+			} else if s == "down" || s == "enter" {
 				// Move focus forward
 				m.focused++
 			}
@@ -158,7 +158,7 @@ func (m EditModel) Update(msg tea.Msg) (EditModel, tea.Cmd, models.Screen) {
 				m.focused = len(m.inputs) + 2 // Wrap to last element
 			}
 
-			// Update focus states for all text inputs
+			// Update focus states for navigation keys
 			cmds := make([]tea.Cmd, len(m.inputs)+1)
 			for i := 0; i < len(m.inputs); i++ {
 				if i == m.focused {
@@ -183,6 +183,29 @@ func (m EditModel) Update(msg tea.Msg) (EditModel, tea.Cmd, models.Screen) {
 			}
 
 			return m, tea.Batch(cmds...), models.EditBookScreen
+
+		case "left", "right":
+			s := msg.String()
+
+			// Handle book type selection with left/right arrows when focused on type field
+			if m.focused == len(m.inputs) {
+				if s == "left" {
+					m.selectedType--
+					// Wrap around to last type
+					if m.selectedType < 0 {
+						m.selectedType = len(m.bookTypes) - 1
+					}
+				} else { // right
+					m.selectedType++
+					// Wrap around to first type
+					if m.selectedType >= len(m.bookTypes) {
+						m.selectedType = 0
+					}
+				}
+				return m, nil, models.EditBookScreen
+			}
+			// For text fields, let the input handle left/right for cursor movement
+			// This will be handled by updateInputs() method
 		}
 
 	case messages.UpdateMsg: // Handle save operation result

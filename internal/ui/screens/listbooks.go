@@ -181,7 +181,7 @@ func (m ListBooksModel) View() string {
 				b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Type: %s | Added: %s", string(book.Type), dateStr)))
 				if book.Notes != "" {
 					// Show truncated notes for selected book
-					b.WriteString("\n")
+					b.WriteString("\n\n")
 					b.WriteString(styles.NotesStyle.Render(truncateNotes(book.Notes, 60)))
 				}
 			} else {
@@ -193,7 +193,7 @@ func (m ListBooksModel) View() string {
 				b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Type: %s | Added: %s", string(book.Type), dateStr)))
 				if book.Notes != "" {
 					// Show truncated notes for non-selected book too
-					b.WriteString("\n")
+					b.WriteString("\n\n")
 					b.WriteString(styles.NotesStyle.Render(truncateNotes(book.Notes, 60)))
 				}
 			}
