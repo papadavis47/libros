@@ -23,6 +23,7 @@ type Model struct {
 	listBooks screens.ListBooksModel // Book list display screen model
 	detail    screens.DetailModel    // Book detail view screen model
 	edit      screens.EditModel      // Book editing screen model
+	backup    *screens.BackupScreen  // Backup data screen model
 }
 
 // NewModel creates and initializes a new main application model
@@ -37,6 +38,7 @@ func NewModel(db *database.DB) Model {
 		listBooks:     screens.NewListBooksModel(),     // Initialize book list screen
 		detail:        screens.NewDetailModel(db),      // Initialize detail view screen
 		edit:          screens.NewEditModel(db),        // Initialize edit screen
+		backup:        screens.NewBackupScreen(db),     // Initialize backup screen
 	}
 }
 
@@ -129,6 +131,20 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if newScreen == models.BookDetailScreen {
 			m.detail.ClearUpdated()
 		}
+		
+	case models.BackupScreen:
+		var backupModel tea.Model
+		var backupCmd tea.Cmd
+		// Update backup screen model
+		backupModel, backupCmd = m.backup.Update(msg)
+		m.backup = backupModel.(*screens.BackupScreen)
+		cmd = backupCmd
+		// Handle screen transitions from backup screen
+		if switchMsg, ok := msg.(screens.SwitchScreenMsg); ok {
+			newScreen = switchMsg.Screen
+		} else {
+			newScreen = m.currentScreen
+		}
 	}
 
 	// Handle screen transitions and perform any necessary cleanup
@@ -139,6 +155,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if newScreen == models.ListBooksScreen {
 			// Clear any delete confirmation state when entering list screen
 			m.listBooks.ClearDeleted()
+		}
+		if newScreen == models.BackupScreen {
+			// Clear any backup status when entering backup screen
+			m.backup.ClearStatus()
 		}
 	}
 
@@ -161,6 +181,8 @@ func (m Model) View() string {
 		return m.detail.View()    // Render book details
 	case models.EditBookScreen:
 		return m.edit.View()      // Render edit book form
+	case models.BackupScreen:
+		return m.backup.View()    // Render backup screen
 	default:
 		// Fallback for unknown screen states
 		return ""

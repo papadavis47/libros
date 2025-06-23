@@ -39,4 +39,5 @@ const (
 	ListBooksScreen               // Screen showing list of all books
 	BookDetailScreen              // Screen showing details of a specific book
 	EditBookScreen                // Screen for editing existing book details
+	BackupScreen                  // Screen for backing up book data
 )

@@ -29,3 +29,9 @@ type LoadBooksMsg struct {
 	Books []models.Book // Slice of books loaded from database
 	Err   error         // Error from the load operation, nil if successful
 }
+
+// BackupMsg represents the result of a backup operation
+// Contains an error field to indicate success (nil) or failure (error details)
+type BackupMsg struct {
+	Err error // Error from the backup operation, nil if successful
+}
