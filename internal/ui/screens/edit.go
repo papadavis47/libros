@@ -60,13 +60,14 @@ func NewEditModel(db *database.DB) EditModel {
 		switch i {
 		case 0: // Title field
 			t.Placeholder = "Enter book title"
-			t.Prompt = "Title:  "
+			t.Prompt = "   Title:  "
 			t.Focus() // Start focused on title
-			t.PromptStyle = styles.FocusedStyle
-			t.TextStyle = styles.FocusedStyle
+			t.PromptStyle = styles.FormFocusedStyle
+			t.TextStyle = styles.FormFocusedStyle
 		case 1: // Author field
 			t.Placeholder = "Enter author name"
-			t.Prompt = "Author: "
+			t.Prompt = "   Author: "
+			t.PromptStyle = styles.NoStyle
 			// Initially blurred (not focused)
 		}
 
@@ -80,7 +81,7 @@ func NewEditModel(db *database.DB) EditModel {
 	ta.SetHeight(4)            // Allow multiple lines
 	ta.CharLimit = 1000        // Reasonable limit for notes
 	ta.ShowLineNumbers = false // Disable line numbers
-	ta.Prompt = " "            // Minimal left padding with single space
+	ta.Prompt = "   "          // 3-space left padding for alignment
 	m.textarea = ta
 
 	return m
@@ -164,8 +165,8 @@ func (m EditModel) Update(msg tea.Msg) (EditModel, tea.Cmd, models.Screen) {
 				if i == m.focused {
 					// Focus this input
 					cmds[i] = m.inputs[i].Focus()
-					m.inputs[i].PromptStyle = styles.FocusedStyle
-					m.inputs[i].TextStyle = styles.FocusedStyle
+					m.inputs[i].PromptStyle = styles.FormFocusedStyle
+					m.inputs[i].TextStyle = styles.FormFocusedStyle
 					m.inputs[i].CursorEnd() // Position cursor at end
 				} else {
 					// Blur this input

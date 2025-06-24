@@ -52,13 +52,14 @@ func NewAddBookModel(db *database.DB) AddBookModel {
 		switch i {
 		case 0: // Title field
 			t.Placeholder = "Book title..."
-			t.Prompt = "Title:  "
+			t.Prompt = "   Title:  "
 			t.Focus()                           // Start with title field focused
-			t.PromptStyle = styles.FocusedStyle // Purple styling for focused state
-			t.TextStyle = styles.FocusedStyle
+			t.PromptStyle = styles.FormFocusedStyle
+			t.TextStyle = styles.FormFocusedStyle
 		case 1: // Author field
 			t.Placeholder = "Author name..."
-			t.Prompt = "Author: "
+			t.Prompt = "   Author: "
+			t.PromptStyle = styles.NoStyle      // Remove purple styling to prevent double padding
 			// Author field starts unfocused (default styling)
 		}
 
@@ -72,7 +73,7 @@ func NewAddBookModel(db *database.DB) AddBookModel {
 	ta.SetHeight(4)            // Multi-line height for longer notes
 	ta.CharLimit = 1000        // Reasonable limit for notes length
 	ta.ShowLineNumbers = false // Disable line numbers
-	ta.Prompt = " "            // Minimal left padding with single space
+	ta.Prompt = "   "          // 3-space left padding for alignment
 	m.textarea = ta
 
 	return m
@@ -140,8 +141,8 @@ func (m AddBookModel) Update(msg tea.Msg) (AddBookModel, tea.Cmd, models.Screen)
 			for i := 0; i < len(m.inputs); i++ {
 				if i == m.focused {
 					cmds[i] = m.inputs[i].Focus()
-					m.inputs[i].PromptStyle = styles.FocusedStyle
-					m.inputs[i].TextStyle = styles.FocusedStyle
+					m.inputs[i].PromptStyle = styles.FormFocusedStyle
+					m.inputs[i].TextStyle = styles.FormFocusedStyle
 					m.inputs[i].CursorEnd()
 				} else {
 					m.inputs[i].Blur()
@@ -332,8 +333,8 @@ func (m *AddBookModel) Reset() {
 
 	// Reset focus styling - title field focused, others blurred
 	m.inputs[0].Focus()
-	m.inputs[0].PromptStyle = styles.FocusedStyle // Purple for focused
-	m.inputs[0].TextStyle = styles.FocusedStyle
+	m.inputs[0].PromptStyle = styles.FormFocusedStyle // Purple for focused
+	m.inputs[0].TextStyle = styles.FormFocusedStyle
 
 	// Blur all other input fields
 	for i := 1; i < len(m.inputs); i++ {

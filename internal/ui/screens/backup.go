@@ -33,9 +33,9 @@ type BackupScreen struct {
 
 func NewBackupScreen(db *database.DB) *BackupScreen {
 	items := []string{
-		"JSON Format",
-		"Markdown Format",
-		"Back to Main Menu",
+		"ＪＳＯＮ　Ｆｏｒｍａｔ",
+		"Ｍａｒｋｄｏｗｎ　Ｆｏｒｍａｔ",
+		"Ｂａｃｋ　ｔｏ　Ｍａｉｎ　Ｍｅｎｕ",
 	}
 
 	return &BackupScreen{
@@ -69,13 +69,13 @@ func (s *BackupScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			selectedItem := s.items[s.index]
 			switch selectedItem {
-			case "JSON Format":
+			case "ＪＳＯＮ　Ｆｏｒｍａｔ":
 				s.status = ""
 				return s, s.performBackup("json")
-			case "Markdown Format":
+			case "Ｍａｒｋｄｏｗｎ　Ｆｏｒｍａｔ":
 				s.status = ""
 				return s, s.performBackup("markdown")
-			case "Back to Main Menu":
+			case "Ｂａｃｋ　ｔｏ　Ｍａｉｎ　Ｍｅｎｕ":
 				return s, SwitchScreenCmd(models.MenuScreen)
 			}
 		case "q", "ctrl+c":
@@ -124,7 +124,8 @@ func (s *BackupScreen) View() string {
 		statusStyle := lipgloss.NewStyle().
 			Foreground(lipgloss.Color("#00FF00")).
 			Bold(true).
-			Padding(1, 0)
+			Padding(1, 0).
+			PaddingLeft(3)
 
 		if s.isError {
 			statusStyle = statusStyle.Foreground(lipgloss.Color("#FF0000"))

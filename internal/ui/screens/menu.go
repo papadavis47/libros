@@ -49,16 +49,16 @@ func (m *MenuModel) updateMenuItems() {
 	count, err := m.db.GetBookCount()
 	if err != nil {
 		// On database error, provide minimal menu options
-		m.items = []string{"Add Book", "Quit"}
+		m.items = []string{"Ａｄｄ　Ｂｏｏｋ", "Ｑｕｉｔ"}
 		return
 	}
 
 	if count > 0 {
 		// Books exist - show all menu options including View Books and Backup
-		m.items = []string{"Add Book", "View Books", "Backup", "Quit"}
+		m.items = []string{"Ａｄｄ　Ｂｏｏｋ", "Ｖｉｅｗ　Ｂｏｏｋｓ", "Ｂａｃｋｕｐ", "Ｑｕｉｔ"}
 	} else {
 		// No books exist - hide View Books and Backup options
-		m.items = []string{"Add Book", "Quit"}
+		m.items = []string{"Ａｄｄ　Ｂｏｏｋ", "Ｑｕｉｔ"}
 	}
 
 	// Ensure selected index is still valid after menu items change
@@ -92,17 +92,17 @@ func (m MenuModel) Update(msg tea.KeyMsg) (MenuModel, tea.Cmd, models.Screen) {
 	case "enter": // Activate selected menu item
 		selectedItem := m.items[m.index]
 		switch selectedItem {
-		case "Add Book":
+		case "Ａｄｄ　Ｂｏｏｋ":
 			// Navigate to book creation screen
 			return m, nil, models.AddBookScreen
-		case "View Books":
+		case "Ｖｉｅｗ　Ｂｏｏｋｓ":
 			// Load books from database and navigate to list screen
 			// The LoadBooksCmd will fetch data asynchronously
 			return m, m.LoadBooksCmd(), models.ListBooksScreen
-		case "Backup":
+		case "Ｂａｃｋｕｐ":
 			// Navigate to backup screen
 			return m, nil, models.BackupScreen
-		case "Quit":
+		case "Ｑｕｉｔ":
 			// Exit the application
 			return m, tea.Quit, models.MenuScreen
 		}
