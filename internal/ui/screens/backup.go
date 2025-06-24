@@ -101,7 +101,10 @@ func (s *BackupScreen) View() string {
 	var b strings.Builder
 
 	// Display application title
-	b.WriteString(styles.TitleStyle.Render("Backup"))
+	b.WriteString("\n")
+	b.WriteString(styles.TitleStyle.Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
+	b.WriteString("\n")
+	b.WriteString(styles.BlurredStyle.Render("Backup"))
 	b.WriteString("\n\n")
 
 	// Render each menu item with appropriate styling

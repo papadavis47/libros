@@ -121,7 +121,8 @@ func (m MenuModel) View() string {
 	var b strings.Builder
 
 	// Display application title with emoji and branding
-	b.WriteString(styles.TitleStyle.Render("Libros - A Book Manager "))
+	b.WriteString("\n")
+	b.WriteString(styles.TitleStyle.Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
 	b.WriteString("\n\n")
 
 	// Render each menu item with appropriate styling

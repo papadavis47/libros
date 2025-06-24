@@ -162,7 +162,8 @@ func (m ListBooksModel) View() string {
 	var b strings.Builder
 
 	// Display application title and screen subtitle
-	b.WriteString(styles.TitleStyle.Render("📚 Libros - A Book Manager"))
+	b.WriteString("\n")
+	b.WriteString(styles.TitleStyle.Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
 	b.WriteString("\n")
 	b.WriteString(styles.BlurredStyle.Render("Your Book Collection"))
 	b.WriteString("\n\n")

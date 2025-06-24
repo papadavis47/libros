@@ -187,7 +187,8 @@ func (m DetailModel) View() string {
 	var b strings.Builder
 
 	// Display application title and screen subtitle
-	b.WriteString(styles.TitleStyle.Render("📚 Libros - A Book Manager"))
+	b.WriteString("\n")
+	b.WriteString(styles.TitleStyle.Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
 	b.WriteString("\n")
 	b.WriteString(styles.BlurredStyle.Render("Book Details"))
 	b.WriteString("\n\n")
