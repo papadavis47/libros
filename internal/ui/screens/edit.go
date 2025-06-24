@@ -266,8 +266,8 @@ func (m EditModel) View() string {
 	// Display application title and screen subtitle
 	b.WriteString("\n")
 	b.WriteString(styles.TitleStyle.Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
-	b.WriteString("\n")
-	b.WriteString(styles.BlurredStyle.Render("Edit Book"))
+	b.WriteString("\n\n")
+	b.WriteString(styles.BlurredStyle.Render("Ｅｄｉｔ　Ｂｏｏｋ"))
 	b.WriteString("\n\n")
 
 	// Render all text input fields (title and author)

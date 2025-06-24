@@ -189,8 +189,8 @@ func (m DetailModel) View() string {
 	// Display application title and screen subtitle
 	b.WriteString("\n")
 	b.WriteString(styles.TitleStyle.Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
-	b.WriteString("\n")
-	b.WriteString(styles.BlurredStyle.Render("Book Details"))
+	b.WriteString("\n\n")
+	b.WriteString(styles.BlurredStyle.Render("Ｂｏｏｋ　Ｄｅｔａｉｌｓ"))
 	b.WriteString("\n\n")
 
 	if m.SelectedBook != nil {

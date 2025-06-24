@@ -228,8 +228,8 @@ func (m AddBookModel) View() string {
 
 	b.WriteString("\n")
 	b.WriteString(styles.TitleStyle.Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
-	b.WriteString("\n")
-	b.WriteString(styles.BlurredStyle.Render("Add New Book"))
+	b.WriteString("\n\n")
+	b.WriteString(styles.BlurredStyle.Render("Ａｄｄ　Ｎｅｗ　Ｂｏｏｋ"))
 	b.WriteString("\n\n")
 
 	for i := range m.inputs {

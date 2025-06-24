@@ -164,8 +164,8 @@ func (m ListBooksModel) View() string {
 	// Display application title and screen subtitle
 	b.WriteString("\n")
 	b.WriteString(styles.TitleStyle.Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
-	b.WriteString("\n")
-	b.WriteString(styles.BlurredStyle.Render("Your Book Collection"))
+	b.WriteString("\n\n")
+	b.WriteString(styles.BlurredStyle.Render("Ｙｏｕｒ　Ｂｏｏｋ　Ｃｏｌｌｅｃｔｉｏｎ"))
 	b.WriteString("\n\n")
 
 	if len(m.books) == 0 {
