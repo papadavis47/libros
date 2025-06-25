@@ -60,13 +60,13 @@ func NewEditModel(db *database.DB) EditModel {
 		switch i {
 		case 0: // Title field
 			t.Placeholder = "Enter book title"
-			t.Prompt = "   Title:  "
+			t.Prompt = "   " + styles.AddLetterSpacing("Title:") + "  "
 			t.Focus() // Start focused on title
 			t.PromptStyle = styles.FormFocusedStyle
 			t.TextStyle = styles.FormFocusedStyle
 		case 1: // Author field
 			t.Placeholder = "Enter author name"
-			t.Prompt = "   Author: "
+			t.Prompt = "   " + styles.AddLetterSpacing("Author:") + " "
 			t.PromptStyle = styles.NoStyle
 			// Initially blurred (not focused)
 		}
@@ -283,7 +283,7 @@ func (m EditModel) View() string {
 
 	// Add book type selector with focus-aware styling
 	b.WriteString("\n")
-	typeLabel := "Type:   "
+	typeLabel := styles.AddLetterSpacing("Type:") + "   "
 	if m.focused == len(m.inputs) {
 		// Book type selector is focused
 		b.WriteString(styles.FocusedStyle.Render(typeLabel))
@@ -298,14 +298,14 @@ func (m EditModel) View() string {
 			// This is the currently selected book type
 			if m.focused == len(m.inputs) {
 				// Book type selector is focused - use button style
-				b.WriteString(styles.ButtonStyle.Render(fmt.Sprintf(" %s ", string(bookType))))
+				b.WriteString(styles.ButtonStyle.Render(fmt.Sprintf(" %s ", styles.CapitalizeBookType(string(bookType)))))
 			} else {
 				// Book type selector not focused but this type is selected
-				b.WriteString(styles.FocusedStyle.Render(fmt.Sprintf(" %s ", string(bookType))))
+				b.WriteString(styles.FocusedStyle.Render(fmt.Sprintf(" %s ", styles.CapitalizeBookType(string(bookType)))))
 			}
 		} else {
 			// This is not the selected book type
-			b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf(" %s ", string(bookType))))
+			b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf(" %s ", styles.CapitalizeBookType(string(bookType)))))
 		}
 		// Add spacing between book type options
 		if i < len(m.bookTypes)-1 {
@@ -316,7 +316,7 @@ func (m EditModel) View() string {
 
 	// Add notes textarea with label
 	b.WriteString("\n")
-	b.WriteString(styles.FocusedStyle.Render("Notes: "))
+	b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Notes:") + " "))
 	b.WriteString("\n")
 	b.WriteString(m.textarea.View())
 
@@ -330,7 +330,7 @@ func (m EditModel) View() string {
 
 	// Show any validation or save errors
 	if m.err != nil {
-		b.WriteString(styles.ErrorStyle.Render("Error: " + m.err.Error()))
+		b.WriteString(styles.ErrorStyle.Render(styles.AddLetterSpacing("Error: " + m.err.Error())))
 		b.WriteString("\n")
 	}
 

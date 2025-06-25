@@ -177,46 +177,46 @@ func (m ListBooksModel) View() string {
 			dateStr := formatDate(book.CreatedAt)
 			if i == m.index {
 				// Currently selected book - use selected style and show full details
-				b.WriteString(styles.SelectedStyle.Render(fmt.Sprintf("%s by %s", book.Title, book.Author)))
+				b.WriteString(styles.SelectedStyle.Render(fmt.Sprintf("%s  %s  %s", styles.AddLetterSpacing(book.Title), styles.AddLetterSpacing("by"), styles.AddLetterSpacing(book.Author))))
 				b.WriteString("\n")
-				b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Type: %s | Added: %s", string(book.Type), dateStr)))
+				b.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s | %s %s", styles.AddLetterSpacing("Type:"), styles.AddLetterSpacing(styles.CapitalizeBookType(string(book.Type))), styles.AddLetterSpacing("Added:"), styles.AddLetterSpacing(dateStr))))
 				if book.Notes != "" {
 					// Show truncated notes for selected book
 					b.WriteString("\n\n")
-					b.WriteString(styles.NotesStyle.Render(truncateNotes(book.Notes, 60)))
+					b.WriteString(styles.SpacedNotesStyle.Render(styles.AddLetterSpacing(truncateNotes(book.Notes, 60))))
 				}
 			} else {
 				// Non-selected book - use different styling for title vs author
-				b.WriteString(styles.FocusedStyle.Render(book.Title))
-				b.WriteString(" by ")
-				b.WriteString(styles.BlurredNoPaddingStyle.Render(book.Author))
+				b.WriteString(styles.BoldFocusedStyle.Render(styles.AddLetterSpacing(book.Title)))
+				b.WriteString(styles.BoldBlurredNoPaddingStyle.Render("  " + styles.AddLetterSpacing("by") + "  "))
+				b.WriteString(styles.BoldBlurredNoPaddingStyle.Render(styles.AddLetterSpacing(book.Author)))
 				b.WriteString("\n")
-				b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Type: %s | Added: %s", string(book.Type), dateStr)))
+				b.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s | %s %s", styles.AddLetterSpacing("Type:"), styles.AddLetterSpacing(styles.CapitalizeBookType(string(book.Type))), styles.AddLetterSpacing("Added:"), styles.AddLetterSpacing(dateStr))))
 				if book.Notes != "" {
 					// Show truncated notes for non-selected book too
 					b.WriteString("\n\n")
-					b.WriteString(styles.NotesStyle.Render(truncateNotes(book.Notes, 60)))
+					b.WriteString(styles.SpacedNotesStyle.Render(styles.AddLetterSpacing(truncateNotes(book.Notes, 60))))
 				}
 			}
 			b.WriteString("\n\n") // Add spacing between books
 		}
 
 		// Display total book count
-		b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Total books: %d", len(m.books))))
+		b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("%s %d", styles.AddLetterSpacing("Total books:"), len(m.books))))
 		b.WriteString("\n")
 	}
 
 	// Show success message if a book was recently deleted
 	if m.deleted {
 		b.WriteString("\n")
-		b.WriteString(styles.SuccessStyle.Render("✓ Book deleted successfully!"))
+		b.WriteString(styles.SuccessStyle.Render(styles.AddLetterSpacing("✓ Book deleted successfully!")))
 		b.WriteString("\n")
 	}
 
 	// Show any error messages
 	if m.err != nil {
 		b.WriteString("\n")
-		b.WriteString(styles.ErrorStyle.Render("Error: " + m.err.Error()))
+		b.WriteString(styles.ErrorStyle.Render(styles.AddLetterSpacing("Error: " + m.err.Error())))
 		b.WriteString("\n")
 	}
 

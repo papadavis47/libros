@@ -199,25 +199,25 @@ func (m DetailModel) View() string {
 		updatedStr := formatDateDetail(m.SelectedBook.UpdatedAt)
 
 		// Always show creation date
-		b.WriteString(styles.BlurredStyle.Render("Added: "+createdStr) + "\n")
+		b.WriteString(styles.BlurredStyle.Render(styles.AddLetterSpacing("Added: ")+styles.AddLetterSpacing(createdStr)) + "\n")
 		// Only show update date if it's different from creation date
 		if !m.SelectedBook.CreatedAt.Truncate(24 * time.Hour).Equal(m.SelectedBook.UpdatedAt.Truncate(24 * time.Hour)) {
-			b.WriteString(styles.BlurredStyle.Render("Last updated: "+updatedStr) + "\n")
+			b.WriteString(styles.BlurredStyle.Render(styles.AddLetterSpacing("Last updated: ")+styles.AddLetterSpacing(updatedStr)) + "\n")
 		}
 		b.WriteString("\n")
 
 		// Display all book metadata with labels
-		b.WriteString(styles.FocusedStyle.Render("Title: ") + m.SelectedBook.Title + "\n")
-		b.WriteString(styles.FocusedStyle.Render("Author: ") + m.SelectedBook.Author + "\n")
-		b.WriteString(styles.FocusedStyle.Render("Type: ") + string(m.SelectedBook.Type) + "\n")
+		b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Title: ")) + styles.AddLetterSpacing(m.SelectedBook.Title) + "\n")
+		b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Author: ")) + styles.AddLetterSpacing(m.SelectedBook.Author) + "\n")
+		b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Type: ")) + styles.AddLetterSpacing(styles.CapitalizeBookType(string(m.SelectedBook.Type))) + "\n")
 
 		// Display notes if they exist, with text wrapping for readability
 		if m.SelectedBook.Notes != "" {
 			b.WriteString("\n")
-			b.WriteString(styles.FocusedStyle.Render("Notes: ") + "\n")
+			b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Notes: ")) + "\n")
 			// Wrap long notes to fit terminal width
 			wrappedNotes := wrapText(m.SelectedBook.Notes, 60)
-			b.WriteString(styles.NotesStyle.Render(wrappedNotes) + "\n")
+			b.WriteString(styles.SpacedNotesStyle.Render(styles.AddLetterSpacing(wrappedNotes)) + "\n")
 		}
 		b.WriteString("\n")
 
@@ -225,10 +225,10 @@ func (m DetailModel) View() string {
 		for i, action := range m.actions {
 			if i == m.index {
 				// Highlight currently selected action
-				b.WriteString(styles.SelectedStyle.Render(action))
+				b.WriteString(styles.SelectedStyle.Render(styles.AddLetterSpacing(action)))
 			} else {
 				// Dim non-selected actions
-				b.WriteString(styles.BlurredStyle.Render(action))
+				b.WriteString(styles.BlurredStyle.Render(styles.AddLetterSpacing(action)))
 			}
 			b.WriteString("\n\n")
 		}
@@ -237,14 +237,14 @@ func (m DetailModel) View() string {
 	// Show success message if book was recently updated
 	if m.updated {
 		b.WriteString("\n")
-		b.WriteString(styles.SuccessStyle.Render("✓ Book updated successfully!"))
+		b.WriteString(styles.SuccessStyle.Render(styles.AddLetterSpacing("✓ Book updated successfully!")))
 		b.WriteString("\n")
 	}
 
 	// Show any error messages
 	if m.err != nil {
 		b.WriteString("\n")
-		b.WriteString(styles.ErrorStyle.Render("Error: " + m.err.Error()))
+		b.WriteString(styles.ErrorStyle.Render(styles.AddLetterSpacing("Error: " + m.err.Error())))
 		b.WriteString("\n")
 	}
 

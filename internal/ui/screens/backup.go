@@ -131,7 +131,7 @@ func (s *BackupScreen) View() string {
 			statusStyle = statusStyle.Foreground(lipgloss.Color("#FF0000"))
 		}
 
-		b.WriteString("\n" + statusStyle.Render(s.status))
+		b.WriteString("\n" + statusStyle.Render(styles.AddLetterSpacing(s.status)))
 	}
 
 	// Display help text

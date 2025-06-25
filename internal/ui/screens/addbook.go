@@ -51,15 +51,15 @@ func NewAddBookModel(db *database.DB) AddBookModel {
 		// Configure each input field with specific prompts and placeholders
 		switch i {
 		case 0: // Title field
-			t.Placeholder = "Book title..."
-			t.Prompt = "   Title:  "
-			t.Focus()                           // Start with title field focused
+			t.Placeholder = "_______________"
+			t.Prompt = "   " + styles.AddLetterSpacing("Title:") + "  "
+			t.Focus() // Start with title field focused
 			t.PromptStyle = styles.FormFocusedStyle
 			t.TextStyle = styles.FormFocusedStyle
 		case 1: // Author field
-			t.Placeholder = "Author name..."
-			t.Prompt = "   Author: "
-			t.PromptStyle = styles.NoStyle      // Remove purple styling to prevent double padding
+			t.Placeholder = "_______________"
+			t.Prompt = "   " + styles.AddLetterSpacing("Author:") + " "
+			t.PromptStyle = styles.NoStyle // Remove purple styling to prevent double padding
 			// Author field starts unfocused (default styling)
 		}
 
@@ -244,7 +244,7 @@ func (m AddBookModel) View() string {
 
 	// Add book type selector
 	b.WriteString("\n")
-	typeLabel := "Type:   "
+	typeLabel := styles.AddLetterSpacing("Type:") + "   "
 	if m.focused == len(m.inputs) {
 		b.WriteString(styles.FocusedStyle.Render(typeLabel))
 	} else {
@@ -254,12 +254,12 @@ func (m AddBookModel) View() string {
 	for i, bookType := range m.bookTypes {
 		if i == m.selectedType {
 			if m.focused == len(m.inputs) {
-				b.WriteString(styles.ButtonStyle.Render(fmt.Sprintf(" %s ", string(bookType))))
+				b.WriteString(styles.ButtonStyle.Render(fmt.Sprintf(" %s ", styles.CapitalizeBookType(string(bookType)))))
 			} else {
-				b.WriteString(styles.FocusedStyle.Render(fmt.Sprintf(" %s ", string(bookType))))
+				b.WriteString(styles.FocusedStyle.Render(fmt.Sprintf(" %s ", styles.CapitalizeBookType(string(bookType)))))
 			}
 		} else {
-			b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf(" %s ", string(bookType))))
+			b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf(" %s ", styles.CapitalizeBookType(string(bookType)))))
 		}
 		if i < len(m.bookTypes)-1 {
 			b.WriteString(" ")
@@ -269,7 +269,7 @@ func (m AddBookModel) View() string {
 
 	// Add notes textarea
 	b.WriteString("\n")
-	b.WriteString(styles.FocusedStyle.Render("Notes: "))
+	b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Notes:") + " "))
 	b.WriteString("\n")
 	b.WriteString(m.textarea.View())
 
@@ -280,12 +280,12 @@ func (m AddBookModel) View() string {
 	fmt.Fprintf(&b, "\n\n%s\n\n", button.Render("SAVE BOOK"))
 
 	if m.err != nil {
-		b.WriteString(styles.ErrorStyle.Render("Error: " + m.err.Error()))
+		b.WriteString(styles.ErrorStyle.Render(styles.AddLetterSpacing("Error: " + m.err.Error())))
 		b.WriteString("\n")
 	}
 
 	if m.saved {
-		b.WriteString(styles.SuccessStyle.Render("Book saved successfully!"))
+		b.WriteString(styles.SuccessStyle.Render(styles.AddLetterSpacing("Book saved successfully!")))
 		b.WriteString("\n")
 	}
 

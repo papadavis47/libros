@@ -3,7 +3,10 @@
 // across all UI components and screens
 package styles
 
-import "github.com/charmbracelet/lipgloss"
+import (
+	"strings"
+	"github.com/charmbracelet/lipgloss"
+)
 
 // Global style definitions used throughout the application
 // These provide a consistent look and feel across all UI components
@@ -39,7 +42,8 @@ var (
 			Foreground(lipgloss.Color("#FFFFFF")). // White text
 			Background(lipgloss.Color("#7D56F4")). // Purple background
 			Padding(0, 1).                         // Horizontal padding
-			PaddingLeft(3)                         // 3-space left indent
+			MarginLeft(2).                         // 2-space left margin (creates gap)
+			PaddingLeft(1)                         // 1-space left padding inside background
 
 	// ButtonStyle is used for interactive buttons and action items
 	// Orange color with bold text to make actions stand out
@@ -77,4 +81,80 @@ var (
 	// Used for inline text that shouldn't have extra spacing
 	BlurredNoPaddingStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("#9CA3AF")) // Gray color for unfocused
+
+	// SpacedFocusedStyle is FocusedStyle with 1.5x letter spacing for enhanced readability
+	SpacedFocusedStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#7D56F4")). // Purple color for focus
+			PaddingLeft(3)                         // 3-space left indent
+
+	// SpacedBlurredStyle is BlurredStyle with 1.5x letter spacing for enhanced readability
+	SpacedBlurredStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#9CA3AF")). // Gray color for unfocused
+			Padding(0, 1).                         // Consistent horizontal padding
+			PaddingLeft(3)                         // 3-space left indent
+
+	// SpacedNotesStyle is NotesStyle with 1.5x letter spacing for enhanced readability
+	SpacedNotesStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#9CA3AF")). // Gray color like BlurredStyle
+			Italic(true).                          // Italic formatting for notes
+			Padding(0, 1).                         // Consistent horizontal padding
+			PaddingLeft(3)                         // 3-space left indent
+
+	// BoldFocusedStyle is SpacedFocusedStyle with bold formatting for emphasis
+	BoldFocusedStyle = lipgloss.NewStyle().
+			Bold(true).                            // Bold formatting
+			Foreground(lipgloss.Color("#7D56F4")). // Purple color for focus
+			PaddingLeft(3)                         // 3-space left indent
+
+	// BoldBlurredNoPaddingStyle is BlurredNoPaddingStyle with bold formatting
+	BoldBlurredNoPaddingStyle = lipgloss.NewStyle().
+			Bold(true).                          // Bold formatting
+			Foreground(lipgloss.Color("#9CA3AF")) // Gray color for unfocused
 )
+
+// AddLetterSpacing converts text to have 1.5x letter spacing by adding spaces between characters
+// Example: "Book Title" becomes "B o o k  T i t l e"
+func AddLetterSpacing(text string) string {
+	if text == "" {
+		return text
+	}
+	
+	var result strings.Builder
+	runes := []rune(text)
+	
+	for i, r := range runes {
+		result.WriteRune(r)
+		// Add space after each character except the last one
+		// Add double space after space characters to maintain word separation
+		if i < len(runes)-1 {
+			if r == ' ' {
+				result.WriteString(" ")
+			} else {
+				result.WriteString(" ")
+			}
+		}
+	}
+	
+	return result.String()
+}
+
+// CapitalizeBookType converts BookType enum values to capitalized display names
+// Example: "paperback" becomes "Paperback", "audio" becomes "Audio"
+func CapitalizeBookType(bookType string) string {
+	switch bookType {
+	case "paperback":
+		return "Paperback"
+	case "hardback":
+		return "Hardback"
+	case "audio":
+		return "Audio"
+	case "digital":
+		return "Digital"
+	default:
+		// Fallback: capitalize first letter for unknown types
+		if len(bookType) == 0 {
+			return bookType
+		}
+		return strings.ToUpper(string(bookType[0])) + strings.ToLower(bookType[1:])
+	}
+}
