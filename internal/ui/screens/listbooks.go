@@ -177,7 +177,9 @@ func (m ListBooksModel) View() string {
 			dateStr := formatDate(book.CreatedAt)
 			if i == m.index {
 				// Currently selected book - use selected style and show full details
-				b.WriteString(styles.SelectedStyle.Render(fmt.Sprintf("%s  %s  %s", styles.AddLetterSpacing(book.Title), styles.AddLetterSpacing("by"), styles.AddLetterSpacing(book.Author))))
+				b.WriteString(styles.SelectedStyle.Render(styles.AddLetterSpacing(book.Title)))
+				b.WriteString("\n")
+				b.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s", styles.AddLetterSpacing("Author:"), styles.AddLetterSpacing(book.Author))))
 				b.WriteString("\n")
 				b.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s | %s %s", styles.AddLetterSpacing("Type:"), styles.AddLetterSpacing(styles.CapitalizeBookType(string(book.Type))), styles.AddLetterSpacing("Added:"), styles.AddLetterSpacing(dateStr))))
 				if book.Notes != "" {
@@ -188,8 +190,8 @@ func (m ListBooksModel) View() string {
 			} else {
 				// Non-selected book - use different styling for title vs author
 				b.WriteString(styles.BoldFocusedStyle.Render(styles.AddLetterSpacing(book.Title)))
-				b.WriteString(styles.BoldBlurredNoPaddingStyle.Render("  " + styles.AddLetterSpacing("by") + "  "))
-				b.WriteString(styles.BoldBlurredNoPaddingStyle.Render(styles.AddLetterSpacing(book.Author)))
+				b.WriteString("\n")
+				b.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s", styles.AddLetterSpacing("Author:"), styles.AddLetterSpacing(book.Author))))
 				b.WriteString("\n")
 				b.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s | %s %s", styles.AddLetterSpacing("Type:"), styles.AddLetterSpacing(styles.CapitalizeBookType(string(book.Type))), styles.AddLetterSpacing("Added:"), styles.AddLetterSpacing(dateStr))))
 				if book.Notes != "" {
