@@ -189,7 +189,7 @@ func (m ListBooksModel) View() string {
 				// Non-selected book - use different styling for title vs author
 				b.WriteString(styles.FocusedStyle.Render(book.Title))
 				b.WriteString(" by ")
-				b.WriteString(styles.BlurredStyle.Render(book.Author))
+				b.WriteString(styles.BlurredNoPaddingStyle.Render(book.Author))
 				b.WriteString("\n")
 				b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("Type: %s | Added: %s", string(book.Type), dateStr)))
 				if book.Notes != "" {

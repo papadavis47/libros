@@ -72,4 +72,9 @@ var (
 	// Purple color for focus indication without additional padding
 	FormFocusedStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("#7D56F4")) // Purple color for focus
+
+	// BlurredNoPaddingStyle is like BlurredStyle but without left padding
+	// Used for inline text that shouldn't have extra spacing
+	BlurredNoPaddingStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#9CA3AF")) // Gray color for unfocused
 )
