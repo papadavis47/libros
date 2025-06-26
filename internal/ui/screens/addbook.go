@@ -290,7 +290,7 @@ func (m AddBookModel) View() string {
 	}
 
 	b.WriteString("\n")
-	b.WriteString(styles.BlurredStyle.Render("Press Esc to return to menu, Ctrl+A/Ctrl+E for start/end of field, q or Ctrl+C to quit"))
+	b.WriteString(styles.HelpTextStyle.Render("Press Esc to return to menu, Ctrl+A/Ctrl+E for start/end of field, q or Ctrl+C to quit"))
 
 	return b.String()
 }

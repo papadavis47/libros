@@ -138,7 +138,7 @@ func (m MenuModel) View() string {
 	}
 
 	// Display help text for user guidance
-	b.WriteString("\n" + styles.BlurredStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, q or Ctrl+C to quit"))
+	b.WriteString("\n" + styles.HelpTextStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, q or Ctrl+C to quit"))
 
 	return b.String()
 }

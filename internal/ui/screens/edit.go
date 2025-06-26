@@ -335,7 +335,7 @@ func (m EditModel) View() string {
 	}
 
 	// Display help text
-	b.WriteString(styles.BlurredStyle.Render("Press Esc to cancel, Ctrl+A/Ctrl+E for start/end of field, q or Ctrl+C to quit"))
+	b.WriteString(styles.HelpTextStyle.Render("Press Esc to cancel, Ctrl+A/Ctrl+E for start/end of field, q or Ctrl+C to quit"))
 
 	return b.String()
 }

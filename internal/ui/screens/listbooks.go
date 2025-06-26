@@ -36,7 +36,7 @@ func NewListBooksModel() ListBooksModel {
 	return ListBooksModel{
 		index:    0, // Start with first item selected
 		offset:   0, // Start at top of list
-		pageSize: 5, // Show 5 books at a time
+		pageSize: 3, // Show 3 books at a time to prevent overflow
 	}
 }
 
@@ -194,38 +194,53 @@ func (m ListBooksModel) View() string {
 		for i := m.offset; i < endIndex; i++ {
 			book := m.books[i]
 			dateStr := formatDate(book.CreatedAt)
+			
+			// Create book content with enhanced styling
+			var bookContent strings.Builder
+			
 			if i == m.index {
-				// Currently selected book - use selected style and show full details
-				b.WriteString(styles.SelectedStyle.Render(styles.AddLetterSpacing(book.Title)))
-				b.WriteString("\n")
-				b.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s", styles.AddLetterSpacing("Author:"), styles.AddLetterSpacing(book.Author))))
-				b.WriteString("\n\n")
-				b.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s | %s %s", styles.AddLetterSpacing("Type:"), styles.AddLetterSpacing(styles.CapitalizeBookType(string(book.Type))), styles.AddLetterSpacing("Added:"), styles.AddLetterSpacing(dateStr))))
+				// Currently selected book - use enhanced selected styles
+				bookContent.WriteString(styles.BookTitleSelectedStyle.Render(styles.AddLetterSpacing(book.Title)))
+				bookContent.WriteString("\n\n")
+				bookContent.WriteString(styles.BookAuthorSelectedStyle.Render(fmt.Sprintf("%s  %s", styles.AddLetterSpacing("Author:"), styles.AddLetterSpacing(book.Author))))
+				bookContent.WriteString("\n\n")
+				bookContent.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s | %s %s", styles.AddLetterSpacing("Type:"), styles.AddLetterSpacing(styles.CapitalizeBookType(string(book.Type))), styles.AddLetterSpacing("Added:"), styles.AddLetterSpacing(dateStr))))
 				if book.Notes != "" {
 					// Show truncated notes for selected book
-					b.WriteString("\n\n")
-					b.WriteString(styles.SpacedNotesStyle.Render(styles.AddLetterSpacing(truncateNotes(book.Notes, 60))))
+					bookContent.WriteString("\n\n")
+					bookContent.WriteString(styles.SpacedNotesStyle.Render(styles.AddLetterSpacing(truncateNotes(book.Notes, 60))))
 				}
+				
+				// Wrap selected book in container
+				b.WriteString(styles.BookContainerSelectedStyle.Render(bookContent.String()))
 			} else {
-				// Non-selected book - use different styling for title vs author
-				b.WriteString(styles.BoldFocusedStyle.Render(styles.AddLetterSpacing(book.Title)))
-				b.WriteString("\n")
-				b.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s", styles.AddLetterSpacing("Author:"), styles.AddLetterSpacing(book.Author))))
-				b.WriteString("\n\n")
-				b.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s | %s %s", styles.AddLetterSpacing("Type:"), styles.AddLetterSpacing(styles.CapitalizeBookType(string(book.Type))), styles.AddLetterSpacing("Added:"), styles.AddLetterSpacing(dateStr))))
+				// Non-selected book - use enhanced unselected styles
+				bookContent.WriteString(styles.BookTitleUnselectedStyle.Render(styles.AddLetterSpacing(book.Title)))
+				bookContent.WriteString("\n\n")
+				bookContent.WriteString(styles.BookAuthorUnselectedStyle.Render(fmt.Sprintf("%s  %s", styles.AddLetterSpacing("Author:"), styles.AddLetterSpacing(book.Author))))
+				bookContent.WriteString("\n\n")
+				bookContent.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s | %s %s", styles.AddLetterSpacing("Type:"), styles.AddLetterSpacing(styles.CapitalizeBookType(string(book.Type))), styles.AddLetterSpacing("Added:"), styles.AddLetterSpacing(dateStr))))
 				if book.Notes != "" {
 					// Show truncated notes for non-selected book too
-					b.WriteString("\n\n")
-					b.WriteString(styles.SpacedNotesStyle.Render(styles.AddLetterSpacing(truncateNotes(book.Notes, 60))))
+					bookContent.WriteString("\n\n")
+					bookContent.WriteString(styles.SpacedNotesStyle.Render(styles.AddLetterSpacing(truncateNotes(book.Notes, 60))))
 				}
+				
+				// Wrap unselected book in subtle container
+				b.WriteString(styles.BookContainerUnselectedStyle.Render(bookContent.String()))
 			}
-			b.WriteString("\n\n") // Add spacing between books
+			
+			// Add minimal spacing between books
+			if i < endIndex-1 {
+				b.WriteString("\n")
+			}
 		}
 
 		// Display total book count and scroll position
+		b.WriteString("\n")
 		currentPage := (m.offset / m.pageSize) + 1
 		totalPages := (len(m.books) + m.pageSize - 1) / m.pageSize
-		b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("%s %d | %s %d/%d", 
+		b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("   %s %d | %s %d/%d", 
 			styles.AddLetterSpacing("Total books:"), len(m.books),
 			styles.AddLetterSpacing("Page:"), currentPage, totalPages)))
 		b.WriteString("\n")
@@ -247,9 +262,9 @@ func (m ListBooksModel) View() string {
 
 	// Display appropriate help text based on whether books exist
 	if len(m.books) > 0 {
-		b.WriteString("\n" + styles.BlurredStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, Esc to return to menu, q to quit"))
+		b.WriteString("\n" + styles.HelpTextStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, Esc to return to menu, q to quit"))
 	} else {
-		b.WriteString("\n" + styles.BlurredStyle.Render("Press Esc to return to menu, q or Ctrl+C to quit"))
+		b.WriteString("\n" + styles.HelpTextStyle.Render("Press Esc to return to menu, q or Ctrl+C to quit"))
 	}
 
 	return b.String()

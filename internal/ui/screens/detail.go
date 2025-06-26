@@ -249,7 +249,7 @@ func (m DetailModel) View() string {
 	}
 
 	// Display help text
-	b.WriteString("\n" + styles.BlurredStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, Esc to go back, q to quit"))
+	b.WriteString("\n" + styles.HelpTextStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, Esc to go back, q to quit"))
 
 	return b.String()
 }
