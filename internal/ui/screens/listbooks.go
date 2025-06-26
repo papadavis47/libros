@@ -18,10 +18,12 @@ import (
 // ListBooksModel represents the book list screen that displays all books in the collection.
 // It manages the list of books, user navigation, error states, and deletion confirmations.
 type ListBooksModel struct {
-	books   []models.Book // Complete list of books loaded from the database
-	index   int           // Currently selected book index (0-based)
-	err     error         // Any error that occurred during book operations
-	deleted bool          // Flag indicating if a book was recently deleted (for showing success message)
+	books      []models.Book // Complete list of books loaded from the database
+	index      int           // Currently selected book index (0-based)
+	offset     int           // Current scroll offset for viewport
+	pageSize   int           // Number of books to display at once
+	err        error         // Any error that occurred during book operations
+	deleted    bool          // Flag indicating if a book was recently deleted (for showing success message)
 }
 
 // NewListBooksModel creates and initializes a new ListBooksModel instance.
@@ -32,7 +34,9 @@ type ListBooksModel struct {
 //   - ListBooksModel: Initialized list model ready to receive book data
 func NewListBooksModel() ListBooksModel {
 	return ListBooksModel{
-		index: 0, // Start with first item selected
+		index:    0, // Start with first item selected
+		offset:   0, // Start at top of list
+		pageSize: 5, // Show 5 books at a time
 	}
 }
 
@@ -111,10 +115,18 @@ func (m ListBooksModel) Update(msg tea.Msg) (ListBooksModel, tea.Cmd, models.Scr
 		case "up", "k": // Move selection up (arrow key or vim key)
 			if m.index > 0 {
 				m.index--
+				// Scroll up if selection moves above viewport
+				if m.index < m.offset {
+					m.offset = m.index
+				}
 			}
 		case "down", "j": // Move selection down (arrow key or vim key)
 			if m.index < len(m.books)-1 {
 				m.index++
+				// Scroll down if selection moves below viewport
+				if m.index >= m.offset+m.pageSize {
+					m.offset = m.index - m.pageSize + 1
+				}
 			}
 		case "enter": // Select current book for detailed view
 			if len(m.books) > 0 {
@@ -172,15 +184,22 @@ func (m ListBooksModel) View() string {
 		// Show empty state message when no books exist
 		b.WriteString(styles.BlurredStyle.Render("No books found. Add some books first!"))
 	} else {
-		// Display each book with formatting based on selection state
-		for i, book := range m.books {
+		// Calculate visible books based on current offset and page size
+		endIndex := m.offset + m.pageSize
+		if endIndex > len(m.books) {
+			endIndex = len(m.books)
+		}
+		
+		// Display only visible books
+		for i := m.offset; i < endIndex; i++ {
+			book := m.books[i]
 			dateStr := formatDate(book.CreatedAt)
 			if i == m.index {
 				// Currently selected book - use selected style and show full details
 				b.WriteString(styles.SelectedStyle.Render(styles.AddLetterSpacing(book.Title)))
 				b.WriteString("\n")
 				b.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s", styles.AddLetterSpacing("Author:"), styles.AddLetterSpacing(book.Author))))
-				b.WriteString("\n")
+				b.WriteString("\n\n")
 				b.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s | %s %s", styles.AddLetterSpacing("Type:"), styles.AddLetterSpacing(styles.CapitalizeBookType(string(book.Type))), styles.AddLetterSpacing("Added:"), styles.AddLetterSpacing(dateStr))))
 				if book.Notes != "" {
 					// Show truncated notes for selected book
@@ -192,7 +211,7 @@ func (m ListBooksModel) View() string {
 				b.WriteString(styles.BoldFocusedStyle.Render(styles.AddLetterSpacing(book.Title)))
 				b.WriteString("\n")
 				b.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s", styles.AddLetterSpacing("Author:"), styles.AddLetterSpacing(book.Author))))
-				b.WriteString("\n")
+				b.WriteString("\n\n")
 				b.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s %s | %s %s", styles.AddLetterSpacing("Type:"), styles.AddLetterSpacing(styles.CapitalizeBookType(string(book.Type))), styles.AddLetterSpacing("Added:"), styles.AddLetterSpacing(dateStr))))
 				if book.Notes != "" {
 					// Show truncated notes for non-selected book too
@@ -203,8 +222,12 @@ func (m ListBooksModel) View() string {
 			b.WriteString("\n\n") // Add spacing between books
 		}
 
-		// Display total book count
-		b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("%s %d", styles.AddLetterSpacing("Total books:"), len(m.books))))
+		// Display total book count and scroll position
+		currentPage := (m.offset / m.pageSize) + 1
+		totalPages := (len(m.books) + m.pageSize - 1) / m.pageSize
+		b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("%s %d | %s %d/%d", 
+			styles.AddLetterSpacing("Total books:"), len(m.books),
+			styles.AddLetterSpacing("Page:"), currentPage, totalPages)))
 		b.WriteString("\n")
 	}
 
