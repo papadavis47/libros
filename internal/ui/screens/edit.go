@@ -317,7 +317,7 @@ func (m EditModel) View() string {
 	// Add notes textarea with label
 	b.WriteString("\n")
 	b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Notes:") + " "))
-	b.WriteString("\n")
+	b.WriteString("\n\n")
 	b.WriteString(m.textarea.View())
 
 	// Add save button with focus-aware styling

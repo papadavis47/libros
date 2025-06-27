@@ -214,10 +214,10 @@ func (m DetailModel) View() string {
 		// Display notes if they exist, with text wrapping for readability
 		if m.SelectedBook.Notes != "" {
 			b.WriteString("\n")
-			b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Notes: ")) + "\n")
-			// Wrap long notes to fit terminal width
+			b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Notes: ")) + "\n\n")
+			// Wrap long notes to fit terminal width and add quotation marks
 			wrappedNotes := wrapText(m.SelectedBook.Notes, 60)
-			b.WriteString(styles.SpacedNotesStyle.Render(styles.AddLetterSpacing(wrappedNotes)) + "\n")
+			b.WriteString(styles.SpacedNotesStyle.Render("\"" + styles.AddLetterSpacing(wrappedNotes) + "\"") + "\n")
 		}
 		b.WriteString("\n")
 

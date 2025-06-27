@@ -270,7 +270,7 @@ func (m AddBookModel) View() string {
 	// Add notes textarea
 	b.WriteString("\n")
 	b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Notes:") + " "))
-	b.WriteString("\n")
+	b.WriteString("\n\n")
 	b.WriteString(m.textarea.View())
 
 	button := &styles.BlurredStyle

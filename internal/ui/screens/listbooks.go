@@ -208,7 +208,7 @@ func (m ListBooksModel) View() string {
 				if book.Notes != "" {
 					// Show truncated notes for selected book
 					bookContent.WriteString("\n\n")
-					bookContent.WriteString(styles.SpacedNotesStyle.Render(styles.AddLetterSpacing(truncateNotes(book.Notes, 60))))
+					bookContent.WriteString(styles.SpacedNotesStyle.Render("\"" + styles.AddLetterSpacing(truncateNotes(book.Notes, 60)) + "\""))
 				}
 				
 				// Wrap selected book in container
@@ -223,7 +223,7 @@ func (m ListBooksModel) View() string {
 				if book.Notes != "" {
 					// Show truncated notes for non-selected book too
 					bookContent.WriteString("\n\n")
-					bookContent.WriteString(styles.SpacedNotesStyle.Render(styles.AddLetterSpacing(truncateNotes(book.Notes, 60))))
+					bookContent.WriteString(styles.SpacedNotesStyle.Render("\"" + styles.AddLetterSpacing(truncateNotes(book.Notes, 60)) + "\""))
 				}
 				
 				// Wrap unselected book in subtle container
