@@ -254,12 +254,12 @@ func (m AddBookModel) View() string {
 	for i, bookType := range m.bookTypes {
 		if i == m.selectedType {
 			if m.focused == len(m.inputs) {
-				b.WriteString(styles.ButtonStyle.Render(fmt.Sprintf(" %s ", styles.CapitalizeBookType(string(bookType)))))
+				b.WriteString(styles.ButtonStyle.Render(fmt.Sprintf(" %s ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))))
 			} else {
-				b.WriteString(styles.FocusedStyle.Render(fmt.Sprintf(" %s ", styles.CapitalizeBookType(string(bookType)))))
+				b.WriteString(styles.FocusedStyle.Render(fmt.Sprintf(" %s ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))))
 			}
 		} else {
-			b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf(" %s ", styles.CapitalizeBookType(string(bookType)))))
+			b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf(" %s ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))))
 		}
 		if i < len(m.bookTypes)-1 {
 			b.WriteString(" ")
@@ -277,7 +277,7 @@ func (m AddBookModel) View() string {
 	if m.focused == len(m.inputs)+2 {
 		button = &styles.ButtonStyle
 	}
-	fmt.Fprintf(&b, "\n\n%s\n\n", button.Render("SAVE BOOK"))
+	fmt.Fprintf(&b, "\n\n%s\n\n", button.Render(styles.AddLetterSpacing("SAVE BOOK")))
 
 	if m.err != nil {
 		b.WriteString(styles.ErrorStyle.Render(styles.AddLetterSpacing("Error: " + m.err.Error())))

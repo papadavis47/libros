@@ -238,7 +238,7 @@ func (m ListBooksModel) View() string {
 
 		// Display total book count and scroll position
 		b.WriteString("\n")
-		currentPage := (m.offset / m.pageSize) + 1
+		currentPage := (m.index / m.pageSize) + 1
 		totalPages := (len(m.books) + m.pageSize - 1) / m.pageSize
 		b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("   %s %d | %s %d/%d", 
 			styles.AddLetterSpacing("Total books:"), len(m.books),

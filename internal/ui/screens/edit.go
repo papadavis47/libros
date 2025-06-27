@@ -298,14 +298,14 @@ func (m EditModel) View() string {
 			// This is the currently selected book type
 			if m.focused == len(m.inputs) {
 				// Book type selector is focused - use button style
-				b.WriteString(styles.ButtonStyle.Render(fmt.Sprintf(" %s ", styles.CapitalizeBookType(string(bookType)))))
+				b.WriteString(styles.ButtonStyle.Render(fmt.Sprintf(" %s ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))))
 			} else {
 				// Book type selector not focused but this type is selected
-				b.WriteString(styles.FocusedStyle.Render(fmt.Sprintf(" %s ", styles.CapitalizeBookType(string(bookType)))))
+				b.WriteString(styles.FocusedStyle.Render(fmt.Sprintf(" %s ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))))
 			}
 		} else {
 			// This is not the selected book type
-			b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf(" %s ", styles.CapitalizeBookType(string(bookType)))))
+			b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf(" %s ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))))
 		}
 		// Add spacing between book type options
 		if i < len(m.bookTypes)-1 {
@@ -326,7 +326,7 @@ func (m EditModel) View() string {
 		// Save button is focused
 		button = &styles.ButtonStyle
 	}
-	fmt.Fprintf(&b, "\n\n%s\n\n", button.Render("UPDATE BOOK"))
+	fmt.Fprintf(&b, "\n\n%s\n\n", button.Render(styles.AddLetterSpacing("UPDATE BOOK")))
 
 	// Show any validation or save errors
 	if m.err != nil {
