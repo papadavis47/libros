@@ -135,7 +135,7 @@ func (s *BackupScreen) View() string {
 	}
 
 	// Display help text
-	b.WriteString("\n\n" + styles.HelpTextStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, Esc to go back"))
+	b.WriteString("\n\n" + styles.HelpTextStyle.Render(styles.AddLetterSpacing("Use ↑/↓ or j/k to navigate, Enter to select, Esc to go back")))
 
 	return b.String()
 }

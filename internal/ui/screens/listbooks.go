@@ -262,9 +262,9 @@ func (m ListBooksModel) View() string {
 
 	// Display appropriate help text based on whether books exist
 	if len(m.books) > 0 {
-		b.WriteString("\n" + styles.HelpTextStyle.Render("Use ↑/↓ or j/k to navigate, Enter to select, Esc to return to menu, q to quit"))
+		b.WriteString("\n\n" + styles.HelpTextStyle.Render("   " + styles.AddLetterSpacing("Use ↑/↓ or j/k to navigate, Enter to select, Esc to return to menu, q to quit")))
 	} else {
-		b.WriteString("\n" + styles.HelpTextStyle.Render("Press Esc to return to menu, q or Ctrl+C to quit"))
+		b.WriteString("\n\n" + styles.HelpTextStyle.Render("   " + styles.AddLetterSpacing("Press Esc to return to menu, q or Ctrl+C to quit")))
 	}
 
 	return b.String()
