@@ -146,13 +146,13 @@ var (
 	BookContainerSelectedStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(lipgloss.Color("#7D56F4")).  // Purple border
-			Padding(1, 1).                               // Added vertical padding for more space inside border
+			Padding(1, 2, 1, 0).                         // top, right, bottom, left padding
 			MarginBottom(1)
 
 	// BookContainerUnselectedStyle creates a subtle container for non-selected books
 	BookContainerUnselectedStyle = lipgloss.NewStyle().
 			Border(lipgloss.HiddenBorder()).              // Invisible border for spacing
-			Padding(1, 1).                               // Added vertical padding for more space inside border
+			Padding(1, 2, 1, 0).                         // top, right, bottom, left padding
 			MarginBottom(1)
 
 	// Visual Separator Styles
