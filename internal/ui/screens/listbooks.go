@@ -202,9 +202,9 @@ func (m ListBooksModel) View() string {
 				// Currently selected book - use enhanced selected styles
 				bookContent.WriteString(styles.BookTitleSelectedStyle.Render(styles.AddLetterSpacing(book.Title)))
 				bookContent.WriteString("\n\n")
-				bookContent.WriteString(styles.BookAuthorSelectedStyle.Render(fmt.Sprintf("%s  %s", styles.AddLetterSpacing("Author:"), styles.AddLetterSpacing(book.Author))))
+				bookContent.WriteString(fmt.Sprintf("%s%s", styles.SpacedBlurredStyle.Render(styles.AddLetterSpacing("Author:")), styles.BookAuthorSelectedStyle.Render(styles.AddLetterSpacing(book.Author))))
 				bookContent.WriteString("\n\n")
-				bookContent.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s  %s  |  %s  %s", styles.AddLetterSpacing("Type:"), styles.AddLetterSpacing(styles.CapitalizeBookType(string(book.Type))), styles.AddLetterSpacing("Added:"), styles.AddLetterSpacing(dateStr))))
+				bookContent.WriteString(fmt.Sprintf("%s%s   | %s%s", styles.SpacedBlurredStyle.Render(styles.AddLetterSpacing("Type:")), styles.BookAuthorSelectedStyle.Render(styles.AddLetterSpacing(styles.CapitalizeBookType(string(book.Type)))), styles.SpacedBlurredStyle.Render(styles.AddLetterSpacing("Added:")), styles.BookAuthorSelectedStyle.Render(styles.AddLetterSpacing(dateStr))))
 				if book.Notes != "" {
 					// Show truncated notes for selected book
 					bookContent.WriteString("\n\n")
@@ -217,9 +217,9 @@ func (m ListBooksModel) View() string {
 				// Non-selected book - use enhanced unselected styles
 				bookContent.WriteString(styles.BookTitleUnselectedStyle.Render(styles.AddLetterSpacing(book.Title)))
 				bookContent.WriteString("\n\n")
-				bookContent.WriteString(styles.BookAuthorUnselectedStyle.Render(fmt.Sprintf("%s  %s", styles.AddLetterSpacing("Author:"), styles.AddLetterSpacing(book.Author))))
+				bookContent.WriteString(fmt.Sprintf("%s%s", styles.SpacedBlurredStyle.Render(styles.AddLetterSpacing("Author:")), styles.BookAuthorUnselectedStyle.Render(styles.AddLetterSpacing(book.Author))))
 				bookContent.WriteString("\n\n")
-				bookContent.WriteString(styles.SpacedBlurredStyle.Render(fmt.Sprintf("%s  %s  |  %s  %s", styles.AddLetterSpacing("Type:"), styles.AddLetterSpacing(styles.CapitalizeBookType(string(book.Type))), styles.AddLetterSpacing("Added:"), styles.AddLetterSpacing(dateStr))))
+				bookContent.WriteString(fmt.Sprintf("%s%s   | %s%s", styles.SpacedBlurredStyle.Render(styles.AddLetterSpacing("Type:")), styles.BookAuthorUnselectedStyle.Render(styles.AddLetterSpacing(styles.CapitalizeBookType(string(book.Type)))), styles.SpacedBlurredStyle.Render(styles.AddLetterSpacing("Added:")), styles.BookAuthorUnselectedStyle.Render(styles.AddLetterSpacing(dateStr))))
 				if book.Notes != "" {
 					// Show truncated notes for non-selected book too
 					bookContent.WriteString("\n\n")
@@ -240,7 +240,7 @@ func (m ListBooksModel) View() string {
 		b.WriteString("\n")
 		currentPage := (m.index / m.pageSize) + 1
 		totalPages := (len(m.books) + m.pageSize - 1) / m.pageSize
-		b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("   %s %d | %s %d/%d",
+		b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf("   %s %d  |  %s %d/%d",
 			styles.AddLetterSpacing("Total books:"), len(m.books),
 			styles.AddLetterSpacing("Page:"), currentPage, totalPages)))
 		b.WriteString("\n")
