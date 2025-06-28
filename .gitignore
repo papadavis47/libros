@@ -1,5 +1,5 @@
-# binary file
-libros
+# binary file (only in root directory)
+/libros
 
 # sqlite db file
 books.db
