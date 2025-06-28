@@ -58,7 +58,7 @@ func NewAddBookModel(db *database.DB) AddBookModel {
 			t.TextStyle = styles.FormFocusedStyle
 		case 1: // Author field
 			t.Placeholder = "_______________"
-			t.Prompt = "   " + styles.AddLetterSpacing("Author:") + " "
+			t.Prompt = "   " + styles.AddLetterSpacing("Author:") + "  "
 			t.PromptStyle = styles.NoStyle // Remove purple styling to prevent double padding
 			// Author field starts unfocused (default styling)
 		}

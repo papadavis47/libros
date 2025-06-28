@@ -66,7 +66,7 @@ func NewEditModel(db *database.DB) EditModel {
 			t.TextStyle = styles.FormFocusedStyle
 		case 1: // Author field
 			t.Placeholder = "Enter author name"
-			t.Prompt = "   " + styles.AddLetterSpacing("Author:") + " "
+			t.Prompt = "   " + styles.AddLetterSpacing("Author:") + "  "
 			t.PromptStyle = styles.NoStyle
 			// Initially blurred (not focused)
 		}
