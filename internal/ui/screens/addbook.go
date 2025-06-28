@@ -244,25 +244,26 @@ func (m AddBookModel) View() string {
 
 	// Add book type selector
 	b.WriteString("\n")
-	typeLabel := styles.AddLetterSpacing("Type:") + "   "
+	typeLabel := "   " + styles.AddLetterSpacing("Type:") + "  "
 	if m.focused == len(m.inputs) {
-		b.WriteString(styles.FocusedStyle.Render(typeLabel))
+		b.WriteString(styles.FormFocusedStyle.Render(typeLabel))
 	} else {
-		b.WriteString(styles.BlurredStyle.Render(typeLabel))
+		b.WriteString(typeLabel)
 	}
 
 	for i, bookType := range m.bookTypes {
+		buttonText := fmt.Sprintf("  %s  ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))
 		if i == m.selectedType {
 			if m.focused == len(m.inputs) {
-				b.WriteString(styles.ButtonStyle.Render(fmt.Sprintf(" %s ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))))
+				b.WriteString(styles.BookAuthorSelectedStyle.Render(buttonText))
 			} else {
-				b.WriteString(styles.FocusedStyle.Render(fmt.Sprintf(" %s ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))))
+				b.WriteString(styles.BookAuthorSelectedStyle.Render(buttonText))
 			}
 		} else {
-			b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf(" %s ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))))
+			b.WriteString(styles.SpacedBlurredStyle.Render(buttonText))
 		}
 		if i < len(m.bookTypes)-1 {
-			b.WriteString(" ")
+			b.WriteString("  ")
 		}
 	}
 	b.WriteString("\n")

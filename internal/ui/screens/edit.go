@@ -283,33 +283,34 @@ func (m EditModel) View() string {
 
 	// Add book type selector with focus-aware styling
 	b.WriteString("\n")
-	typeLabel := styles.AddLetterSpacing("Type:") + "   "
+	typeLabel := "   " + styles.AddLetterSpacing("Type:") + "  "
 	if m.focused == len(m.inputs) {
 		// Book type selector is focused
-		b.WriteString(styles.FocusedStyle.Render(typeLabel))
+		b.WriteString(styles.FormFocusedStyle.Render(typeLabel))
 	} else {
 		// Book type selector is not focused
-		b.WriteString(styles.BlurredStyle.Render(typeLabel))
+		b.WriteString(typeLabel)
 	}
 
 	// Render each book type option with appropriate styling
 	for i, bookType := range m.bookTypes {
+		buttonText := fmt.Sprintf("  %s  ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))
 		if i == m.selectedType {
 			// This is the currently selected book type
 			if m.focused == len(m.inputs) {
 				// Book type selector is focused - use button style
-				b.WriteString(styles.ButtonStyle.Render(fmt.Sprintf(" %s ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))))
+				b.WriteString(styles.BookAuthorSelectedStyle.Render(buttonText))
 			} else {
 				// Book type selector not focused but this type is selected
-				b.WriteString(styles.FocusedStyle.Render(fmt.Sprintf(" %s ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))))
+				b.WriteString(styles.BookAuthorSelectedStyle.Render(buttonText))
 			}
 		} else {
 			// This is not the selected book type
-			b.WriteString(styles.BlurredStyle.Render(fmt.Sprintf(" %s ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))))
+			b.WriteString(styles.SpacedBlurredStyle.Render(buttonText))
 		}
 		// Add spacing between book type options
 		if i < len(m.bookTypes)-1 {
-			b.WriteString(" ")
+			b.WriteString("  ")
 		}
 	}
 	b.WriteString("\n")
