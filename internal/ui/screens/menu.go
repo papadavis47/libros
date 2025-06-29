@@ -54,10 +54,10 @@ func (m *MenuModel) updateMenuItems() {
 	}
 
 	if count > 0 {
-		// Books exist - show all menu options including View Books and Backup
-		m.items = []string{"Ａｄｄ　Ｂｏｏｋ", "Ｖｉｅｗ　Ｂｏｏｋｓ", "Ｂａｃｋｕｐ", "Ｑｕｉｔ"}
+		// Books exist - show all menu options including View Books and Utilities
+		m.items = []string{"Ａｄｄ　Ｂｏｏｋ", "Ｖｉｅｗ　Ｂｏｏｋｓ", "Ｕｔｉｌｉｔｉｅｓ", "Ｑｕｉｔ"}
 	} else {
-		// No books exist - hide View Books and Backup options
+		// No books exist - hide View Books and Utilities options
 		m.items = []string{"Ａｄｄ　Ｂｏｏｋ", "Ｑｕｉｔ"}
 	}
 
@@ -99,9 +99,9 @@ func (m MenuModel) Update(msg tea.KeyMsg) (MenuModel, tea.Cmd, models.Screen) {
 			// Load books from database and navigate to list screen
 			// The LoadBooksCmd will fetch data asynchronously
 			return m, m.LoadBooksCmd(), models.ListBooksScreen
-		case "Ｂａｃｋｕｐ":
-			// Navigate to backup screen
-			return m, nil, models.BackupScreen
+		case "Ｕｔｉｌｉｔｉｅｓ":
+			// Navigate to utilities screen
+			return m, nil, models.UtilitiesScreen
 		case "Ｑｕｉｔ":
 			// Exit the application
 			return m, tea.Quit, models.MenuScreen

@@ -39,5 +39,7 @@ const (
 	ListBooksScreen               // Screen showing list of all books
 	BookDetailScreen              // Screen showing details of a specific book
 	EditBookScreen                // Screen for editing existing book details
+	UtilitiesScreen               // Screen for utilities menu (Export/Backup)
+	ExportScreen                  // Screen for exporting book data
 	BackupScreen                  // Screen for backing up book data
 )

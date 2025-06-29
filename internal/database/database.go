@@ -63,7 +63,7 @@ func (db *DB) SaveBook(title, author string, bookType models.BookType, notes str
 	notes = strings.TrimSpace(notes)
 
 	if title == "" || author == "" {
-		return fmt.Errorf("both title and author are required")
+		return fmt.Errorf("title, author, and type are required")
 	}
 
 	_, err := db.conn.Exec("INSERT INTO books (title, author, type, notes) VALUES (?, ?, ?, ?)", title, author, string(bookType), notes)
@@ -102,7 +102,7 @@ func (db *DB) UpdateBook(id int, title, author string, bookType models.BookType,
 	notes = strings.TrimSpace(notes)
 
 	if title == "" || author == "" {
-		return fmt.Errorf("both title and author are required")
+		return fmt.Errorf("title, author, and type are required")
 	}
 
 	_, err := db.conn.Exec("UPDATE books SET title = ?, author = ?, type = ?, notes = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", title, author, string(bookType), notes, id)

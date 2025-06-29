@@ -18,12 +18,14 @@ type Model struct {
 	currentScreen models.Screen   // Current active screen being displayed
 	
 	// Screen models - each screen has its own model that handles specific functionality
-	menu      screens.MenuModel      // Main menu screen model
-	addBook   screens.AddBookModel   // Add new book screen model
-	listBooks screens.ListBooksModel // Book list display screen model
-	detail    screens.DetailModel    // Book detail view screen model
-	edit      screens.EditModel      // Book editing screen model
-	backup    *screens.BackupScreen  // Backup data screen model
+	menu      screens.MenuModel       // Main menu screen model
+	addBook   screens.AddBookModel    // Add new book screen model
+	listBooks screens.ListBooksModel  // Book list display screen model
+	detail    screens.DetailModel     // Book detail view screen model
+	edit      screens.EditModel       // Book editing screen model
+	utilities screens.UtilitiesModel  // Utilities menu screen model
+	exportScreen *screens.ExportScreen // Export data screen model
+	backup    *screens.BackupScreen   // Backup data screen model
 }
 
 // NewModel creates and initializes a new main application model
@@ -31,14 +33,16 @@ type Model struct {
 // The application starts on the MenuScreen by default
 func NewModel(db *database.DB) Model {
 	return Model{
-		db:            db,                              // Store database connection
-		currentScreen: models.MenuScreen,               // Start at main menu
-		menu:          screens.NewMenuModel(db),        // Initialize menu screen
-		addBook:       screens.NewAddBookModel(db),     // Initialize add book screen
-		listBooks:     screens.NewListBooksModel(),     // Initialize book list screen
-		detail:        screens.NewDetailModel(db),      // Initialize detail view screen
-		edit:          screens.NewEditModel(db),        // Initialize edit screen
-		backup:        screens.NewBackupScreen(db),     // Initialize backup screen
+		db:            db,                                // Store database connection
+		currentScreen: models.MenuScreen,                 // Start at main menu
+		menu:          screens.NewMenuModel(db),          // Initialize menu screen
+		addBook:       screens.NewAddBookModel(db),       // Initialize add book screen
+		listBooks:     screens.NewListBooksModel(),       // Initialize book list screen
+		detail:        screens.NewDetailModel(db),        // Initialize detail view screen
+		edit:          screens.NewEditModel(db),          // Initialize edit screen
+		utilities:     screens.NewUtilitiesModel(db),     // Initialize utilities screen
+		exportScreen:  screens.NewExportScreen(db),       // Initialize export screen
+		backup:        screens.NewBackupScreen(db),       // Initialize backup screen
 	}
 }
 
@@ -132,6 +136,32 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.detail.ClearUpdated()
 		}
 		
+	case models.UtilitiesScreen:
+		// Utilities only handles key messages
+		if keyMsg, ok := msg.(tea.KeyMsg); ok {
+			var utilitiesCmd tea.Cmd
+			// Update utilities model and get any screen transition
+			m.utilities, utilitiesCmd, newScreen = m.utilities.Update(keyMsg)
+			cmd = utilitiesCmd
+		} else {
+			// No screen change if message isn't a key press
+			newScreen = m.currentScreen
+		}
+		
+	case models.ExportScreen:
+		var exportModel tea.Model
+		var exportCmd tea.Cmd
+		// Update export screen model
+		exportModel, exportCmd = m.exportScreen.Update(msg)
+		m.exportScreen = exportModel.(*screens.ExportScreen)
+		cmd = exportCmd
+		// Handle screen transitions from export screen
+		if switchMsg, ok := msg.(screens.SwitchScreenMsg); ok {
+			newScreen = switchMsg.Screen
+		} else {
+			newScreen = m.currentScreen
+		}
+		
 	case models.BackupScreen:
 		var backupModel tea.Model
 		var backupCmd tea.Cmd
@@ -156,9 +186,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Clear any delete confirmation state when entering list screen
 			m.listBooks.ClearDeleted()
 		}
-		if newScreen == models.BackupScreen {
-			// Clear any backup status when entering backup screen
-			m.backup.ClearStatus()
+		if newScreen == models.ExportScreen {
+			// Clear any export status when entering export screen
+			m.exportScreen.ClearStatus()
 		}
 	}
 
@@ -181,6 +211,10 @@ func (m Model) View() string {
 		return m.detail.View()    // Render book details
 	case models.EditBookScreen:
 		return m.edit.View()      // Render edit book form
+	case models.UtilitiesScreen:
+		return m.utilities.View() // Render utilities screen
+	case models.ExportScreen:
+		return m.exportScreen.View() // Render export screen
 	case models.BackupScreen:
 		return m.backup.View()    // Render backup screen
 	default:
