@@ -7,12 +7,13 @@ package screens
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/papadavis47/libros/internal/constants"
 	"github.com/papadavis47/libros/internal/messages"
 	"github.com/papadavis47/libros/internal/models"
 	"github.com/papadavis47/libros/internal/styles"
+	"github.com/papadavis47/libros/internal/utils"
 )
 
 // ListBooksModel represents the book list screen that displays all books in the collection.
@@ -36,38 +37,10 @@ func NewListBooksModel() ListBooksModel {
 	return ListBooksModel{
 		index:    0, // Start with first item selected
 		offset:   0, // Start at top of list
-		pageSize: 3, // Show 3 books at a time to prevent overflow
+		pageSize: constants.BooksPerPage,
 	}
 }
 
-// formatDate converts a time.Time to a human-readable date string with ordinal suffix.
-// Examples: "January 1st, 2024", "March 23rd, 2024", "April 11th, 2024"
-// This provides a more friendly date display than the default Go time formatting.
-//
-// Parameters:
-//   - t: Time value to format
-//
-// Returns:
-//   - string: Formatted date with month name, day with ordinal suffix, and year
-func formatDate(t time.Time) string {
-	day := t.Day()
-	var suffix string
-	// Determine appropriate ordinal suffix for the day
-	switch {
-	case day >= 11 && day <= 13:
-		// Special case: 11th, 12th, 13th (not 11st, 12nd, 13rd)
-		suffix = "th"
-	case day%10 == 1:
-		suffix = "st" // 1st, 21st, 31st
-	case day%10 == 2:
-		suffix = "nd" // 2nd, 22nd
-	case day%10 == 3:
-		suffix = "rd" // 3rd, 23rd
-	default:
-		suffix = "th" // 4th, 5th, 6th, 7th, 8th, 9th, 10th, etc.
-	}
-	return fmt.Sprintf("%s %d%s, %d", t.Format("January"), day, suffix, t.Year())
-}
 
 // truncateNotes shortens long note text for display in the book list.
 // It attempts to break at word boundaries to avoid cutting words in half,
@@ -193,7 +166,7 @@ func (m ListBooksModel) View() string {
 		// Display only visible books
 		for i := m.offset; i < endIndex; i++ {
 			book := m.books[i]
-			dateStr := formatDate(book.CreatedAt)
+			dateStr := utils.FormatDate(book.CreatedAt)
 
 			// Create book content with enhanced styling
 			var bookContent strings.Builder
@@ -208,7 +181,7 @@ func (m ListBooksModel) View() string {
 				if book.Notes != "" {
 					// Show truncated notes for selected book
 					bookContent.WriteString("\n\n")
-					bookContent.WriteString(styles.SpacedNotesStyle.Render("\"" + styles.AddLetterSpacing(truncateNotes(book.Notes, 60)) + "\""))
+					bookContent.WriteString(styles.SpacedNotesStyle.Render("\"" + styles.AddLetterSpacing(truncateNotes(book.Notes, constants.TextWrapWidth)) + "\""))
 				}
 
 				// Wrap selected book in container
@@ -223,7 +196,7 @@ func (m ListBooksModel) View() string {
 				if book.Notes != "" {
 					// Show truncated notes for non-selected book too
 					bookContent.WriteString("\n\n")
-					bookContent.WriteString(styles.SpacedNotesStyle.Render("\"" + styles.AddLetterSpacing(truncateNotes(book.Notes, 60)) + "\""))
+					bookContent.WriteString(styles.SpacedNotesStyle.Render("\"" + styles.AddLetterSpacing(truncateNotes(book.Notes, constants.TextWrapWidth)) + "\""))
 				}
 
 				// Wrap unselected book in subtle container

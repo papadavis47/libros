@@ -5,15 +5,16 @@
 package screens
 
 import (
-	"fmt"
 	"strings"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/papadavis47/libros/internal/constants"
 	"github.com/papadavis47/libros/internal/database"
 	"github.com/papadavis47/libros/internal/messages"
 	"github.com/papadavis47/libros/internal/models"
 	"github.com/papadavis47/libros/internal/styles"
+	"github.com/papadavis47/libros/internal/utils"
 )
 
 // DetailModel represents the book detail screen that shows comprehensive information
@@ -45,34 +46,6 @@ func NewDetailModel(db *database.DB) DetailModel {
 	}
 }
 
-// formatDateDetail converts a time.Time to a human-readable date string with ordinal suffix.
-// This is identical to formatDate in listbooks.go but kept separate to maintain modularity.
-// Examples: "January 1st, 2024", "March 23rd, 2024", "April 11th, 2024"
-//
-// Parameters:
-//   - t: Time value to format
-//
-// Returns:
-//   - string: Formatted date with month name, day with ordinal suffix, and year
-func formatDateDetail(t time.Time) string {
-	day := t.Day()
-	var suffix string
-	// Determine appropriate ordinal suffix for the day
-	switch {
-	case day >= 11 && day <= 13:
-		// Special case: 11th, 12th, 13th (not 11st, 12nd, 13rd)
-		suffix = "th"
-	case day%10 == 1:
-		suffix = "st" // 1st, 21st, 31st
-	case day%10 == 2:
-		suffix = "nd" // 2nd, 22nd
-	case day%10 == 3:
-		suffix = "rd" // 3rd, 23rd
-	default:
-		suffix = "th" // 4th, 5th, 6th, 7th, 8th, 9th, 10th, etc.
-	}
-	return fmt.Sprintf("%s %d%s, %d", t.Format("January"), day, suffix, t.Year())
-}
 
 // wrapText wraps long text to fit within a specified width by breaking at word boundaries.
 // This ensures that long notes are displayed properly in the terminal without horizontal scrolling.
@@ -195,8 +168,8 @@ func (m DetailModel) View() string {
 
 	if m.SelectedBook != nil {
 		// Format the creation and update dates
-		createdStr := formatDateDetail(m.SelectedBook.CreatedAt)
-		updatedStr := formatDateDetail(m.SelectedBook.UpdatedAt)
+		createdStr := utils.FormatDate(m.SelectedBook.CreatedAt)
+		updatedStr := utils.FormatDate(m.SelectedBook.UpdatedAt)
 
 		// Always show creation date
 		b.WriteString(styles.BlurredStyle.Render(styles.AddLetterSpacing("Added: ")+styles.AddLetterSpacing(createdStr)) + "\n")
@@ -216,7 +189,7 @@ func (m DetailModel) View() string {
 			b.WriteString("\n")
 			b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Notes: ")) + "\n\n")
 			// Wrap long notes to fit terminal width and add quotation marks
-			wrappedNotes := wrapText(m.SelectedBook.Notes, 60)
+			wrappedNotes := wrapText(m.SelectedBook.Notes, constants.TextWrapWidth)
 			b.WriteString(styles.SpacedNotesStyle.Render("\"" + styles.AddLetterSpacing(wrappedNotes) + "\"") + "\n")
 		}
 		b.WriteString("\n")

@@ -12,6 +12,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/papadavis47/libros/internal/database"
+	"github.com/papadavis47/libros/internal/factory"
 	"github.com/papadavis47/libros/internal/messages"
 	"github.com/papadavis47/libros/internal/models"
 	"github.com/papadavis47/libros/internal/styles"
@@ -50,39 +51,12 @@ func NewEditModel(db *database.DB) EditModel {
 		focused:      0, // Start with title field focused
 	}
 
-	// Initialize text input fields
-	var t textinput.Model
-	for i := range m.inputs {
-		t = textinput.New()
-		t.CharLimit = 255 // Reasonable limit for title and author
-		t.Width = 50      // Visual width in terminal
+	// Initialize text inputs using factory functions
+	m.inputs[0] = factory.CreateTitleInput()
+	m.inputs[1] = factory.CreateAuthorInput()
 
-		switch i {
-		case 0: // Title field
-			t.Placeholder = "Enter book title"
-			t.Prompt = "   " + styles.AddLetterSpacing("Title:") + "  "
-			t.Focus() // Start focused on title
-			t.PromptStyle = styles.FormFocusedStyle
-			t.TextStyle = styles.FormFocusedStyle
-		case 1: // Author field
-			t.Placeholder = "Enter author name"
-			t.Prompt = "   " + styles.AddLetterSpacing("Author:") + "  "
-			t.PromptStyle = styles.NoStyle
-			// Initially blurred (not focused)
-		}
-
-		m.inputs[i] = t
-	}
-
-	// Initialize textarea for notes
-	ta := textarea.New()
-	ta.Placeholder = "Enter notes about this book (optional)..."
-	ta.SetWidth(50)            // Match width of text inputs
-	ta.SetHeight(4)            // Allow multiple lines
-	ta.CharLimit = 1000        // Reasonable limit for notes
-	ta.ShowLineNumbers = false // Disable line numbers
-	ta.Prompt = "   "          // 3-space left padding for alignment
-	m.textarea = ta
+	// Initialize textarea using factory function
+	m.textarea = factory.CreateNotesTextArea()
 
 	return m
 }

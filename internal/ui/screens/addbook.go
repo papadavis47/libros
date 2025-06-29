@@ -11,6 +11,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/papadavis47/libros/internal/database"
+	"github.com/papadavis47/libros/internal/factory"
 	"github.com/papadavis47/libros/internal/messages"
 	"github.com/papadavis47/libros/internal/models"
 	"github.com/papadavis47/libros/internal/styles"
@@ -41,40 +42,12 @@ func NewAddBookModel(db *database.DB) AddBookModel {
 		focused:      0,                                                                                  // Start focus on title field
 	}
 
-	// Initialize and configure the text input fields
-	var t textinput.Model
-	for i := range m.inputs {
-		t = textinput.New()
-		t.CharLimit = 255 // Maximum characters per field
-		t.Width = 50      // Visual width of input field
+	// Initialize text inputs using factory functions
+	m.inputs[0] = factory.CreateTitleInput()
+	m.inputs[1] = factory.CreateAuthorInput()
 
-		// Configure each input field with specific prompts and placeholders
-		switch i {
-		case 0: // Title field
-			t.Placeholder = "_______________"
-			t.Prompt = "   " + styles.AddLetterSpacing("Title:") + "  "
-			t.Focus() // Start with title field focused
-			t.PromptStyle = styles.FormFocusedStyle
-			t.TextStyle = styles.FormFocusedStyle
-		case 1: // Author field
-			t.Placeholder = "_______________"
-			t.Prompt = "   " + styles.AddLetterSpacing("Author:") + "  "
-			t.PromptStyle = styles.NoStyle // Remove purple styling to prevent double padding
-			// Author field starts unfocused (default styling)
-		}
-
-		m.inputs[i] = t
-	}
-
-	// Initialize the textarea for optional book notes
-	ta := textarea.New()
-	ta.Placeholder = "Notes about this book (optional)..."
-	ta.SetWidth(50)            // Match width of text inputs
-	ta.SetHeight(4)            // Multi-line height for longer notes
-	ta.CharLimit = 1000        // Reasonable limit for notes length
-	ta.ShowLineNumbers = false // Disable line numbers
-	ta.Prompt = "   "          // 3-space left padding for alignment
-	m.textarea = ta
+	// Initialize textarea using factory function
+	m.textarea = factory.CreateNotesTextArea()
 
 	return m
 }

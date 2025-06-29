@@ -1,6 +1,7 @@
 package screens
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -8,9 +9,12 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/papadavis47/libros/internal/constants"
 	"github.com/papadavis47/libros/internal/database"
+	"github.com/papadavis47/libros/internal/factory"
 	"github.com/papadavis47/libros/internal/messages"
 	"github.com/papadavis47/libros/internal/models"
+	"github.com/papadavis47/libros/internal/services"
 	"github.com/papadavis47/libros/internal/styles"
 )
 
@@ -52,17 +56,15 @@ func NewExportScreen(db *database.DB) *ExportScreen {
 	homeDir, _ := os.UserHomeDir()
 	defaultExportsDir := filepath.Join(homeDir, ".libros", "exports")
 
-	// Initialize text input for file path
-	pathInput := textinput.New()
-	pathInput.Placeholder = defaultExportsDir
+	// Initialize text input for file path using factory function
+	pathInput := factory.CreatePathInput(defaultExportsDir)
 	pathInput.Focus()
-	pathInput.Width = 60
-	pathInput.Prompt = "   " // 3-space left padding for alignment with other text
 
 	formatItems := []string{
 		"ＪＳＯＮ　Ｆｏｒｍａｔ",
 		"Ｍａｒｋｄｏｗｎ　Ｆｏｒｍａｔ",
 		"Ｂａｃｋ　ｔｏ　Ｕｔｉｌｉｔｉｅｓ",
+		"Ｂａｃｋ　ｔｏ　Ｍａｉｎ　Ｍｅｎｕ",
 	}
 
 	return &ExportScreen{
@@ -192,6 +194,8 @@ func (s *ExportScreen) updateFormatSelection(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return s, s.performExport("markdown")
 			case "Ｂａｃｋ　ｔｏ　Ｕｔｉｌｉｔｉｅｓ":
 				return s, SwitchScreenCmd(models.UtilitiesScreen)
+			case "Ｂａｃｋ　ｔｏ　Ｍａｉｎ　Ｍｅｎｕ":
+				return s, SwitchScreenCmd(models.MenuScreen)
 			}
 		case "esc":
 			// Go back to path input
@@ -369,16 +373,23 @@ func (s *ExportScreen) View() string {
 func (s *ExportScreen) performExport(format string) tea.Cmd {
 	return func() tea.Msg {
 		// Ensure export directory exists
-		if err := os.MkdirAll(s.exportPath, 0755); err != nil {
+		if err := os.MkdirAll(s.exportPath, constants.DirPermissions); err != nil {
 			return messages.BackupMsg{Err: err}
 		}
 
-		var err error
+		// Load books from database
+		books, err := s.db.LoadBooks()
+		if err != nil {
+			return messages.BackupMsg{Err: fmt.Errorf("failed to load books: %v", err)}
+		}
+
+		// Create backup service and export
+		backupService := services.NewBackupService()
 		switch format {
 		case "json":
-			err = s.db.BackupToJSON(s.exportPath)
+			err = backupService.ExportToJSON(books, filepath.Join(s.exportPath, "books.json"))
 		case "markdown":
-			err = s.db.BackupToMarkdown(s.exportPath)
+			err = backupService.ExportToMarkdown(books, filepath.Join(s.exportPath, "books.md"))
 		}
 
 		return messages.BackupMsg{Err: err}

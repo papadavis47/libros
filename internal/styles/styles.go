@@ -6,6 +6,7 @@ package styles
 import (
 	"strings"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/papadavis47/libros/internal/utils"
 )
 
 // Global style definitions used throughout the application
@@ -206,23 +207,9 @@ func AddLetterSpacing(text string) string {
 
 // CapitalizeBookType converts BookType enum values to capitalized display names
 // Example: "paperback" becomes "Paperback", "audio" becomes "Audio"
+// Deprecated: Use utils.FormatBookType instead
 func CapitalizeBookType(bookType string) string {
-	switch bookType {
-	case "paperback":
-		return "Paperback"
-	case "hardback":
-		return "Hardback"
-	case "audio":
-		return "Audio"
-	case "digital":
-		return "Digital"
-	default:
-		// Fallback: capitalize first letter for unknown types
-		if len(bookType) == 0 {
-			return bookType
-		}
-		return strings.ToUpper(string(bookType[0])) + strings.ToLower(bookType[1:])
-	}
+	return utils.FormatBookType(bookType)
 }
 
 // CreateBookSeparator creates a decorative separator line for visual separation between books

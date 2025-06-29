@@ -7,6 +7,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/papadavis47/libros/internal/constants"
 	"github.com/papadavis47/libros/internal/database"
 	"github.com/papadavis47/libros/internal/models"
 	"github.com/papadavis47/libros/internal/styles"
@@ -126,5 +127,5 @@ func copyFile(src, dst string) error {
 		return err
 	}
 
-	return os.WriteFile(dst, sourceFile, 0644)
+	return os.WriteFile(dst, sourceFile, constants.FilePermissions)
 }
