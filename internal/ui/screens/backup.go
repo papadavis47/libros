@@ -13,7 +13,6 @@ import (
 	"github.com/papadavis47/libros/internal/styles"
 )
 
-
 type BackupScreen struct {
 	db      *database.DB
 	status  string
@@ -58,7 +57,6 @@ func (s *BackupScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (s *BackupScreen) View() string {
 	var b strings.Builder
 
-	// Display title
 	b.WriteString("\n")
 	b.WriteString(styles.TitleStyle.Render("Ｄａｔａｂａｓｅ　Ｂａｃｋｕｐ"))
 	b.WriteString("\n\n")
@@ -79,7 +77,6 @@ func (s *BackupScreen) View() string {
 		b.WriteString("\n")
 	}
 
-	// Always show help text when backup is done
 	if s.done {
 		b.WriteString("\n" + styles.HelpTextStyle.Render(styles.AddLetterSpacing("Press Enter or Esc to return to Utilities")))
 	}
@@ -89,7 +86,7 @@ func (s *BackupScreen) View() string {
 
 func (s *BackupScreen) performBackupSync() {
 	s.done = true
-	
+
 	// Get the database file path
 	homeDir, err := os.UserHomeDir()
 	if err != nil {

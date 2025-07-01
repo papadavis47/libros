@@ -1,6 +1,3 @@
-// Package main is the entry point for the Libros book management application
-// Libros is a TUI (Terminal User Interface) application built with Bubble Tea
-// that allows users to manage their book collection
 package main
 
 import (
@@ -13,8 +10,7 @@ import (
 	"github.com/papadavis47/libros/internal/ui"
 )
 
-// main is the entry point of the application
-// It initializes the SQLite database, creates the UI model, and starts the Bubble Tea program
+// This initializes the SQLite database, creates the UI model, and starts the Bubble Tea program
 func main() {
 	// Get user's home directory
 	homeDir, err := os.UserHomeDir()
@@ -43,12 +39,12 @@ func main() {
 	// Create the main UI model with database connection
 	// This model handles all the application state and UI logic
 	model := ui.NewModel(db)
-	
+
 	// Create a new Bubble Tea program with our model
 	// Bubble Tea is a framework for building terminal applications
 	// WithAltScreen enables alternate screen buffer (clears terminal on start, restores on exit)
 	p := tea.NewProgram(model, tea.WithAltScreen())
-	
+
 	// Run the Bubble Tea program and handle any errors
 	// This starts the main event loop and renders the UI
 	if _, err := p.Run(); err != nil {

@@ -314,10 +314,9 @@ func (m *AddBookModel) Reset() {
 	// Blur all other input fields
 	for i := 1; i < len(m.inputs); i++ {
 		m.inputs[i].Blur()
-		m.inputs[i].PromptStyle = styles.NoStyle // No special styling
+		m.inputs[i].PromptStyle = styles.NoStyle
 		m.inputs[i].TextStyle = styles.NoStyle
 	}
 
-	// Blur the textarea
 	m.textarea.Blur()
 }

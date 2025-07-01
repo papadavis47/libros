@@ -5,12 +5,12 @@ package styles
 
 import (
 	"strings"
+
 	"github.com/charmbracelet/lipgloss"
 	"github.com/papadavis47/libros/internal/utils"
 )
 
-// Global style definitions used throughout the application
-// These provide a consistent look and feel across all UI components
+// These styles provide a consistent look and feel across all UI components
 var (
 	// TitleStyle is used for main headings and screen titles
 	// Purple color with bold text for prominence
@@ -76,107 +76,107 @@ var (
 	// FormFocusedStyle is for form inputs that already have padding in their prompts
 	// Purple color for focus indication without additional padding
 	FormFocusedStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#7D56F4")) // Purple color for focus
+				Foreground(lipgloss.Color("#7D56F4")) // Purple color for focus
 
 	// BlurredNoPaddingStyle is like BlurredStyle but without left padding
 	// Used for inline text that shouldn't have extra spacing
 	BlurredNoPaddingStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#9CA3AF")) // Gray color for unfocused
+				Foreground(lipgloss.Color("#9CA3AF")) // Gray color for unfocused
 
 	// SpacedFocusedStyle is FocusedStyle with 1.5x letter spacing for enhanced readability
 	SpacedFocusedStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#7D56F4")). // Purple color for focus
-			PaddingLeft(3)                         // 3-space left indent
+				Foreground(lipgloss.Color("#7D56F4")). // Purple color for focus
+				PaddingLeft(3)                         // 3-space left indent
 
 	// SpacedBlurredStyle is BlurredStyle with 1.5x letter spacing for enhanced readability
 	SpacedBlurredStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#9CA3AF")). // Gray color for unfocused
-			Padding(0, 1).                         // Consistent horizontal padding
-			PaddingLeft(3)                         // 3-space left indent
+				Foreground(lipgloss.Color("#9CA3AF")). // Gray color for unfocused
+				Padding(0, 1).                         // Consistent horizontal padding
+				PaddingLeft(3)                         // 3-space left indent
 
 	// SpacedNotesStyle is NotesStyle with 1.5x letter spacing for enhanced readability
 	SpacedNotesStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#9CA3AF")). // Gray color like BlurredStyle
-			Italic(true).                          // Italic formatting for notes
-			Padding(0, 1).                         // Consistent horizontal padding
-			PaddingLeft(3)                         // 3-space left indent
+				Foreground(lipgloss.Color("#9CA3AF")). // Gray color like BlurredStyle
+				Italic(true).                          // Italic formatting for notes
+				Padding(0, 1).                         // Consistent horizontal padding
+				PaddingLeft(3)                         // 3-space left indent
 
 	// BoldFocusedStyle is SpacedFocusedStyle with bold formatting for emphasis
 	BoldFocusedStyle = lipgloss.NewStyle().
-			Bold(true).                            // Bold formatting
-			Foreground(lipgloss.Color("#7D56F4")). // Purple color for focus
-			PaddingLeft(3)                         // 3-space left indent
+				Bold(true).                            // Bold formatting
+				Foreground(lipgloss.Color("#7D56F4")). // Purple color for focus
+				PaddingLeft(3)                         // 3-space left indent
 
 	// BoldBlurredNoPaddingStyle is BlurredNoPaddingStyle with bold formatting
 	BoldBlurredNoPaddingStyle = lipgloss.NewStyle().
-			Bold(true).                          // Bold formatting
-			Foreground(lipgloss.Color("#9CA3AF")) // Gray color for unfocused
+					Bold(true).                           // Bold formatting
+					Foreground(lipgloss.Color("#9CA3AF")) // Gray color for unfocused
 
 	// Enhanced Book Title Styles for better visual emphasis
 	// BookTitleSelectedStyle creates a prominent title with background for selected books
 	BookTitleSelectedStyle = lipgloss.NewStyle().
-			Bold(true).
-			Foreground(lipgloss.Color("#FFFFFF")).  // White text
-			Background(lipgloss.Color("#7D56F4")).  // Purple background
-			Padding(0, 1).                          // Horizontal padding
-			MarginLeft(2).                          // Left margin for alignment
-			PaddingLeft(1)                          // Internal left padding
+				Bold(true).
+				Foreground(lipgloss.Color("#FFFFFF")). // White text
+				Background(lipgloss.Color("#7D56F4")). // Purple background
+				Padding(0, 1).                         // Horizontal padding
+				MarginLeft(2).                         // Left margin for alignment
+				PaddingLeft(1)                         // Internal left padding
 
 	// BookTitleUnselectedStyle creates emphasized title for non-selected books
 	BookTitleUnselectedStyle = lipgloss.NewStyle().
-			Bold(true).
-			Foreground(lipgloss.Color("#7D56F4")).  // Purple color
-			PaddingLeft(3)                          // Left padding
+					Bold(true).
+					Foreground(lipgloss.Color("#7D56F4")). // Purple color
+					PaddingLeft(3)                         // Left padding
 
 	// Enhanced Author Styles with complementary colors
 	// BookAuthorSelectedStyle for authors of selected books
 	BookAuthorSelectedStyle = lipgloss.NewStyle().
-			Italic(true).
-			Foreground(lipgloss.Color("#FFD700")).  // Gold color for contrast
-			PaddingLeft(3).                         // Same left alignment as title
-			Faint(false)                            // Keep readable on selection
+				Italic(true).
+				Foreground(lipgloss.Color("#FFD700")). // Gold color for contrast
+				PaddingLeft(3).                        // Same left alignment as title
+				Faint(false)                           // Keep readable on selection
 
-	// BookAuthorUnselectedStyle for authors of non-selected books  
+	// BookAuthorUnselectedStyle for authors of non-selected books
 	BookAuthorUnselectedStyle = lipgloss.NewStyle().
-			Italic(true).
-			Foreground(lipgloss.Color("#FFA500")).  // Orange color (complementary to purple)
-			PaddingLeft(3)                          // Same left alignment as title
+					Italic(true).
+					Foreground(lipgloss.Color("#FFA500")). // Orange color (complementary to purple)
+					PaddingLeft(3)                         // Same left alignment as title
 
 	// Book Entry Container Styles
 	// BookContainerSelectedStyle creates a bordered container for selected books
 	BookContainerSelectedStyle = lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color("#7D56F4")).  // Purple border
-			Padding(1, 2, 1, 0).                         // top, right, bottom, left padding
-			MarginBottom(1)
+					Border(lipgloss.RoundedBorder()).
+					BorderForeground(lipgloss.Color("#7D56F4")). // Purple border
+					Padding(1, 2, 1, 0).                         // top, right, bottom, left padding
+					MarginBottom(1)
 
 	// BookContainerUnselectedStyle creates a subtle container for non-selected books
 	BookContainerUnselectedStyle = lipgloss.NewStyle().
-			Border(lipgloss.HiddenBorder()).              // Invisible border for spacing
-			Padding(1, 2, 1, 0).                         // top, right, bottom, left padding
-			MarginBottom(1)
+					Border(lipgloss.HiddenBorder()). // Invisible border for spacing
+					Padding(1, 2, 1, 0).             // top, right, bottom, left padding
+					MarginBottom(1)
 
 	// Visual Separator Styles
 	// BookSeparatorStyle creates elegant separators between books
 	BookSeparatorStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#444444")).        // Subtle gray
-			MarginTop(1).
-			MarginBottom(1).
-			PaddingLeft(3)
+				Foreground(lipgloss.Color("#444444")). // Subtle gray
+				MarginTop(1).
+				MarginBottom(1).
+				PaddingLeft(3)
 
 	// BookSeparatorBoldStyle creates more prominent separators
 	BookSeparatorBoldStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#7D56F4")).        // Purple separators
-			Bold(true).
-			MarginTop(1).
-			MarginBottom(1).
-			PaddingLeft(3)
+				Foreground(lipgloss.Color("#7D56F4")). // Purple separators
+				Bold(true).
+				MarginTop(1).
+				MarginBottom(1).
+				PaddingLeft(3)
 
 	// HelpTextStyle creates bold help text for better visibility
 	HelpTextStyle = lipgloss.NewStyle().
 			Bold(true).
-			Foreground(lipgloss.Color("#9CA3AF")).        // Gray color like BlurredStyle
-			PaddingLeft(3)                               // Left padding for alignment
+			Foreground(lipgloss.Color("#9CA3AF")). // Gray color like BlurredStyle
+			PaddingLeft(3)                         // Left padding for alignment
 )
 
 // AddLetterSpacing converts text to have 1.5x letter spacing by adding spaces between characters
@@ -185,10 +185,10 @@ func AddLetterSpacing(text string) string {
 	if text == "" {
 		return text
 	}
-	
+
 	var result strings.Builder
 	runes := []rune(text)
-	
+
 	for i, r := range runes {
 		result.WriteRune(r)
 		// Add space after each character except the last one
@@ -201,7 +201,7 @@ func AddLetterSpacing(text string) string {
 			}
 		}
 	}
-	
+
 	return result.String()
 }
 

@@ -1,4 +1,3 @@
-// Package screens provides the user interface screens for the Libros book manager application.
 // This file contains the book editing screen that allows users to modify existing book information
 // including title, author, type, and notes. It provides a form-based interface with navigation
 // between fields and validation before saving changes to the database.

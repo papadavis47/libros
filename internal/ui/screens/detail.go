@@ -1,4 +1,3 @@
-// Package screens provides the user interface screens for the Libros book manager application.
 // This file contains the book detail screen that displays comprehensive information about a selected book,
 // including all metadata, creation/update dates, and full notes. It provides actions for editing,
 // deleting, or returning to the book list.
@@ -45,7 +44,6 @@ func NewDetailModel(db *database.DB) DetailModel {
 		index:   0, // Start with first action selected
 	}
 }
-
 
 // wrapText wraps long text to fit within a specified width by breaking at word boundaries.
 // This ensures that long notes are displayed properly in the terminal without horizontal scrolling.
@@ -190,7 +188,7 @@ func (m DetailModel) View() string {
 			b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Notes: ")) + "\n\n")
 			// Wrap long notes to fit terminal width and add quotation marks
 			wrappedNotes := wrapText(m.SelectedBook.Notes, constants.TextWrapWidth)
-			b.WriteString(styles.SpacedNotesStyle.Render("\"" + styles.AddLetterSpacing(wrappedNotes) + "\"") + "\n")
+			b.WriteString(styles.SpacedNotesStyle.Render("\""+styles.AddLetterSpacing(wrappedNotes)+"\"") + "\n")
 		}
 		b.WriteString("\n")
 
@@ -210,7 +208,7 @@ func (m DetailModel) View() string {
 	// Show success message if book was recently updated
 	if m.updated {
 		b.WriteString("\n")
-		b.WriteString(styles.SuccessStyle.Render(styles.AddLetterSpacing("✓ Book updated successfully!")))
+		b.WriteString(styles.SuccessStyle.Render(styles.AddLetterSpacing("Book updated successfully!")))
 		b.WriteString("\n")
 	}
 
