@@ -1,20 +1,19 @@
-package unit
+package models
 
 import (
 	"testing"
 	"time"
 
-	"github.com/papadavis47/libros/internal/models"
 )
 
 // TestBook_Fields tests that Book model fields can be set and retrieved correctly
 // This test ensures the model can handle typical use cases without data corruption
 func TestBook_Fields(t *testing.T) {
-	book := models.Book{
+	book := Book{
 		ID:     1,
 		Title:  "The Go Programming Language",
 		Author: "Alan Donovan",
-		Type:   models.Paperback,
+		Type:   Paperback,
 		Notes:  "Excellent reference book",
 	}
 
@@ -28,7 +27,7 @@ func TestBook_Fields(t *testing.T) {
 	if book.Author != "Alan Donovan" {
 		t.Errorf("Expected Author = 'Alan Donovan', got %q", book.Author)
 	}
-	if book.Type != models.Paperback {
+	if book.Type != Paperback {
 		t.Errorf("Expected Type = Paperback, got %v", book.Type)
 	}
 	if book.Notes != "Excellent reference book" {
@@ -41,13 +40,13 @@ func TestBook_Fields(t *testing.T) {
 func TestBookType_Values(t *testing.T) {
 	tests := []struct {
 		name     string
-		bookType models.BookType
+		bookType BookType
 		expected string
 	}{
-		{"paperback type", models.Paperback, "paperback"},
-		{"hardback type", models.Hardback, "hardback"},
-		{"audio type", models.Audio, "audio"},
-		{"digital type", models.Digital, "digital"},
+		{"paperback type", Paperback, "paperback"},
+		{"hardback type", Hardback, "hardback"},
+		{"audio type", Audio, "audio"},
+		{"digital type", Digital, "digital"},
 	}
 
 	for _, tt := range tests {
@@ -64,11 +63,11 @@ func TestBookType_Values(t *testing.T) {
 func TestBook_Validation(t *testing.T) {
 	now := time.Now()
 	
-	book := models.Book{
+	book := Book{
 		ID:          1,
 		Title:       "Test Book",
 		Author:      "Test Author",
-		Type:        models.Paperback,
+		Type:        Paperback,
 		Notes:       "Test notes",
 		CreatedAt:   now,
 		UpdatedAt:   now,
@@ -84,7 +83,7 @@ func TestBook_Validation(t *testing.T) {
 	if book.Author != "Test Author" {
 		t.Errorf("Expected Author = 'Test Author', got %q", book.Author)
 	}
-	if book.Type != models.Paperback {
+	if book.Type != Paperback {
 		t.Errorf("Expected Type = Paperback, got %v", book.Type)
 	}
 	if book.Notes != "Test notes" {
@@ -103,17 +102,17 @@ func TestBook_Validation(t *testing.T) {
 func TestScreenType_Values(t *testing.T) {
 	tests := []struct {
 		name       string
-		screenType models.Screen
-		expected   models.Screen
+		screenType Screen
+		expected   Screen
 	}{
-		{"menu screen", models.MenuScreen, 0},
-		{"add book screen", models.AddBookScreen, 1},
-		{"list books screen", models.ListBooksScreen, 2},
-		{"book detail screen", models.BookDetailScreen, 3},
-		{"edit book screen", models.EditBookScreen, 4},
-		{"utilities screen", models.UtilitiesScreen, 5},
-		{"export screen", models.ExportScreen, 6},
-		{"backup screen", models.BackupScreen, 7},
+		{"menu screen", MenuScreen, 0},
+		{"add book screen", AddBookScreen, 1},
+		{"list books screen", ListBooksScreen, 2},
+		{"book detail screen", BookDetailScreen, 3},
+		{"edit book screen", EditBookScreen, 4},
+		{"utilities screen", UtilitiesScreen, 5},
+		{"export screen", ExportScreen, 6},
+		{"backup screen", BackupScreen, 7},
 	}
 
 	for _, tt := range tests {

@@ -31,8 +31,6 @@ var (
 	// Database filename
 	DatabaseFilename = "libros.db"
 	
-	// Backup directory
-	BackupDir = "backups"
 )
 
 // GetAppDir returns the application directory path, expanding ~ if necessary
@@ -52,7 +50,3 @@ func GetDatabasePath() string {
 	return GetAppDir() + "/" + DatabaseFilename
 }
 
-// GetBackupDir returns the full path to the backup directory
-func GetBackupDir() string {
-	return GetAppDir() + "/" + BackupDir
-}

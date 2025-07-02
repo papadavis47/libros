@@ -1,10 +1,9 @@
-package unit
+package factory
 
 import (
 	"testing"
 
 	"github.com/papadavis47/libros/internal/constants"
-	"github.com/papadavis47/libros/internal/factory"
 )
 
 // TestCreateTextInput tests the generic text input factory function
@@ -13,7 +12,7 @@ func TestCreateTextInput(t *testing.T) {
 	placeholder := "Test placeholder"
 	maxLength := 100
 	
-	input := factory.CreateTextInput(placeholder, maxLength)
+	input := CreateTextInput(placeholder, maxLength)
 	
 	// Test basic properties
 	if input.Placeholder != placeholder {
@@ -38,7 +37,7 @@ func TestCreateTextInput(t *testing.T) {
 // TestCreateTitleInput tests the title-specific input factory function
 // This function creates inputs with title-specific styling and validation limits
 func TestCreateTitleInput(t *testing.T) {
-	input := factory.CreateTitleInput()
+	input := CreateTitleInput()
 	
 	// Test title-specific properties
 	if input.CharLimit != constants.TitleMaxLength {
@@ -64,7 +63,7 @@ func TestCreateTitleInput(t *testing.T) {
 // TestCreateAuthorInput tests the author-specific input factory function
 // This function creates inputs with author-specific styling and validation limits
 func TestCreateAuthorInput(t *testing.T) {
-	input := factory.CreateAuthorInput()
+	input := CreateAuthorInput()
 	
 	// Test author-specific properties
 	if input.CharLimit != constants.AuthorMaxLength {
@@ -90,7 +89,7 @@ func TestCreateAuthorInput(t *testing.T) {
 // TestCreateNotesTextArea tests the notes-specific textarea factory function
 // This function creates textareas optimized for longer text input
 func TestCreateNotesTextArea(t *testing.T) {
-	textarea := factory.CreateNotesTextArea()
+	textarea := CreateNotesTextArea()
 	
 	// Test notes-specific properties
 	if textarea.CharLimit != constants.NotesMaxLength {
@@ -131,7 +130,7 @@ func TestCreateNotesTextArea(t *testing.T) {
 func TestCreatePathInput(t *testing.T) {
 	placeholder := "/home/user/documents"
 	
-	input := factory.CreatePathInput(placeholder)
+	input := CreatePathInput(placeholder)
 	
 	// Test path-specific properties
 	if input.Placeholder != placeholder {
@@ -152,10 +151,10 @@ func TestCreatePathInput(t *testing.T) {
 // TestFactory_Consistency tests that factory functions create consistent components
 // This ensures all factory functions follow the same patterns and conventions
 func TestFactory_Consistency(t *testing.T) {
-	titleInput := factory.CreateTitleInput()
-	authorInput := factory.CreateAuthorInput()
-	pathInput := factory.CreatePathInput("test")
-	notesTextArea := factory.CreateNotesTextArea()
+	titleInput := CreateTitleInput()
+	authorInput := CreateAuthorInput()
+	pathInput := CreatePathInput("test")
+	notesTextArea := CreateNotesTextArea()
 	
 	// Test that all text inputs have the same prompt format
 	expectedPrompt := "   "
@@ -199,8 +198,8 @@ func TestFactory_Consistency(t *testing.T) {
 // TestFactory_InputStates tests that factory functions create inputs in appropriate states
 // This ensures proper focus management and initial configuration
 func TestFactory_InputStates(t *testing.T) {
-	titleInput := factory.CreateTitleInput()
-	authorInput := factory.CreateAuthorInput()
+	titleInput := CreateTitleInput()
+	authorInput := CreateAuthorInput()
 	
 	// Title input should be focused by default (first field in forms)
 	if !titleInput.Focused() {
@@ -225,7 +224,7 @@ func containsPromptPadding(prompt string) bool {
 func BenchmarkCreateTitleInput(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		factory.CreateTitleInput()
+		CreateTitleInput()
 	}
 }
 
@@ -234,6 +233,6 @@ func BenchmarkCreateTitleInput(b *testing.B) {
 func BenchmarkCreateNotesTextArea(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		factory.CreateNotesTextArea()
+		CreateNotesTextArea()
 	}
 }

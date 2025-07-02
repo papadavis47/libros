@@ -1,4 +1,4 @@
-package unit
+package validation
 
 import (
 	"os"
@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/papadavis47/libros/internal/models"
-	"github.com/papadavis47/libros/internal/validation"
 )
 
 // TestValidateBook tests comprehensive book validation
@@ -111,7 +110,7 @@ func TestValidateBook(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			errors := validation.ValidateBook(tt.book)
+			errors := ValidateBook(tt.book)
 			
 			if len(errors) != tt.expectedCount {
 				t.Errorf("ValidateBook() returned %d errors, want %d", len(errors), tt.expectedCount)
@@ -150,7 +149,7 @@ func TestValidateTitle(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := validation.ValidateTitle(tt.title)
+			err := ValidateTitle(tt.title)
 			
 			if tt.shouldErr && err == nil {
 				t.Errorf("ValidateTitle(%q) should have returned an error", tt.title)
@@ -184,7 +183,7 @@ func TestValidateAuthor(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := validation.ValidateAuthor(tt.author)
+			err := ValidateAuthor(tt.author)
 			
 			if tt.shouldErr && err == nil {
 				t.Errorf("ValidateAuthor(%q) should have returned an error", tt.author)
@@ -215,7 +214,7 @@ func TestValidateNotes(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := validation.ValidateNotes(tt.notes)
+			err := ValidateNotes(tt.notes)
 			
 			if tt.shouldErr && err == nil {
 				t.Errorf("ValidateNotes(%q) should have returned an error", tt.notes)
@@ -251,7 +250,7 @@ func TestValidateFilePath(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := validation.ValidateFilePath(tt.path)
+			err := ValidateFilePath(tt.path)
 			
 			if tt.shouldErr && err == nil {
 				t.Errorf("ValidateFilePath(%q) should have returned an error", tt.path)
@@ -288,7 +287,7 @@ func TestValidateExportPath(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := validation.ValidateExportPath(tt.path)
+			result, err := ValidateExportPath(tt.path)
 			
 			if tt.shouldErr && err == nil {
 				t.Errorf("ValidateExportPath(%q) should have returned an error", tt.path)
@@ -326,7 +325,7 @@ func TestTrimAndValidateInput(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := validation.TrimAndValidateInput(tt.input, tt.fieldName)
+			result, err := TrimAndValidateInput(tt.input, tt.fieldName)
 			
 			if tt.shouldErr && err == nil {
 				t.Errorf("TrimAndValidateInput(%q, %q) should have returned an error", tt.input, tt.fieldName)

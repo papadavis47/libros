@@ -1,17 +1,17 @@
 # Libros - Personal Book Manager
 
-A beautiful, interactive terminal-based book management application built with Go and Bubble Tea. Track your personal library with support for multiple book formats, detailed notes, and powerful export/backup features.
+An interactive terminal-based book management application built with Go and Bubble Tea. Track your personal library with support for multiple book formats, notes, and export/backup features.
 
 ## Features
 
 - **📚 Book Management**: Add, edit, view, and manage your personal book collection
 - **📝 Detailed Records**: Track title, author, format type, and personal notes for each book
-- **🎨 Beautiful UI**: Clean, interactive terminal interface powered by Bubble Tea
+- **🎨 Bubbletea UI**: Clean, interactive terminal interface powered by Bubble Tea
 - **💾 Multiple Formats**: Support for paperback, hardback, audiobook, and digital formats
 - **📊 Export Options**: Export your library to JSON or Markdown formats
-- **🔄 Backup & Restore**: Create backups of your entire book database
-- **🔍 Smart Navigation**: Intuitive menu system with keyboard shortcuts
-- **⚡ Fast Performance**: Lightweight SQLite database for quick access
+- **🔄 Backup Feature **: Create backups of your entire book database
+- **🔍 Smart Navigation**: Menu system with keyboard shortcuts
+- **⚡ Fast Performance**: Lightweight SQLite database
 
 ## Installation
 
@@ -43,6 +43,7 @@ go build -o libros ./cmd/libros
 ```
 
 The application will:
+
 - Create a `.libros` directory in your home folder
 - Initialize a SQLite database at `~/.libros/books.db`
 - Launch the interactive terminal interface
@@ -57,6 +58,7 @@ The application will:
 ### Main Features
 
 #### Adding Books
+
 1. Select "Add a new book" from the main menu
 2. Fill in the book details:
    - Title (required)
@@ -66,12 +68,14 @@ The application will:
 3. Save your book to the collection
 
 #### Managing Your Collection
+
 - **View All Books**: Browse your entire library with formatted display
 - **Book Details**: View complete information for any book
 - **Edit Books**: Update any book's information
 - **Delete Books**: Remove books from your collection
 
 #### Export & Backup
+
 - **JSON Export**: Export your library as structured JSON data
 - **Markdown Export**: Create readable Markdown documentation of your books
 - **Database Backup**: Create complete backups of your book database
@@ -182,6 +186,7 @@ This project is open source. See the repository for license details.
 ## Support
 
 If you encounter any issues or have questions:
+
 1. Check the existing issues in the repository
 2. Create a new issue with detailed information
 3. Include steps to reproduce any bugs

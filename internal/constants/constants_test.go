@@ -1,11 +1,10 @@
-package unit
+package constants
 
 import (
 	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/papadavis47/libros/internal/constants"
 )
 
 // TestConstants_Values tests that all constants are properly defined
@@ -16,14 +15,14 @@ func TestConstants_Values(t *testing.T) {
 		actual   int
 		expected int
 	}{
-		{"InputFieldWidth", constants.InputFieldWidth, 50},
-		{"TextAreaWidth", constants.TextAreaWidth, 60},
-		{"TitleMaxLength", constants.TitleMaxLength, 255},
-		{"AuthorMaxLength", constants.AuthorMaxLength, 255},
-		{"NotesMaxLength", constants.NotesMaxLength, 1000},
-		{"BooksPerPage", constants.BooksPerPage, 3},
-		{"TextWrapWidth", constants.TextWrapWidth, 60},
-		{"NoteTruncateLength", constants.NoteTruncateLength, 100},
+		{"InputFieldWidth", InputFieldWidth, 50},
+		{"TextAreaWidth", TextAreaWidth, 60},
+		{"TitleMaxLength", TitleMaxLength, 255},
+		{"AuthorMaxLength", AuthorMaxLength, 255},
+		{"NotesMaxLength", NotesMaxLength, 1000},
+		{"BooksPerPage", BooksPerPage, 3},
+		{"TextWrapWidth", TextWrapWidth, 60},
+		{"NoteTruncateLength", NoteTruncateLength, 100},
 	}
 
 	for _, tt := range tests {
@@ -43,8 +42,8 @@ func TestConstants_FilePermissions(t *testing.T) {
 		actual   os.FileMode
 		expected os.FileMode
 	}{
-		{"DirPermissions", constants.DirPermissions, 0755},
-		{"FilePermissions", constants.FilePermissions, 0644},
+		{"DirPermissions", DirPermissions, 0755},
+		{"FilePermissions", FilePermissions, 0644},
 	}
 
 	for _, tt := range tests {
@@ -64,9 +63,8 @@ func TestConstants_DefaultPaths(t *testing.T) {
 		actual   string
 		expected string
 	}{
-		{"DefaultAppDir", constants.DefaultAppDir, "~/.libros"},
-		{"DatabaseFilename", constants.DatabaseFilename, "libros.db"},
-		{"BackupDir", constants.BackupDir, "backups"},
+		{"DefaultAppDir", DefaultAppDir, "~/.libros"},
+		{"DatabaseFilename", DatabaseFilename, "libros.db"},
 	}
 
 	for _, tt := range tests {
@@ -82,7 +80,7 @@ func TestConstants_DefaultPaths(t *testing.T) {
 // This function handles home directory expansion and fallback behavior
 func TestGetAppDir(t *testing.T) {
 	// Test that GetAppDir returns a valid directory path
-	appDir := constants.GetAppDir()
+	appDir := GetAppDir()
 	
 	if appDir == "" {
 		t.Error("GetAppDir() returned empty string")
@@ -102,76 +100,55 @@ func TestGetAppDir(t *testing.T) {
 // TestGetDatabasePath tests the database path resolution function
 // This function combines the app directory with the database filename
 func TestGetDatabasePath(t *testing.T) {
-	dbPath := constants.GetDatabasePath()
+	dbPath := GetDatabasePath()
 	
 	if dbPath == "" {
 		t.Error("GetDatabasePath() returned empty string")
 	}
 	
 	// Test that the path ends with the database filename
-	if filepath.Base(dbPath) != constants.DatabaseFilename {
-		t.Errorf("GetDatabasePath() should end with %q, got: %q", constants.DatabaseFilename, filepath.Base(dbPath))
+	if filepath.Base(dbPath) != DatabaseFilename {
+		t.Errorf("GetDatabasePath() should end with %q, got: %q", DatabaseFilename, filepath.Base(dbPath))
 	}
 	
 	// Test that the directory part matches GetAppDir()
-	expectedDir := constants.GetAppDir()
+	expectedDir := GetAppDir()
 	actualDir := filepath.Dir(dbPath)
 	if actualDir != expectedDir {
 		t.Errorf("GetDatabasePath() directory = %q, want %q", actualDir, expectedDir)
 	}
 }
 
-// TestGetBackupDir tests the backup directory resolution function
-// This function combines the app directory with the backup subdirectory
-func TestGetBackupDir(t *testing.T) {
-	backupDir := constants.GetBackupDir()
-	
-	if backupDir == "" {
-		t.Error("GetBackupDir() returned empty string")
-	}
-	
-	// Test that the path ends with the backup directory name
-	if filepath.Base(backupDir) != constants.BackupDir {
-		t.Errorf("GetBackupDir() should end with %q, got: %q", constants.BackupDir, filepath.Base(backupDir))
-	}
-	
-	// Test that the parent directory matches GetAppDir()
-	expectedParent := constants.GetAppDir()
-	actualParent := filepath.Dir(backupDir)
-	if actualParent != expectedParent {
-		t.Errorf("GetBackupDir() parent directory = %q, want %q", actualParent, expectedParent)
-	}
-}
 
 // TestConstants_Logical_Relationships tests logical relationships between constants
 // This ensures constants make sense relative to each other
 func TestConstants_Logical_Relationships(t *testing.T) {
 	// TextAreaWidth should be larger than InputFieldWidth for better notes editing
-	if constants.TextAreaWidth <= constants.InputFieldWidth {
+	if TextAreaWidth <= InputFieldWidth {
 		t.Errorf("TextAreaWidth (%d) should be larger than InputFieldWidth (%d)", 
-			constants.TextAreaWidth, constants.InputFieldWidth)
+			TextAreaWidth, InputFieldWidth)
 	}
 	
 	// NotesMaxLength should be larger than TitleMaxLength and AuthorMaxLength
-	if constants.NotesMaxLength <= constants.TitleMaxLength {
+	if NotesMaxLength <= TitleMaxLength {
 		t.Errorf("NotesMaxLength (%d) should be larger than TitleMaxLength (%d)", 
-			constants.NotesMaxLength, constants.TitleMaxLength)
+			NotesMaxLength, TitleMaxLength)
 	}
 	
-	if constants.NotesMaxLength <= constants.AuthorMaxLength {
+	if NotesMaxLength <= AuthorMaxLength {
 		t.Errorf("NotesMaxLength (%d) should be larger than AuthorMaxLength (%d)", 
-			constants.NotesMaxLength, constants.AuthorMaxLength)
+			NotesMaxLength, AuthorMaxLength)
 	}
 	
 	// NoteTruncateLength should be less than NotesMaxLength
-	if constants.NoteTruncateLength >= constants.NotesMaxLength {
+	if NoteTruncateLength >= NotesMaxLength {
 		t.Errorf("NoteTruncateLength (%d) should be less than NotesMaxLength (%d)", 
-			constants.NoteTruncateLength, constants.NotesMaxLength)
+			NoteTruncateLength, NotesMaxLength)
 	}
 	
 	// BooksPerPage should be a reasonable number (not too high or too low)
-	if constants.BooksPerPage < 1 || constants.BooksPerPage > 10 {
-		t.Errorf("BooksPerPage (%d) should be between 1 and 10 for good UX", constants.BooksPerPage)
+	if BooksPerPage < 1 || BooksPerPage > 10 {
+		t.Errorf("BooksPerPage (%d) should be between 1 and 10 for good UX", BooksPerPage)
 	}
 }
 
@@ -179,23 +156,22 @@ func TestConstants_Logical_Relationships(t *testing.T) {
 // This is a regression test to ensure constants aren't accidentally modified
 func TestConstants_Immutability(t *testing.T) {
 	// Store initial values
-	initialInputWidth := constants.InputFieldWidth
-	initialTextAreaWidth := constants.TextAreaWidth
-	initialTitleMaxLength := constants.TitleMaxLength
+	initialInputWidth := InputFieldWidth
+	initialTextAreaWidth := TextAreaWidth
+	initialTitleMaxLength := TitleMaxLength
 	
 	// Call functions that might modify internal state
-	_ = constants.GetAppDir()
-	_ = constants.GetDatabasePath()
-	_ = constants.GetBackupDir()
+	_ = GetAppDir()
+	_ = GetDatabasePath()
 	
 	// Verify constants haven't changed
-	if constants.InputFieldWidth != initialInputWidth {
-		t.Errorf("InputFieldWidth changed from %d to %d", initialInputWidth, constants.InputFieldWidth)
+	if InputFieldWidth != initialInputWidth {
+		t.Errorf("InputFieldWidth changed from %d to %d", initialInputWidth, InputFieldWidth)
 	}
-	if constants.TextAreaWidth != initialTextAreaWidth {
-		t.Errorf("TextAreaWidth changed from %d to %d", initialTextAreaWidth, constants.TextAreaWidth)
+	if TextAreaWidth != initialTextAreaWidth {
+		t.Errorf("TextAreaWidth changed from %d to %d", initialTextAreaWidth, TextAreaWidth)
 	}
-	if constants.TitleMaxLength != initialTitleMaxLength {
-		t.Errorf("TitleMaxLength changed from %d to %d", initialTitleMaxLength, constants.TitleMaxLength)
+	if TitleMaxLength != initialTitleMaxLength {
+		t.Errorf("TitleMaxLength changed from %d to %d", initialTitleMaxLength, TitleMaxLength)
 	}
 }

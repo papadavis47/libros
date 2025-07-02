@@ -1,11 +1,10 @@
-package unit
+package utils
 
 import (
 	"testing"
 	"time"
 
 	"github.com/papadavis47/libros/internal/models"
-	"github.com/papadavis47/libros/internal/utils"
 )
 
 // TestFormatDate tests the date formatting utility function
@@ -86,7 +85,7 @@ func TestFormatDate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := utils.FormatDate(tt.date)
+			result := FormatDate(tt.date)
 			if result != tt.expected {
 				t.Errorf("FormatDate(%v) = %q, want %q", tt.date, result, tt.expected)
 			}
@@ -110,7 +109,7 @@ func TestFormatBookType_WithEnum(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := utils.FormatBookType(tt.bookType)
+			result := FormatBookType(tt.bookType)
 			if result != tt.expected {
 				t.Errorf("FormatBookType(%v) = %q, want %q", tt.bookType, result, tt.expected)
 			}
@@ -137,7 +136,7 @@ func TestFormatBookType_WithString(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := utils.FormatBookType(tt.input)
+			result := FormatBookType(tt.input)
 			if result != tt.expected {
 				t.Errorf("FormatBookType(%q) = %q, want %q", tt.input, result, tt.expected)
 			}
@@ -161,7 +160,7 @@ func TestFormatBookType_WithOtherTypes(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := utils.FormatBookType(tt.input)
+			result := FormatBookType(tt.input)
 			if result != tt.expected {
 				t.Errorf("FormatBookType(%v) = %q, want %q", tt.input, result, tt.expected)
 			}
@@ -176,7 +175,7 @@ func BenchmarkFormatDate(b *testing.B) {
 	
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		utils.FormatDate(date)
+		FormatDate(date)
 	}
 }
 
@@ -187,6 +186,6 @@ func BenchmarkFormatBookType(b *testing.B) {
 	
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		utils.FormatBookType(bookType)
+		FormatBookType(bookType)
 	}
 }
