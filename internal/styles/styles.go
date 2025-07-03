@@ -26,9 +26,9 @@ var (
 			PaddingLeft(3)                         // 3-space left indent
 
 	// BlurredStyle is applied to UI elements that are not currently focused
-	// Gray color to de-emphasize inactive elements
+	// White color for better accessibility
 	BlurredStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#9CA3AF")). // Gray color for unfocused
+			Foreground(lipgloss.Color("#FFFFFF")). // White color for accessibility
 			Padding(0, 1).                         // Consistent horizontal padding
 			PaddingLeft(3)                         // 3-space left indent
 
@@ -66,9 +66,9 @@ var (
 			PaddingLeft(3)                         // 3-space left indent
 
 	// NotesStyle is used for displaying book notes with italic formatting
-	// Gray color with italic text to distinguish notes from other content
+	// White color with italic text for better readability
 	NotesStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#9CA3AF")). // Gray color like BlurredStyle
+			Foreground(lipgloss.Color("#FFFFFF")). // White color for accessibility
 			Italic(true).                          // Italic formatting for notes
 			Padding(0, 1).                         // Consistent horizontal padding
 			PaddingLeft(3)                         // 3-space left indent
@@ -81,7 +81,7 @@ var (
 	// BlurredNoPaddingStyle is like BlurredStyle but without left padding
 	// Used for inline text that shouldn't have extra spacing
 	BlurredNoPaddingStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("#9CA3AF")) // Gray color for unfocused
+				Foreground(lipgloss.Color("#FFFFFF")) // White color for accessibility
 
 	// SpacedFocusedStyle is FocusedStyle with 1.5x letter spacing for enhanced readability
 	SpacedFocusedStyle = lipgloss.NewStyle().
@@ -90,13 +90,13 @@ var (
 
 	// SpacedBlurredStyle is BlurredStyle with 1.5x letter spacing for enhanced readability
 	SpacedBlurredStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("#9CA3AF")). // Gray color for unfocused
+				Foreground(lipgloss.Color("#FFFFFF")). // White color for accessibility
 				Padding(0, 1).                         // Consistent horizontal padding
 				PaddingLeft(3)                         // 3-space left indent
 
 	// SpacedNotesStyle is NotesStyle with 1.5x letter spacing for enhanced readability
 	SpacedNotesStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("#9CA3AF")). // Gray color like BlurredStyle
+				Foreground(lipgloss.Color("#FFFFFF")). // White color for accessibility
 				Italic(true).                          // Italic formatting for notes
 				Padding(0, 1).                         // Consistent horizontal padding
 				PaddingLeft(3)                         // 3-space left indent
@@ -110,7 +110,7 @@ var (
 	// BoldBlurredNoPaddingStyle is BlurredNoPaddingStyle with bold formatting
 	BoldBlurredNoPaddingStyle = lipgloss.NewStyle().
 					Bold(true).                           // Bold formatting
-					Foreground(lipgloss.Color("#9CA3AF")) // Gray color for unfocused
+					Foreground(lipgloss.Color("#FFFFFF")) // White color for accessibility
 
 	// Enhanced Book Title Styles for better visual emphasis
 	// BookTitleSelectedStyle creates a prominent title with background for selected books
@@ -159,7 +159,7 @@ var (
 	// Visual Separator Styles
 	// BookSeparatorStyle creates elegant separators between books
 	BookSeparatorStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("#444444")). // Subtle gray
+				Foreground(lipgloss.Color("#FFFFFF")). // White color for accessibility
 				MarginTop(1).
 				MarginBottom(1).
 				PaddingLeft(3)
@@ -175,7 +175,7 @@ var (
 	// HelpTextStyle creates bold help text for better visibility
 	HelpTextStyle = lipgloss.NewStyle().
 			Bold(true).
-			Foreground(lipgloss.Color("#9CA3AF")). // Gray color like BlurredStyle
+			Foreground(lipgloss.Color("#FFFFFF")). // White color for accessibility
 			PaddingLeft(3)                         // Left padding for alignment
 )
 
