@@ -90,7 +90,8 @@ var (
 
 	// SpacedBlurredStyle is BlurredStyle with 1.5x letter spacing for enhanced readability
 	SpacedBlurredStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("#FFFFFF")). // White color for accessibility
+				Bold(true).                            // Bold for better visibility
+				Foreground(lipgloss.Color("#F5F5F5")). // Light gray color for accessibility
 				Padding(0, 1).                         // Consistent horizontal padding
 				PaddingLeft(3)                         // 3-space left indent
 
