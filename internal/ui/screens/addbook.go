@@ -228,9 +228,9 @@ func (m AddBookModel) View() string {
 		buttonText := fmt.Sprintf("  %s  ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))
 		if i == m.selectedType {
 			if m.focused == len(m.inputs) {
-				b.WriteString(styles.BookAuthorSelectedStyle.Render(buttonText))
+				b.WriteString(styles.BookTypeSelectedStyle.Render(buttonText))
 			} else {
-				b.WriteString(styles.BookAuthorSelectedStyle.Render(buttonText))
+				b.WriteString(styles.BookTypeSelectedStyle.Render(buttonText))
 			}
 		} else {
 			b.WriteString(styles.SpacedBlurredStyle.Render(buttonText))

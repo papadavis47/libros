@@ -272,10 +272,10 @@ func (m EditModel) View() string {
 			// This is the currently selected book type
 			if m.focused == len(m.inputs) {
 				// Book type selector is focused - use button style
-				b.WriteString(styles.BookAuthorSelectedStyle.Render(buttonText))
+				b.WriteString(styles.BookTypeSelectedStyle.Render(buttonText))
 			} else {
 				// Book type selector not focused but this type is selected
-				b.WriteString(styles.BookAuthorSelectedStyle.Render(buttonText))
+				b.WriteString(styles.BookTypeSelectedStyle.Render(buttonText))
 			}
 		} else {
 			// This is not the selected book type

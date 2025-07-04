@@ -143,6 +143,13 @@ var (
 					Foreground(lipgloss.Color("#FFA500")). // Orange color (complementary to purple)
 					PaddingLeft(3)                         // Same left alignment as title
 
+	// BookTypeSelectedStyle for selected book type buttons (no italics)
+	BookTypeSelectedStyle = lipgloss.NewStyle().
+				Bold(true).
+				Foreground(lipgloss.Color("#FFD700")). // Gold color for contrast
+				Padding(0, 1).                         // Consistent horizontal padding
+				PaddingLeft(3)                         // Same left alignment as other elements
+
 	// Book Entry Container Styles
 	// BookContainerSelectedStyle creates a bordered container for selected books
 	BookContainerSelectedStyle = lipgloss.NewStyle().

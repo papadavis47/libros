@@ -199,26 +199,32 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // View renders the current screen by delegating to the appropriate screen model
 // It returns the string representation of the UI for the current screen
 func (m Model) View() string {
+	// Add top margin to all screens for better vertical spacing
+	var screenContent string
+	
 	// Delegate view rendering to the current screen's model
 	switch m.currentScreen {
 	case models.MenuScreen:
-		return m.menu.View()      // Render main menu
+		screenContent = m.menu.View()      // Render main menu
 	case models.AddBookScreen:
-		return m.addBook.View()   // Render add book form
+		screenContent = m.addBook.View()   // Render add book form
 	case models.ListBooksScreen:
-		return m.listBooks.View() // Render book list
+		screenContent = m.listBooks.View() // Render book list
 	case models.BookDetailScreen:
-		return m.detail.View()    // Render book details
+		screenContent = m.detail.View()    // Render book details
 	case models.EditBookScreen:
-		return m.edit.View()      // Render edit book form
+		screenContent = m.edit.View()      // Render edit book form
 	case models.UtilitiesScreen:
-		return m.utilities.View() // Render utilities screen
+		screenContent = m.utilities.View() // Render utilities screen
 	case models.ExportScreen:
-		return m.exportScreen.View() // Render export screen
+		screenContent = m.exportScreen.View() // Render export screen
 	case models.BackupScreen:
-		return m.backup.View()    // Render backup screen
+		screenContent = m.backup.View()    // Render backup screen
 	default:
 		// Fallback for unknown screen states
-		return ""
+		screenContent = ""
 	}
+	
+	// Add top margin to move all content down from the top of the terminal
+	return "\n" + screenContent
 }
