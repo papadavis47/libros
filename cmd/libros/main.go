@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/papadavis47/libros/internal/config"
 	"github.com/papadavis47/libros/internal/database"
 	"github.com/papadavis47/libros/internal/ui"
 )
@@ -22,6 +23,13 @@ func main() {
 	librosDir := filepath.Join(homeDir, ".libros")
 	if err := os.MkdirAll(librosDir, 0755); err != nil {
 		log.Fatal(err)
+	}
+
+	// Load theme configuration
+	// This ensures the application uses the user's selected theme
+	_, err = config.LoadConfig()
+	if err != nil {
+		log.Printf("Warning: Could not load theme config, using defaults: %v", err)
 	}
 
 	// Set database path to ~/.libros/books.db

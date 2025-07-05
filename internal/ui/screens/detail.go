@@ -159,7 +159,7 @@ func (m DetailModel) View() string {
 
 	// Display application title and screen subtitle
 	b.WriteString("\n")
-	b.WriteString(styles.TitleStyle.Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
+	b.WriteString(styles.TitleStyle().Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
 	b.WriteString("\n\n")
 	b.WriteString(styles.BlurredStyle.Render("Ｂｏｏｋ　Ｄｅｔａｉｌｓ"))
 	b.WriteString("\n\n")
@@ -178,14 +178,14 @@ func (m DetailModel) View() string {
 		b.WriteString("\n")
 
 		// Display all book metadata with labels
-		b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Title: ")) + styles.AddLetterSpacing(m.SelectedBook.Title) + "\n")
-		b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Author: ")) + styles.AddLetterSpacing(m.SelectedBook.Author) + "\n")
-		b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Type: ")) + styles.AddLetterSpacing(styles.CapitalizeBookType(string(m.SelectedBook.Type))) + "\n")
+		b.WriteString(styles.FocusedStyle().Render(styles.AddLetterSpacing("Title: ")) + styles.AddLetterSpacing(m.SelectedBook.Title) + "\n")
+		b.WriteString(styles.FocusedStyle().Render(styles.AddLetterSpacing("Author: ")) + styles.AddLetterSpacing(m.SelectedBook.Author) + "\n")
+		b.WriteString(styles.FocusedStyle().Render(styles.AddLetterSpacing("Type: ")) + styles.AddLetterSpacing(styles.CapitalizeBookType(string(m.SelectedBook.Type))) + "\n")
 
 		// Display notes if they exist, with text wrapping for readability
 		if m.SelectedBook.Notes != "" {
 			b.WriteString("\n")
-			b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Notes: ")) + "\n\n")
+			b.WriteString(styles.FocusedStyle().Render(styles.AddLetterSpacing("Notes: ")) + "\n\n")
 			// Wrap long notes to fit terminal width and add quotation marks
 			wrappedNotes := wrapText(m.SelectedBook.Notes, constants.TextWrapWidth)
 			b.WriteString(styles.SpacedNotesStyle.Render("\""+styles.AddLetterSpacing(wrappedNotes)+"\"") + "\n")
@@ -196,7 +196,7 @@ func (m DetailModel) View() string {
 		for i, action := range m.actions {
 			if i == m.index {
 				// Highlight currently selected action
-				b.WriteString(styles.SelectedStyle.Render(styles.AddLetterSpacing(action)))
+				b.WriteString(styles.SelectedStyle().Render(styles.AddLetterSpacing(action)))
 			} else {
 				// Dim non-selected actions
 				b.WriteString(styles.BlurredStyle.Render(styles.AddLetterSpacing(action)))

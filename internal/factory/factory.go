@@ -25,8 +25,8 @@ func CreateTitleInput() textinput.Model {
 	ti.Placeholder = "_______________"
 	ti.Prompt = "   " + styles.AddLetterSpacing("Title:") + "  "
 	ti.Focus() // Start focused
-	ti.PromptStyle = styles.FormFocusedStyle
-	ti.TextStyle = styles.FormFocusedStyle
+	ti.PromptStyle = styles.FormFocusedStyle()
+	ti.TextStyle = styles.FormFocusedStyle()
 	return ti
 }
 

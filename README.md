@@ -7,11 +7,13 @@ An interactive terminal-based book management application built with Go and Bubb
 - **📚 Book Management**: Add, edit, view, and manage your personal book collection
 - **📝 Detailed Records**: Track title, author, format type, and personal notes for each book
 - **🎨 Bubbletea UI**: Clean, interactive terminal interface powered by Bubble Tea
+- **🌈 Theme System**: Choose from 4 color themes with live preview
 - **💾 Multiple Formats**: Support for paperback, hardback, audiobook, and digital formats
 - **📊 Export Options**: Export your library to JSON or Markdown formats
 - **🔄 Backup Feature **: Create backups of your entire book database
-- **🔍 Smart Navigation**: Menu system with keyboard shortcuts
+- **🔍 Smart Navigation**: Menu system with keyboard shortcuts (j/k vim-style navigation)
 - **⚡ Fast Performance**: Lightweight SQLite database
+- **💿 Persistent Settings**: Theme preferences saved automatically
 
 ## Installation
 

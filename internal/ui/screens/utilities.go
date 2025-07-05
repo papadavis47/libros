@@ -89,14 +89,14 @@ func (u UtilitiesModel) View() string {
 
 	// Display utilities title
 	b.WriteString("\n")
-	b.WriteString(styles.TitleStyle.Render("Ｕｔｉｌｉｔｉｅｓ"))
+	b.WriteString(styles.TitleStyle().Render("Ｕｔｉｌｉｔｉｅｓ"))
 	b.WriteString("\n\n")
 
 	// Render each menu item with appropriate styling
 	for i, item := range u.items {
 		if i == u.index {
 			// Highlight currently selected item
-			b.WriteString(styles.SelectedStyle.Render(item))
+			b.WriteString(styles.SelectedStyle().Render(item))
 		} else {
 			// Dim non-selected items
 			b.WriteString(styles.BlurredStyle.Render(item))

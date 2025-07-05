@@ -138,8 +138,8 @@ func (m EditModel) Update(msg tea.Msg) (EditModel, tea.Cmd, models.Screen) {
 				if i == m.focused {
 					// Focus this input
 					cmds[i] = m.inputs[i].Focus()
-					m.inputs[i].PromptStyle = styles.FormFocusedStyle
-					m.inputs[i].TextStyle = styles.FormFocusedStyle
+					m.inputs[i].PromptStyle = styles.FormFocusedStyle()
+					m.inputs[i].TextStyle = styles.FormFocusedStyle()
 					m.inputs[i].CursorEnd() // Position cursor at end
 				} else {
 					// Blur this input
@@ -239,7 +239,7 @@ func (m EditModel) View() string {
 
 	// Display application title and screen subtitle
 	b.WriteString("\n")
-	b.WriteString(styles.TitleStyle.Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
+	b.WriteString(styles.TitleStyle().Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
 	b.WriteString("\n\n")
 	b.WriteString(styles.BlurredStyle.Render("Ｅｄｉｔ　Ｂｏｏｋ"))
 	b.WriteString("\n\n")
@@ -259,7 +259,7 @@ func (m EditModel) View() string {
 	typeLabel := "   " + styles.AddLetterSpacing("Type:") + "  "
 	if m.focused == len(m.inputs) {
 		// Book type selector is focused
-		b.WriteString(styles.FormFocusedStyle.Render(typeLabel))
+		b.WriteString(styles.FormFocusedStyle().Render(typeLabel))
 	} else {
 		// Book type selector is not focused
 		b.WriteString(typeLabel)
@@ -290,17 +290,17 @@ func (m EditModel) View() string {
 
 	// Add notes textarea with label
 	b.WriteString("\n")
-	b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Notes:") + " "))
+	b.WriteString(styles.FocusedStyle().Render(styles.AddLetterSpacing("Notes:") + " "))
 	b.WriteString("\n\n")
 	b.WriteString(m.textarea.View())
 
 	// Add save button with focus-aware styling
-	button := &styles.BlurredStyle
 	if m.focused == len(m.inputs)+2 {
 		// Save button is focused
-		button = &styles.ButtonStyle
+		fmt.Fprintf(&b, "\n\n%s\n\n", styles.ButtonStyle.Render(styles.AddLetterSpacing("UPDATE BOOK")))
+	} else {
+		fmt.Fprintf(&b, "\n\n%s\n\n", styles.BlurredStyle.Render(styles.AddLetterSpacing("UPDATE BOOK")))
 	}
-	fmt.Fprintf(&b, "\n\n%s\n\n", button.Render(styles.AddLetterSpacing("UPDATE BOOK")))
 
 	// Show any validation or save errors
 	if m.err != nil {

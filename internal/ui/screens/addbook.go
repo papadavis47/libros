@@ -114,8 +114,8 @@ func (m AddBookModel) Update(msg tea.Msg) (AddBookModel, tea.Cmd, models.Screen)
 			for i := 0; i < len(m.inputs); i++ {
 				if i == m.focused {
 					cmds[i] = m.inputs[i].Focus()
-					m.inputs[i].PromptStyle = styles.FormFocusedStyle
-					m.inputs[i].TextStyle = styles.FormFocusedStyle
+					m.inputs[i].PromptStyle = styles.FormFocusedStyle()
+					m.inputs[i].TextStyle = styles.FormFocusedStyle()
 					m.inputs[i].CursorEnd()
 				} else {
 					m.inputs[i].Blur()
@@ -201,7 +201,7 @@ func (m AddBookModel) View() string {
 	var b strings.Builder
 
 	b.WriteString("\n")
-	b.WriteString(styles.TitleStyle.Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
+	b.WriteString(styles.TitleStyle().Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
 	b.WriteString("\n\n")
 	b.WriteString(styles.BlurredStyle.Render("Ａｄｄ　Ｎｅｗ　Ｂｏｏｋ"))
 	b.WriteString("\n\n")
@@ -219,7 +219,7 @@ func (m AddBookModel) View() string {
 	b.WriteString("\n")
 	typeLabel := "   " + styles.AddLetterSpacing("Type:") + "  "
 	if m.focused == len(m.inputs) {
-		b.WriteString(styles.FormFocusedStyle.Render(typeLabel))
+		b.WriteString(styles.FormFocusedStyle().Render(typeLabel))
 	} else {
 		b.WriteString(typeLabel)
 	}
@@ -243,15 +243,15 @@ func (m AddBookModel) View() string {
 
 	// Add notes textarea
 	b.WriteString("\n")
-	b.WriteString(styles.FocusedStyle.Render(styles.AddLetterSpacing("Notes:") + " "))
+	b.WriteString(styles.FocusedStyle().Render(styles.AddLetterSpacing("Notes:") + " "))
 	b.WriteString("\n\n")
 	b.WriteString(m.textarea.View())
 
-	button := &styles.BlurredStyle
 	if m.focused == len(m.inputs)+2 {
-		button = &styles.ButtonStyle
+		fmt.Fprintf(&b, "\n\n%s\n\n", styles.ButtonStyle.Render(styles.AddLetterSpacing("SAVE BOOK")))
+	} else {
+		fmt.Fprintf(&b, "\n\n%s\n\n", styles.BlurredStyle.Render(styles.AddLetterSpacing("SAVE BOOK")))
 	}
-	fmt.Fprintf(&b, "\n\n%s\n\n", button.Render(styles.AddLetterSpacing("SAVE BOOK")))
 
 	if m.err != nil {
 		b.WriteString(styles.ErrorStyle.Render(styles.AddLetterSpacing("Error: " + m.err.Error())))
@@ -308,8 +308,8 @@ func (m *AddBookModel) Reset() {
 
 	// Reset focus styling - title field focused, others blurred
 	m.inputs[0].Focus()
-	m.inputs[0].PromptStyle = styles.FormFocusedStyle // Purple for focused
-	m.inputs[0].TextStyle = styles.FormFocusedStyle
+	m.inputs[0].PromptStyle = styles.FormFocusedStyle() // Theme color for focused
+	m.inputs[0].TextStyle = styles.FormFocusedStyle()
 
 	// Blur all other input fields
 	for i := 1; i < len(m.inputs); i++ {

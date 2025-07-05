@@ -49,16 +49,16 @@ func (m *MenuModel) updateMenuItems() {
 	count, err := m.db.GetBookCount()
 	if err != nil {
 		// On database error, provide minimal menu options
-		m.items = []string{"Ａｄｄ　Ｂｏｏｋ", "Ｑｕｉｔ"}
+		m.items = []string{"Ａｄｄ　Ｂｏｏｋ", "Ｔｈｅｍｅ", "Ｑｕｉｔ"}
 		return
 	}
 
 	if count > 0 {
 		// Books exist - show all menu options including View Books and Utilities
-		m.items = []string{"Ａｄｄ　Ｂｏｏｋ", "Ｖｉｅｗ　Ｂｏｏｋｓ", "Ｕｔｉｌｉｔｉｅｓ", "Ｑｕｉｔ"}
+		m.items = []string{"Ａｄｄ　Ｂｏｏｋ", "Ｖｉｅｗ　Ｂｏｏｋｓ", "Ｕｔｉｌｉｔｉｅｓ", "Ｔｈｅｍｅ", "Ｑｕｉｔ"}
 	} else {
 		// No books exist - hide View Books and Utilities options
-		m.items = []string{"Ａｄｄ　Ｂｏｏｋ", "Ｑｕｉｔ"}
+		m.items = []string{"Ａｄｄ　Ｂｏｏｋ", "Ｔｈｅｍｅ", "Ｑｕｉｔ"}
 	}
 
 	// Ensure selected index is still valid after menu items change
@@ -102,6 +102,9 @@ func (m MenuModel) Update(msg tea.KeyMsg) (MenuModel, tea.Cmd, models.Screen) {
 		case "Ｕｔｉｌｉｔｉｅｓ":
 			// Navigate to utilities screen
 			return m, nil, models.UtilitiesScreen
+		case "Ｔｈｅｍｅ":
+			// Navigate to theme selection screen
+			return m, nil, models.ThemeScreen
 		case "Ｑｕｉｔ":
 			// Exit the application
 			return m, tea.Quit, models.MenuScreen
@@ -122,14 +125,14 @@ func (m MenuModel) View() string {
 
 	// Display application title with emoji and branding
 	b.WriteString("\n")
-	b.WriteString(styles.TitleStyle.Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
+	b.WriteString(styles.TitleStyle().Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
 	b.WriteString("\n\n")
 
 	// Render each menu item with appropriate styling
 	for i, item := range m.items {
 		if i == m.index {
 			// Highlight currently selected item
-			b.WriteString(styles.SelectedStyle.Render(item))
+			b.WriteString(styles.SelectedStyle().Render(item))
 		} else {
 			// Dim non-selected items
 			b.WriteString(styles.BlurredStyle.Render(item))

@@ -58,7 +58,7 @@ func (s *BackupScreen) View() string {
 	var b strings.Builder
 
 	b.WriteString("\n")
-	b.WriteString(styles.TitleStyle.Render("Ｄａｔａｂａｓｅ　Ｂａｃｋｕｐ"))
+	b.WriteString(styles.TitleStyle().Render("Ｄａｔａｂａｓｅ　Ｂａｃｋｕｐ"))
 	b.WriteString("\n\n")
 
 	// Show backup result

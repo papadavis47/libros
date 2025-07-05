@@ -42,4 +42,5 @@ const (
 	UtilitiesScreen               // Screen for utilities menu (Export/Backup)
 	ExportScreen                  // Screen for exporting book data
 	BackupScreen                  // Screen for backing up book data
+	ThemeScreen                   // Screen for theme selection
 )

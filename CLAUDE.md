@@ -36,17 +36,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **UI Screens**: Individual screen models for each application view
 - **Services**: Business logic for backup, export (JSON/Markdown)
 - **Factory**: Consistent UI component creation (text inputs, textareas)
+- **Config**: Theme management and TOML configuration persistence
+- **Styles**: Dynamic theming system with function-based color application
 
 ### Navigation Flow
 Application uses a main `ui.Model` that coordinates between screen models:
-- MenuScreen → AddBookScreen/ListBooksScreen/UtilitiesScreen
+- MenuScreen → AddBookScreen/ListBooksScreen/UtilitiesScreen/ThemeScreen
 - ListBooksScreen → BookDetailScreen → EditBookScreen
 - UtilitiesScreen → ExportScreen/BackupScreen
+- ThemeScreen → Theme selection with dynamic color preview
 
 ### Database Schema
 - Books table with fields: ID, Title, Author, Type, Notes, CreatedAt, UpdatedAt
 - BookType enum: paperback, hardback, audio, digital
 - Database path: `~/.libros/books.db`
+
+### Configuration Files
+- Theme configuration: `~/.libros/theme.toml`
+- Contains selected theme name and primary color
+- Persists user's theme choice across application restarts
 
 ## Development Patterns
 
@@ -67,6 +75,13 @@ Application uses a main `ui.Model` that coordinates between screen models:
 - All text inputs and textareas created through factory functions
 - Shared styling through `internal/styles` package
 
+### Theme System
+- Dynamic color theming with 4 built-in themes: Default (purple), Peach Red, Surimi Orange, Spring Blue
+- Function-based styles that always return current theme colors
+- Theme changes apply immediately without restart
+- TOML configuration for persistence
+- Theme selection screen with live color preview
+
 ### State Management
 - Each screen maintains its own state and handles its own updates
 - Main model coordinates screen transitions and shared state
@@ -74,9 +89,11 @@ Application uses a main `ui.Model` that coordinates between screen models:
 - Proper cleanup on screen transitions and application exit
 
 ## Key Files
-- `cmd/libros/main.go` - Application entry point
+- `cmd/libros/main.go` - Application entry point with theme loading
 - `internal/ui/model.go` - Main Bubble Tea model coordinating all screens
 - `internal/database/database.go` - Database operations and connection management
 - `internal/models/book.go` - Core data structures and constants
 - `internal/interfaces/` - Repository and service interfaces
-- `internal/ui/screens/` - Individual screen implementations
+- `internal/ui/screens/` - Individual screen implementations including theme.go
+- `internal/config/` - Theme configuration and TOML management
+- `internal/styles/styles.go` - Dynamic styling system with theme functions

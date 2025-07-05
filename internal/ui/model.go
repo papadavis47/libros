@@ -24,6 +24,7 @@ type Model struct {
 	detail    screens.DetailModel     // Book detail view screen model
 	edit      screens.EditModel       // Book editing screen model
 	utilities screens.UtilitiesModel  // Utilities menu screen model
+	theme     screens.ThemeModel      // Theme selection screen model
 	exportScreen *screens.ExportScreen // Export data screen model
 	backup    *screens.BackupScreen   // Backup data screen model
 }
@@ -41,6 +42,7 @@ func NewModel(db *database.DB) Model {
 		detail:        screens.NewDetailModel(db),        // Initialize detail view screen
 		edit:          screens.NewEditModel(db),          // Initialize edit screen
 		utilities:     screens.NewUtilitiesModel(db),     // Initialize utilities screen
+		theme:         screens.NewThemeModel(),           // Initialize theme selection screen
 		exportScreen:  screens.NewExportScreen(db),       // Initialize export screen
 		backup:        screens.NewBackupScreen(db),       // Initialize backup screen
 	}
@@ -148,6 +150,24 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			newScreen = m.currentScreen
 		}
 		
+	case models.ThemeScreen:
+		var themeModel tea.Model
+		var themeCmd tea.Cmd
+		// Update theme screen model
+		themeModel, themeCmd = m.theme.Update(msg)
+		m.theme = themeModel.(screens.ThemeModel)
+		cmd = themeCmd
+		// Handle screen transitions and theme changes from theme screen
+		if switchMsg, ok := msg.(screens.SwitchScreenMsg); ok {
+			newScreen = switchMsg.Screen
+		} else if _, ok := msg.(screens.ThemeSelectedMsg); ok {
+			// Theme was changed - force a screen refresh by staying on current screen
+			// This ensures all UI elements will use the new theme on next render
+			newScreen = m.currentScreen
+		} else {
+			newScreen = m.currentScreen
+		}
+		
 	case models.ExportScreen:
 		var exportModel tea.Model
 		var exportCmd tea.Cmd
@@ -190,6 +210,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Clear any export status when entering export screen
 			m.exportScreen.ClearStatus()
 		}
+		if newScreen == models.ThemeScreen {
+			// Reset theme screen to reflect current theme
+			m.theme = screens.NewThemeModel()
+		}
 	}
 
 	// Return updated model and any command to execute
@@ -216,6 +240,8 @@ func (m Model) View() string {
 		screenContent = m.edit.View()      // Render edit book form
 	case models.UtilitiesScreen:
 		screenContent = m.utilities.View() // Render utilities screen
+	case models.ThemeScreen:
+		screenContent = m.theme.View()     // Render theme selection screen
 	case models.ExportScreen:
 		screenContent = m.exportScreen.View() // Render export screen
 	case models.BackupScreen:

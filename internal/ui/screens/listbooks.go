@@ -148,7 +148,7 @@ func (m ListBooksModel) View() string {
 
 	// Display application title and screen subtitle
 	b.WriteString("\n")
-	b.WriteString(styles.TitleStyle.Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
+	b.WriteString(styles.TitleStyle().Render("Ｌｉｂｒｏｓ　－　Ａ　Ｂｏｏｋ　Ｍａｎａｇｅｒ"))
 	b.WriteString("\n\n")
 	b.WriteString(styles.BlurredStyle.Render("Ｙｏｕｒ　Ｂｏｏｋ　Ｃｏｌｌｅｃｔｉｏｎ"))
 	b.WriteString("\n\n")
@@ -173,7 +173,7 @@ func (m ListBooksModel) View() string {
 
 			if i == m.index {
 				// Currently selected book - use enhanced selected styles
-				bookContent.WriteString(styles.BookTitleSelectedStyle.Render(styles.AddLetterSpacing(book.Title)))
+				bookContent.WriteString(styles.BookTitleSelectedStyle().Render(styles.AddLetterSpacing(book.Title)))
 				bookContent.WriteString("\n\n")
 				bookContent.WriteString(fmt.Sprintf("%s%s", styles.SpacedBlurredStyle.Render(styles.AddLetterSpacing("Author:")), styles.BookAuthorSelectedStyle.Render(styles.AddLetterSpacing(book.Author))))
 				bookContent.WriteString("\n\n")
@@ -185,10 +185,10 @@ func (m ListBooksModel) View() string {
 				}
 
 				// Wrap selected book in container
-				b.WriteString(styles.BookContainerSelectedStyle.Render(bookContent.String()))
+				b.WriteString(styles.BookContainerSelectedStyle().Render(bookContent.String()))
 			} else {
 				// Non-selected book - use enhanced unselected styles
-				bookContent.WriteString(styles.BookTitleUnselectedStyle.Render(styles.AddLetterSpacing(book.Title)))
+				bookContent.WriteString(styles.BookTitleUnselectedStyle().Render(styles.AddLetterSpacing(book.Title)))
 				bookContent.WriteString("\n\n")
 				bookContent.WriteString(fmt.Sprintf("%s%s", styles.SpacedBlurredStyle.Render(styles.AddLetterSpacing("Author:")), styles.BookAuthorUnselectedStyle.Render(styles.AddLetterSpacing(book.Author))))
 				bookContent.WriteString("\n\n")

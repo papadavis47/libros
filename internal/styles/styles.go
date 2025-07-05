@@ -7,24 +7,74 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/papadavis47/libros/internal/config"
 	"github.com/papadavis47/libros/internal/utils"
 )
 
-// These styles provide a consistent look and feel across all UI components
+// GetTitleStyle returns the themed title style
+func GetTitleStyle() lipgloss.Style {
+	theme := config.GetCurrentTheme()
+	return lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color(theme.PrimaryColor)).
+		PaddingLeft(3)
+}
+
+// Style functions that always return current theme-aware styles
+// These should be used instead of global variables to ensure theme changes apply immediately
+
+// TitleStyle returns the current themed title style
+func TitleStyle() lipgloss.Style {
+	return GetTitleStyle()
+}
+
+// FocusedStyle returns the current themed focused style
+func FocusedStyle() lipgloss.Style {
+	return GetFocusedStyle()
+}
+
+// SelectedStyle returns the current themed selected style
+func SelectedStyle() lipgloss.Style {
+	return GetSelectedStyle()
+}
+
+// FormFocusedStyle returns the current themed form focused style
+func FormFocusedStyle() lipgloss.Style {
+	return GetFormFocusedStyle()
+}
+
+// SpacedFocusedStyle returns the current themed spaced focused style
+func SpacedFocusedStyle() lipgloss.Style {
+	return GetSpacedFocusedStyle()
+}
+
+// BoldFocusedStyle returns the current themed bold focused style
+func BoldFocusedStyle() lipgloss.Style {
+	return GetBoldFocusedStyle()
+}
+
+// BookTitleSelectedStyle returns the current themed book title selected style
+func BookTitleSelectedStyle() lipgloss.Style {
+	return GetBookTitleSelectedStyle()
+}
+
+// BookTitleUnselectedStyle returns the current themed book title unselected style
+func BookTitleUnselectedStyle() lipgloss.Style {
+	return GetBookTitleUnselectedStyle()
+}
+
+// BookContainerSelectedStyle returns the current themed book container selected style
+func BookContainerSelectedStyle() lipgloss.Style {
+	return GetBookContainerSelectedStyle()
+}
+
+// BookSeparatorBoldStyle returns the current themed book separator bold style
+func BookSeparatorBoldStyle() lipgloss.Style {
+	return GetBookSeparatorBoldStyle()
+}
+
+// Static styles that don't depend on theme
 var (
-	// TitleStyle is used for main headings and screen titles
-	// Purple color with bold text for prominence
-	TitleStyle = lipgloss.NewStyle().
-			Bold(true).
-			Foreground(lipgloss.Color("#7D56F4")). // Purple color
-			PaddingLeft(3)                         // 3-space left indent
-
-	// FocusedStyle is applied to UI elements that currently have focus
-	// Uses the same purple color to indicate active state
-	FocusedStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#7D56F4")). // Purple color for focus
-			PaddingLeft(3)                         // 3-space left indent
-
 	// BlurredStyle is applied to UI elements that are not currently focused
 	// White color for better accessibility
 	BlurredStyle = lipgloss.NewStyle().
@@ -35,16 +85,6 @@ var (
 	// NoStyle is a plain style with no special formatting
 	// Used as a neutral base or to reset styling
 	NoStyle = lipgloss.NewStyle()
-
-	// SelectedStyle is used for highlighted/selected items in lists
-	// White text on purple background with padding for visual separation
-	SelectedStyle = lipgloss.NewStyle().
-			Bold(true).
-			Foreground(lipgloss.Color("#FFFFFF")). // White text
-			Background(lipgloss.Color("#7D56F4")). // Purple background
-			Padding(0, 1).                         // Horizontal padding
-			MarginLeft(2).                         // 2-space left margin (creates gap)
-			PaddingLeft(1)                         // 1-space left padding inside background
 
 	// ButtonStyle is used for interactive buttons and action items
 	// Orange color with bold text to make actions stand out
@@ -73,20 +113,10 @@ var (
 			Padding(0, 1).                         // Consistent horizontal padding
 			PaddingLeft(3)                         // 3-space left indent
 
-	// FormFocusedStyle is for form inputs that already have padding in their prompts
-	// Purple color for focus indication without additional padding
-	FormFocusedStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("#7D56F4")) // Purple color for focus
-
 	// BlurredNoPaddingStyle is like BlurredStyle but without left padding
 	// Used for inline text that shouldn't have extra spacing
 	BlurredNoPaddingStyle = lipgloss.NewStyle().
 				Foreground(lipgloss.Color("#FFFFFF")) // White color for accessibility
-
-	// SpacedFocusedStyle is FocusedStyle with 1.5x letter spacing for enhanced readability
-	SpacedFocusedStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("#7D56F4")). // Purple color for focus
-				PaddingLeft(3)                         // 3-space left indent
 
 	// SpacedBlurredStyle is BlurredStyle with 1.5x letter spacing for enhanced readability
 	SpacedBlurredStyle = lipgloss.NewStyle().
@@ -102,32 +132,10 @@ var (
 				Padding(0, 1).                         // Consistent horizontal padding
 				PaddingLeft(3)                         // 3-space left indent
 
-	// BoldFocusedStyle is SpacedFocusedStyle with bold formatting for emphasis
-	BoldFocusedStyle = lipgloss.NewStyle().
-				Bold(true).                            // Bold formatting
-				Foreground(lipgloss.Color("#7D56F4")). // Purple color for focus
-				PaddingLeft(3)                         // 3-space left indent
-
 	// BoldBlurredNoPaddingStyle is BlurredNoPaddingStyle with bold formatting
 	BoldBlurredNoPaddingStyle = lipgloss.NewStyle().
 					Bold(true).                           // Bold formatting
 					Foreground(lipgloss.Color("#FFFFFF")) // White color for accessibility
-
-	// Enhanced Book Title Styles for better visual emphasis
-	// BookTitleSelectedStyle creates a prominent title with background for selected books
-	BookTitleSelectedStyle = lipgloss.NewStyle().
-				Bold(true).
-				Foreground(lipgloss.Color("#FFFFFF")). // White text
-				Background(lipgloss.Color("#7D56F4")). // Purple background
-				Padding(0, 1).                         // Horizontal padding
-				MarginLeft(2).                         // Left margin for alignment
-				PaddingLeft(1)                         // Internal left padding
-
-	// BookTitleUnselectedStyle creates emphasized title for non-selected books
-	BookTitleUnselectedStyle = lipgloss.NewStyle().
-					Bold(true).
-					Foreground(lipgloss.Color("#7D56F4")). // Purple color
-					PaddingLeft(3)                         // Left padding
 
 	// Enhanced Author Styles with complementary colors
 	// BookAuthorSelectedStyle for authors of selected books
@@ -150,14 +158,6 @@ var (
 				Padding(0, 1).                         // Consistent horizontal padding
 				PaddingLeft(3)                         // Same left alignment as other elements
 
-	// Book Entry Container Styles
-	// BookContainerSelectedStyle creates a bordered container for selected books
-	BookContainerSelectedStyle = lipgloss.NewStyle().
-					Border(lipgloss.RoundedBorder()).
-					BorderForeground(lipgloss.Color("#7D56F4")). // Purple border
-					Padding(1, 2, 1, 0).                         // top, right, bottom, left padding
-					MarginBottom(1)
-
 	// BookContainerUnselectedStyle creates a subtle container for non-selected books
 	BookContainerUnselectedStyle = lipgloss.NewStyle().
 					Border(lipgloss.HiddenBorder()). // Invisible border for spacing
@@ -168,14 +168,6 @@ var (
 	// BookSeparatorStyle creates elegant separators between books
 	BookSeparatorStyle = lipgloss.NewStyle().
 				Foreground(lipgloss.Color("#FFFFFF")). // White color for accessibility
-				MarginTop(1).
-				MarginBottom(1).
-				PaddingLeft(3)
-
-	// BookSeparatorBoldStyle creates more prominent separators
-	BookSeparatorBoldStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("#7D56F4")). // Purple separators
-				Bold(true).
 				MarginTop(1).
 				MarginBottom(1).
 				PaddingLeft(3)
@@ -238,3 +230,93 @@ func CreateBookDottedSeparator(width int, style lipgloss.Style) string {
 	separator := strings.Repeat("·", width)
 	return style.Render(separator)
 }
+
+// Theme-aware style functions
+// These functions return styles based on the current theme configuration
+
+// GetFocusedStyle returns the themed focused style
+func GetFocusedStyle() lipgloss.Style {
+	theme := config.GetCurrentTheme()
+	return lipgloss.NewStyle().
+		Foreground(lipgloss.Color(theme.PrimaryColor)).
+		PaddingLeft(3)
+}
+
+// GetSelectedStyle returns the themed selected style
+func GetSelectedStyle() lipgloss.Style {
+	theme := config.GetCurrentTheme()
+	return lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color("#FFFFFF")).
+		Background(lipgloss.Color(theme.PrimaryColor)).
+		Padding(0, 1).
+		MarginLeft(2).
+		PaddingLeft(1)
+}
+
+// GetFormFocusedStyle returns the themed form focused style
+func GetFormFocusedStyle() lipgloss.Style {
+	theme := config.GetCurrentTheme()
+	return lipgloss.NewStyle().
+		Foreground(lipgloss.Color(theme.PrimaryColor))
+}
+
+// GetSpacedFocusedStyle returns the themed spaced focused style
+func GetSpacedFocusedStyle() lipgloss.Style {
+	theme := config.GetCurrentTheme()
+	return lipgloss.NewStyle().
+		Foreground(lipgloss.Color(theme.PrimaryColor)).
+		PaddingLeft(3)
+}
+
+// GetBoldFocusedStyle returns the themed bold focused style
+func GetBoldFocusedStyle() lipgloss.Style {
+	theme := config.GetCurrentTheme()
+	return lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color(theme.PrimaryColor)).
+		PaddingLeft(3)
+}
+
+// GetBookTitleSelectedStyle returns the themed book title selected style
+func GetBookTitleSelectedStyle() lipgloss.Style {
+	theme := config.GetCurrentTheme()
+	return lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color("#FFFFFF")).
+		Background(lipgloss.Color(theme.PrimaryColor)).
+		Padding(0, 1).
+		MarginLeft(2).
+		PaddingLeft(1)
+}
+
+// GetBookTitleUnselectedStyle returns the themed book title unselected style
+func GetBookTitleUnselectedStyle() lipgloss.Style {
+	theme := config.GetCurrentTheme()
+	return lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color(theme.PrimaryColor)).
+		PaddingLeft(3)
+}
+
+// GetBookContainerSelectedStyle returns the themed book container selected style
+func GetBookContainerSelectedStyle() lipgloss.Style {
+	theme := config.GetCurrentTheme()
+	return lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color(theme.PrimaryColor)).
+		Padding(1, 2, 1, 0).
+		MarginBottom(1)
+}
+
+// GetBookSeparatorBoldStyle returns the themed book separator bold style
+func GetBookSeparatorBoldStyle() lipgloss.Style {
+	theme := config.GetCurrentTheme()
+	return lipgloss.NewStyle().
+		Foreground(lipgloss.Color(theme.PrimaryColor)).
+		Bold(true).
+		MarginTop(1).
+		MarginBottom(1).
+		PaddingLeft(3)
+}
+

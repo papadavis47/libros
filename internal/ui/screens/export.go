@@ -272,7 +272,7 @@ func (s *ExportScreen) View() string {
 
 	// Display title
 	b.WriteString("\n")
-	b.WriteString(styles.TitleStyle.Render("Ｅｘｐｏｒｔ　Ｂｏｏｋ　Ｃｏｌｌｅｃｔｉｏｎ"))
+	b.WriteString(styles.TitleStyle().Render("Ｅｘｐｏｒｔ　Ｂｏｏｋ　Ｃｏｌｌｅｃｔｉｏｎ"))
 	b.WriteString("\n\n")
 
 	switch s.state {
@@ -305,7 +305,7 @@ func (s *ExportScreen) View() string {
 		// Render format options
 		for i, item := range s.formatItems {
 			if i == s.formatIndex {
-				b.WriteString(styles.SelectedStyle.Render(item))
+				b.WriteString(styles.SelectedStyle().Render(item))
 			} else {
 				b.WriteString(styles.BlurredStyle.Render(item))
 			}
