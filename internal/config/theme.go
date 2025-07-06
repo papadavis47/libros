@@ -29,18 +29,19 @@ var (
 
 	// PeachRedTheme is a warm red theme
 	PeachRedTheme = Theme{
-		Name:           "Peach Red",
-		PrimaryColor:   "#ff5d62",
-		SecondaryColor: "#78e08f",
-		TertiaryColor:  "#38ada9",
+		Name:         "Peach Red",
+		PrimaryColor: "#ff5d62",
+		// SecondaryColor: "#78e08f",
+		SecondaryColor: "#b8e994",
+		TertiaryColor:  "#7bed9f",
 	}
 
 	// SurimiOrangeTheme is a bright orange theme
 	SurimiOrangeTheme = Theme{
 		Name:           "Surimi Orange",
 		PrimaryColor:   "#ff9e3b",
-		SecondaryColor: "#6a89cc",
-		TertiaryColor:  "#4a69bd",
+		SecondaryColor: "#70a1ff",
+		TertiaryColor:  "#1e90ff",
 	}
 
 	// SpringBlueTheme is a cool blue theme
