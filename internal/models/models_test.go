@@ -113,6 +113,7 @@ func TestScreenType_Values(t *testing.T) {
 		{"utilities screen", UtilitiesScreen, 5},
 		{"export screen", ExportScreen, 6},
 		{"backup screen", BackupScreen, 7},
+		{"theme screen", ThemeScreen, 8},
 	}
 
 	for _, tt := range tests {

@@ -76,11 +76,17 @@ Application uses a main `ui.Model` that coordinates between screen models:
 - Shared styling through `internal/styles` package
 
 ### Theme System
-- Dynamic color theming with 4 built-in themes: Default (purple), Peach Red, Surimi Orange, Spring Blue
+- Dynamic color theming with 4 built-in themes with primary, secondary, and tertiary colors:
+  - **Default**: Purple primary (#7D56F4), Orange secondary (#FFA500), Gold tertiary (#FFD700)
+  - **Peach Red**: Red primary (#ff5d62), Light Green secondary (#b8e994), Green tertiary (#7bed9f)
+  - **Surimi Orange**: Orange primary (#ff9e3b), Light Blue secondary (#70a1ff), Blue tertiary (#1e90ff)
+  - **Spring Blue**: Blue primary (#7fb4ca), Light Pink secondary (#f8a5c2), Pink tertiary (#f78fb3)
 - Function-based styles that always return current theme colors
 - Theme changes apply immediately without restart
 - TOML configuration for persistence
 - Theme selection screen with live color preview
+- Secondary colors used for buttons and unselected author text
+- Tertiary colors used for selected elements and author text
 
 ### State Management
 - Each screen maintains its own state and handles its own updates
