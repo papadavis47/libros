@@ -73,6 +73,26 @@ func BookSeparatorBoldStyle() lipgloss.Style {
 	return GetBookSeparatorBoldStyle()
 }
 
+// ButtonStyle returns the current themed button style
+func ButtonStyle() lipgloss.Style {
+	return GetButtonStyle()
+}
+
+// BookAuthorUnselectedStyle returns the current themed book author unselected style
+func BookAuthorUnselectedStyle() lipgloss.Style {
+	return GetBookAuthorUnselectedStyle()
+}
+
+// BookAuthorSelectedStyle returns the current themed book author selected style
+func BookAuthorSelectedStyle() lipgloss.Style {
+	return GetBookAuthorSelectedStyle()
+}
+
+// BookTypeSelectedStyle returns the current themed book type selected style
+func BookTypeSelectedStyle() lipgloss.Style {
+	return GetBookTypeSelectedStyle()
+}
+
 // Static styles that don't depend on theme
 var (
 	// BlurredStyle is applied to UI elements that are not currently focused
@@ -85,13 +105,6 @@ var (
 	// NoStyle is a plain style with no special formatting
 	// Used as a neutral base or to reset styling
 	NoStyle = lipgloss.NewStyle()
-
-	// ButtonStyle is used for interactive buttons and action items
-	// Orange color with bold text to make actions stand out
-	ButtonStyle = lipgloss.NewStyle().
-			Bold(true).
-			Foreground(lipgloss.Color("#FFA500")). // Orange color
-			PaddingLeft(3)                         // 3-space left indent
 
 	// ErrorStyle is used for error messages and warnings
 	// Red color to clearly indicate problems or failures
@@ -136,27 +149,6 @@ var (
 	BoldBlurredNoPaddingStyle = lipgloss.NewStyle().
 					Bold(true).                           // Bold formatting
 					Foreground(lipgloss.Color("#FFFFFF")) // White color for accessibility
-
-	// Enhanced Author Styles with complementary colors
-	// BookAuthorSelectedStyle for authors of selected books
-	BookAuthorSelectedStyle = lipgloss.NewStyle().
-				Italic(true).
-				Foreground(lipgloss.Color("#FFD700")). // Gold color for contrast
-				PaddingLeft(3).                        // Same left alignment as title
-				Faint(false)                           // Keep readable on selection
-
-	// BookAuthorUnselectedStyle for authors of non-selected books
-	BookAuthorUnselectedStyle = lipgloss.NewStyle().
-					Italic(true).
-					Foreground(lipgloss.Color("#FFA500")). // Orange color (complementary to purple)
-					PaddingLeft(3)                         // Same left alignment as title
-
-	// BookTypeSelectedStyle for selected book type buttons (no italics)
-	BookTypeSelectedStyle = lipgloss.NewStyle().
-				Bold(true).
-				Foreground(lipgloss.Color("#FFD700")). // Gold color for contrast
-				Padding(0, 1).                         // Consistent horizontal padding
-				PaddingLeft(3)                         // Same left alignment as other elements
 
 	// BookContainerUnselectedStyle creates a subtle container for non-selected books
 	BookContainerUnselectedStyle = lipgloss.NewStyle().
@@ -317,6 +309,44 @@ func GetBookSeparatorBoldStyle() lipgloss.Style {
 		Bold(true).
 		MarginTop(1).
 		MarginBottom(1).
+		PaddingLeft(3)
+}
+
+// GetButtonStyle returns the themed button style
+func GetButtonStyle() lipgloss.Style {
+	theme := config.GetCurrentTheme()
+	return lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color(theme.SecondaryColor)).
+		PaddingLeft(3)
+}
+
+// GetBookAuthorUnselectedStyle returns the themed book author unselected style
+func GetBookAuthorUnselectedStyle() lipgloss.Style {
+	theme := config.GetCurrentTheme()
+	return lipgloss.NewStyle().
+		Italic(true).
+		Foreground(lipgloss.Color(theme.SecondaryColor)).
+		PaddingLeft(3)
+}
+
+// GetBookAuthorSelectedStyle returns the themed book author selected style
+func GetBookAuthorSelectedStyle() lipgloss.Style {
+	theme := config.GetCurrentTheme()
+	return lipgloss.NewStyle().
+		Italic(true).
+		Foreground(lipgloss.Color(theme.TertiaryColor)).
+		PaddingLeft(3).
+		Faint(false)
+}
+
+// GetBookTypeSelectedStyle returns the themed book type selected style
+func GetBookTypeSelectedStyle() lipgloss.Style {
+	theme := config.GetCurrentTheme()
+	return lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color(theme.TertiaryColor)).
+		Padding(0, 1).
 		PaddingLeft(3)
 }
 

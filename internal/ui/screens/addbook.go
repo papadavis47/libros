@@ -228,9 +228,9 @@ func (m AddBookModel) View() string {
 		buttonText := fmt.Sprintf("  %s  ", styles.AddLetterSpacing(styles.CapitalizeBookType(string(bookType))))
 		if i == m.selectedType {
 			if m.focused == len(m.inputs) {
-				b.WriteString(styles.BookTypeSelectedStyle.Render(buttonText))
+				b.WriteString(styles.BookTypeSelectedStyle().Render(buttonText))
 			} else {
-				b.WriteString(styles.BookTypeSelectedStyle.Render(buttonText))
+				b.WriteString(styles.BookTypeSelectedStyle().Render(buttonText))
 			}
 		} else {
 			b.WriteString(styles.SpacedBlurredStyle.Render(buttonText))
@@ -248,7 +248,7 @@ func (m AddBookModel) View() string {
 	b.WriteString(m.textarea.View())
 
 	if m.focused == len(m.inputs)+2 {
-		fmt.Fprintf(&b, "\n\n%s\n\n", styles.ButtonStyle.Render(styles.AddLetterSpacing("SAVE BOOK")))
+		fmt.Fprintf(&b, "\n\n%s\n\n", styles.ButtonStyle().Render(styles.AddLetterSpacing("SAVE BOOK")))
 	} else {
 		fmt.Fprintf(&b, "\n\n%s\n\n", styles.BlurredStyle.Render(styles.AddLetterSpacing("SAVE BOOK")))
 	}

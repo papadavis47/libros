@@ -4,8 +4,10 @@ import "github.com/charmbracelet/lipgloss"
 
 // Theme represents a visual theme configuration
 type Theme struct {
-	Name         string `toml:"name"`
-	PrimaryColor string `toml:"primary_color"`
+	Name           string `toml:"name"`
+	PrimaryColor   string `toml:"primary_color"`
+	SecondaryColor string `toml:"secondary_color"`
+	TertiaryColor  string `toml:"tertiary_color"`
 }
 
 // ThemeOption represents a theme option for selection
@@ -19,26 +21,34 @@ type ThemeOption struct {
 var (
 	// DefaultTheme is the original purple theme
 	DefaultTheme = Theme{
-		Name:         "Default",
-		PrimaryColor: "#7D56F4",
+		Name:           "Default",
+		PrimaryColor:   "#7D56F4",
+		SecondaryColor: "#FFA500",
+		TertiaryColor:  "#FFD700",
 	}
 
 	// PeachRedTheme is a warm red theme
 	PeachRedTheme = Theme{
-		Name:         "Peach Red",
-		PrimaryColor: "#ff5d62",
+		Name:           "Peach Red",
+		PrimaryColor:   "#ff5d62",
+		SecondaryColor: "#78e08f",
+		TertiaryColor:  "#38ada9",
 	}
 
 	// SurimiOrangeTheme is a bright orange theme
 	SurimiOrangeTheme = Theme{
-		Name:         "Surimi Orange",
-		PrimaryColor: "#ff9e3b",
+		Name:           "Surimi Orange",
+		PrimaryColor:   "#ff9e3b",
+		SecondaryColor: "#6a89cc",
+		TertiaryColor:  "#4a69bd",
 	}
 
 	// SpringBlueTheme is a cool blue theme
 	SpringBlueTheme = Theme{
-		Name:         "Spring Blue",
-		PrimaryColor: "#7fb4ca",
+		Name:           "Spring Blue",
+		PrimaryColor:   "#7fb4ca",
+		SecondaryColor: "#f8a5c2",
+		TertiaryColor:  "#f78fb3",
 	}
 )
 

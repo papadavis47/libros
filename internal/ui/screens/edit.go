@@ -272,10 +272,10 @@ func (m EditModel) View() string {
 			// This is the currently selected book type
 			if m.focused == len(m.inputs) {
 				// Book type selector is focused - use button style
-				b.WriteString(styles.BookTypeSelectedStyle.Render(buttonText))
+				b.WriteString(styles.BookTypeSelectedStyle().Render(buttonText))
 			} else {
 				// Book type selector not focused but this type is selected
-				b.WriteString(styles.BookTypeSelectedStyle.Render(buttonText))
+				b.WriteString(styles.BookTypeSelectedStyle().Render(buttonText))
 			}
 		} else {
 			// This is not the selected book type
@@ -297,7 +297,7 @@ func (m EditModel) View() string {
 	// Add save button with focus-aware styling
 	if m.focused == len(m.inputs)+2 {
 		// Save button is focused
-		fmt.Fprintf(&b, "\n\n%s\n\n", styles.ButtonStyle.Render(styles.AddLetterSpacing("UPDATE BOOK")))
+		fmt.Fprintf(&b, "\n\n%s\n\n", styles.ButtonStyle().Render(styles.AddLetterSpacing("UPDATE BOOK")))
 	} else {
 		fmt.Fprintf(&b, "\n\n%s\n\n", styles.BlurredStyle.Render(styles.AddLetterSpacing("UPDATE BOOK")))
 	}
